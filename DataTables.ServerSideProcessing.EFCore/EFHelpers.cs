@@ -15,6 +15,8 @@ public static class EFHelpers
             if (!ReflectionCache<T>.Properties.TryGetValue(filterModel.PropertyName, out string? propName))
                 continue;
 
+            Expression<Func<T, bool>>? predicate = null;
+
             if (filterModel is DataTableTextFilterModel filterTextModel)
             {
                 if (string.IsNullOrEmpty(filterTextModel.SearchValue))
@@ -23,13 +25,11 @@ public static class EFHelpers
                 if (filterTextModel.ColumnType == ColumnValueType.AccNumber)
                     filterTextModel.SearchValue = filterTextModel.SearchValue.Replace("-", "");
 
-                var predicate = BuildTextWhereExpression<T>(
+                predicate = BuildTextWhereExpression<T>(
                                     propName,
                                     filterTextModel.FilterType,
                                     filterTextModel.SearchValue);
 
-                if (predicate != null)
-                    query = query.Where(predicate);
             }
             else if (filterModel is DataTableNumberFilterModel filterNumberModel)
             {
@@ -39,13 +39,10 @@ public static class EFHelpers
                 if (filterNumberModel.ColumnType == ColumnValueType.Decimal)
                     filterNumberModel.SearchValue = filterNumberModel.SearchValue.Replace(".", "");
 
-                var predicate = BuildNumericWhereExpression<T>(
+                predicate = BuildNumericWhereExpression<T>(
                                     propName,
                                     filterNumberModel.FilterType,
                                     filterNumberModel.SearchValue);
-
-                if (predicate != null)
-                    query = query.Where(predicate);
             }
             else if (filterModel is DataTableDateTimeFilterModel filterDateModel)
             {
@@ -55,13 +52,14 @@ public static class EFHelpers
                 if (!DateTime.TryParseExact(filterDateModel.SearchValue, "dd.MM.yyyy", null, DateTimeStyles.None, out DateTime datumParsed))
                     continue;
 
-                var predicate = BuildDateWhereExpression<T>(
+                predicate = BuildDateWhereExpression<T>(
                                     propName,
                                     datumParsed);
-
-                if (predicate != null)
-                    query = query.Where(predicate);
             }
+
+            if (predicate != null)
+                query = query.Where(predicate);
+
         }
         return query;
     }
@@ -97,28 +95,22 @@ public static class EFHelpers
         return pageSize != -1 ? await query.Skip(skip).Take(pageSize).ToListAsync(ct) : await query.ToListAsync(ct);
     }
 
-    private static Expression<Func<T, bool>>? BuildDateWhereExpression<T>(string propertyName, DateTime searchValue)
+    private static Expression<Func<T, bool>> BuildDateWhereExpression<T>(string propertyName, DateTime searchValue)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
-        var result = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Date);
-        if (!result.HasValue)
-            return null;
+        (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Date);
 
-        (MemberExpression memberAccess, Expression constantValue) = result.Value;
         Expression comparison = Expression.Equal(memberAccess, constantValue);
 
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static Expression<Func<T, bool>>? BuildNumericWhereExpression<T>(string propertyName, NumberFilter? numberFilterType, string searchValue)
+    private static Expression<Func<T, bool>> BuildNumericWhereExpression<T>(string propertyName, NumberFilter numberFilterType, string searchValue)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
-        var result = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Number);
-        if (!result.HasValue)
-            return null;
+        (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Number);
 
-        (MemberExpression memberAccess, Expression constantValue) = result.Value;
-        Expression? comparison = numberFilterType switch
+        Expression comparison = numberFilterType switch
         {
             NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
             NumberFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
@@ -126,21 +118,18 @@ public static class EFHelpers
             NumberFilter.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
             NumberFilter.LessThan => Expression.LessThan(memberAccess, constantValue),
             NumberFilter.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
-            _ => null
+            _ => throw new NotImplementedException(),
         };
 
-        return comparison != null ? Expression.Lambda<Func<T, bool>>(comparison, parameter) : null;
+        return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static Expression<Func<T, bool>>? BuildTextWhereExpression<T>(string propertyName, TextFilter? textFilterType, string searchValue)
+    private static Expression<Func<T, bool>> BuildTextWhereExpression<T>(string propertyName, TextFilter? textFilterType, string searchValue)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
-        var result = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Text);
-        if (!result.HasValue)
-            return null;
+        (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Text);
 
-        (MemberExpression memberAccess, Expression constantValue) = result.Value;
-        Expression? comparison = textFilterType switch
+        Expression comparison = textFilterType switch
         {
             TextFilter.Equals => Expression.Equal(memberAccess, constantValue),
             TextFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
@@ -148,18 +137,15 @@ public static class EFHelpers
             TextFilter.DoesntContain => Expression.Not(Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue)),
             TextFilter.StartsWith => Expression.Call(memberAccess, typeof(string).GetMethod("StartsWith", [typeof(string)])!, constantValue),
             TextFilter.EndsWith => Expression.Call(memberAccess, typeof(string).GetMethod("EndsWith", [typeof(string)])!, constantValue),
-            _ => null
+            _ => throw new NotImplementedException(),
         };
 
-        return comparison != null ? Expression.Lambda<Func<T, bool>>(comparison, parameter) : null;
+        return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static (MemberExpression memberAccess, Expression constantValue)? PrepareExpressionData<T>(ParameterExpression parameter, string propertyName, object searchValue, ColumnFilterType columnType)
+    private static (MemberExpression memberAccess, Expression constantValue) PrepareExpressionData<T>(ParameterExpression parameter, string propertyName, object searchValue, ColumnFilterType columnType)
     {
-
-        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-        if (propertyInfo == null)
-            return null;
+        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
 
         MemberExpression memberAccess = Expression.Property(parameter, propertyInfo);
 
@@ -168,10 +154,14 @@ public static class EFHelpers
         // Get the underlying type if it's nullable (e.g., int from int?)
         Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
-        if ((columnType == ColumnFilterType.Number && !IsNumericType(underlyingType)) ||
-            (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime)) ||
-            (columnType == ColumnFilterType.Text && underlyingType != typeof(string)))
-            return null;
+        if (columnType == ColumnFilterType.Number && !IsNumericType(underlyingType))
+            throw new InvalidOperationException($"Property '{propertyName}' is not a numeric type.");
+
+        if (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime))
+            throw new InvalidOperationException($"Property '{propertyName}' is not a DateTime type.");
+
+        if (columnType == ColumnFilterType.Text && underlyingType != typeof(string))
+            throw new InvalidOperationException($"Property '{propertyName}' is not a string type.");
 
         // Convert the input 'searchValue' to the property's underlying type
         object convertedValue = Convert.ChangeType(searchValue, underlyingType);
