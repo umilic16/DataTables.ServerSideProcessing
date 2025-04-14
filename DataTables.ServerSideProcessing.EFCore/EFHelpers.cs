@@ -105,15 +105,7 @@ public static class EFHelpers
             return null;
 
         (MemberExpression memberAccess, Expression constantValue) = result.Value;
-        Expression comparison;
-        try
-        {
-            comparison = Expression.Equal(memberAccess, constantValue);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+        Expression comparison = Expression.Equal(memberAccess, constantValue);
 
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
@@ -126,24 +118,16 @@ public static class EFHelpers
             return null;
 
         (MemberExpression memberAccess, Expression constantValue) = result.Value;
-        Expression? comparison;
-        try
+        Expression? comparison = numberFilterType switch
         {
-            comparison = numberFilterType switch
-            {
-                NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
-                NumberFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
-                NumberFilter.GreaterThan => Expression.GreaterThan(memberAccess, constantValue),
-                NumberFilter.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
-                NumberFilter.LessThan => Expression.LessThan(memberAccess, constantValue),
-                NumberFilter.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
-                _ => null
-            };
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+            NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
+            NumberFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
+            NumberFilter.GreaterThan => Expression.GreaterThan(memberAccess, constantValue),
+            NumberFilter.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
+            NumberFilter.LessThan => Expression.LessThan(memberAccess, constantValue),
+            NumberFilter.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
+            _ => null
+        };
 
         return comparison != null ? Expression.Lambda<Func<T, bool>>(comparison, parameter) : null;
     }
@@ -156,64 +140,44 @@ public static class EFHelpers
             return null;
 
         (MemberExpression memberAccess, Expression constantValue) = result.Value;
-        Expression? comparison;
-        try
+        Expression? comparison = textFilterType switch
         {
-            comparison = textFilterType switch
-            {
-                TextFilter.Equals => Expression.Equal(memberAccess, constantValue),
-                TextFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
-                TextFilter.Contains => Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue),
-                TextFilter.DoesntContain => Expression.Not(Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue)),
-                TextFilter.StartsWith => Expression.Call(memberAccess, typeof(string).GetMethod("StartsWith", [typeof(string)])!, constantValue),
-                TextFilter.EndsWith => Expression.Call(memberAccess, typeof(string).GetMethod("EndsWith", [typeof(string)])!, constantValue),
-                _ => null
-            };
-        }
-        catch (Exception)
-        {
-            return null;
-        }
+            TextFilter.Equals => Expression.Equal(memberAccess, constantValue),
+            TextFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
+            TextFilter.Contains => Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue),
+            TextFilter.DoesntContain => Expression.Not(Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue)),
+            TextFilter.StartsWith => Expression.Call(memberAccess, typeof(string).GetMethod("StartsWith", [typeof(string)])!, constantValue),
+            TextFilter.EndsWith => Expression.Call(memberAccess, typeof(string).GetMethod("EndsWith", [typeof(string)])!, constantValue),
+            _ => null
+        };
 
         return comparison != null ? Expression.Lambda<Func<T, bool>>(comparison, parameter) : null;
     }
 
     private static (MemberExpression memberAccess, Expression constantValue)? PrepareExpressionData<T>(ParameterExpression parameter, string propertyName, object searchValue, ColumnFilterType columnType)
     {
-        MemberExpression memberAccess;
-        PropertyInfo? propertyInfo;
-        Expression constantValue;
 
-        try
-        {
-            // --- Get Property Info ---
-            propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-            if (propertyInfo == null)
-                return null;
-
-            memberAccess = Expression.Property(parameter, propertyInfo);
-
-            // Get the actual type of the property (e.g., int, double?, decimal)
-            Type propertyType = propertyInfo.PropertyType;
-            // Get the underlying type if it's nullable (e.g., int from int?)
-            Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
-
-            if ((columnType == ColumnFilterType.Number && !IsNumericType(underlyingType)) ||
-                (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime)) ||
-                (columnType == ColumnFilterType.Text && underlyingType != typeof(string)))
-                return null;
-
-            // Convert the input 'searchValue' to the property's underlying type
-            object convertedValue = Convert.ChangeType(searchValue, underlyingType);
-
-            // Create a constant expression using the converted value BUT typed as the *original* property type (including Nullable<>)
-            constantValue = Expression.Constant(convertedValue, propertyType);
-        }
-        catch (Exception)
-        {
+        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        if (propertyInfo == null)
             return null;
-        }
 
+        MemberExpression memberAccess = Expression.Property(parameter, propertyInfo);
+
+        // Get the actual type of the property (e.g., int, double?, decimal)
+        Type propertyType = propertyInfo.PropertyType;
+        // Get the underlying type if it's nullable (e.g., int from int?)
+        Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+        if ((columnType == ColumnFilterType.Number && !IsNumericType(underlyingType)) ||
+            (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime)) ||
+            (columnType == ColumnFilterType.Text && underlyingType != typeof(string)))
+            return null;
+
+        // Convert the input 'searchValue' to the property's underlying type
+        object convertedValue = Convert.ChangeType(searchValue, underlyingType);
+
+        // Create a constant expression using the converted value BUT typed as the *original* property type (including Nullable<>)
+        Expression constantValue = Expression.Constant(convertedValue, propertyType);
         return (memberAccess, constantValue);
     }
 
