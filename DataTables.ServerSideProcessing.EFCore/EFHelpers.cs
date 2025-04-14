@@ -182,41 +182,28 @@ public static class EFHelpers
     {
         MemberExpression memberAccess;
         PropertyInfo? propertyInfo;
+        Expression constantValue;
 
-        // --- Get Property Info ---
         try
         {
+            // --- Get Property Info ---
             propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
             if (propertyInfo == null)
                 return null;
 
             memberAccess = Expression.Property(parameter, propertyInfo);
-        }
-        catch (Exception)
-        {
-            return null;
-        }
 
-        // --- Prepare the Constant Value (Matching Property Type) ---
-        Expression constantValue;
-        try
-        {
             // Get the actual type of the property (e.g., int, double?, decimal)
             Type propertyType = propertyInfo.PropertyType;
             // Get the underlying type if it's nullable (e.g., int from int?)
             Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
-            // Check if the underlying type is numeric (you might want to refine this check)
-            if (columnType == ColumnFilterType.Number && !IsNumericType(underlyingType))
+            if ((columnType == ColumnFilterType.Number && !IsNumericType(underlyingType)) ||
+                (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime)) ||
+                (columnType == ColumnFilterType.Text && underlyingType != typeof(string)))
                 return null;
 
-            if (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime))
-                return null;
-
-            if (columnType == ColumnFilterType.Text && underlyingType != typeof(string))
-                return null;
-
-            // Convert the input 'searchValue' (decimal) to the property's underlying type
+            // Convert the input 'searchValue' to the property's underlying type
             object convertedValue = Convert.ChangeType(searchValue, underlyingType);
 
             // Create a constant expression using the converted value BUT typed as the *original* property type (including Nullable<>)
