@@ -23,16 +23,13 @@ public static class EFHelpers
                 if (filterTextModel.ColumnType == ColumnValueType.AccNumber)
                     filterTextModel.SearchValue = filterTextModel.SearchValue.Replace("-", "");
 
-                query = filterTextModel.FilterType switch
-                {
-                    TextFilter.Contains => query = query.Where(e => EF.Property<object>(e, propName).ToString().Contains(filterTextModel.SearchValue)),
-                    TextFilter.DoesntContain => query = query.Where(e => !EF.Property<object>(e, propName).ToString().Contains(filterTextModel.SearchValue)),
-                    TextFilter.StartsWith => query = query.Where(e => EF.Property<object>(e, propName).ToString().StartsWith(filterTextModel.SearchValue)),
-                    TextFilter.EndsWith => query = query.Where(e => EF.Property<object>(e, propName).ToString().EndsWith(filterTextModel.SearchValue)),
-                    TextFilter.Equals => query = query.Where(e => EF.Property<object>(e, propName).ToString() == filterTextModel.SearchValue),
-                    TextFilter.NotEqual => query = query.Where(e => EF.Property<object>(e, propName).ToString() != filterTextModel.SearchValue),
-                    _ => query
-                };
+                var predicate = BuildTextWhereExpression<T>(
+                                    propName,
+                                    filterTextModel.FilterType,
+                                    filterTextModel.SearchValue);
+
+                if (predicate != null)
+                    query = query.Where(predicate);
             }
             else if (filterModel is DataTableNumberFilterModel filterNumberModel)
             {
@@ -151,6 +148,36 @@ public static class EFHelpers
         return comparison != null ? Expression.Lambda<Func<T, bool>>(comparison, parameter) : null;
     }
 
+    private static Expression<Func<T, bool>>? BuildTextWhereExpression<T>(string propertyName, TextFilter? textFilterType, string searchValue)
+    {
+        ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
+        var result = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Text);
+        if (!result.HasValue)
+            return null;
+
+        (MemberExpression memberAccess, Expression constantValue) = result.Value;
+        Expression? comparison;
+        try
+        {
+            comparison = textFilterType switch
+            {
+                TextFilter.Equals => Expression.Equal(memberAccess, constantValue),
+                TextFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
+                TextFilter.Contains => Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue),
+                TextFilter.DoesntContain => Expression.Not(Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue)),
+                TextFilter.StartsWith => Expression.Call(memberAccess, typeof(string).GetMethod("StartsWith", [typeof(string)])!, constantValue),
+                TextFilter.EndsWith => Expression.Call(memberAccess, typeof(string).GetMethod("EndsWith", [typeof(string)])!, constantValue),
+                _ => null
+            };
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+        return comparison != null ? Expression.Lambda<Func<T, bool>>(comparison, parameter) : null;
+    }
+
     private static (MemberExpression memberAccess, Expression constantValue)? PrepareExpressionData<T>(ParameterExpression parameter, string propertyName, object searchValue, ColumnFilterType columnType)
     {
         MemberExpression memberAccess;
@@ -184,6 +211,9 @@ public static class EFHelpers
                 return null;
 
             if (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime))
+                return null;
+
+            if (columnType == ColumnFilterType.Text && underlyingType != typeof(string))
                 return null;
 
             // Convert the input 'searchValue' (decimal) to the property's underlying type
