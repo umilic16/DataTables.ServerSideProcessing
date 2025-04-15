@@ -7,13 +7,12 @@ using static DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilder;
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 internal static class ColumnFilterHandler
 {
-
     internal static IQueryable<T> HandleColumnFilters<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
     {
         foreach (DataTableFilterBaseModel filterModel in filters)
         {
             if (!ReflectionCache<T>.Properties.TryGetValue(filterModel.PropertyName, out string? propName))
-                continue;
+                throw new InvalidOperationException($"Property '{propName}' not found on type '{typeof(T).Name}'.");
 
             Expression<Func<T, bool>>? predicate = null;
 
