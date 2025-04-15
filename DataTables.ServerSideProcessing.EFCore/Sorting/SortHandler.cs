@@ -2,7 +2,7 @@
 using DataTables.ServerSideProcessing.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataTables.ServerSideProcessing.EFCore.Handlers;
+namespace DataTables.ServerSideProcessing.EFCore.Sorting;
 internal static class SortHandler
 {
     internal static IQueryable<T> HandleSorting<T>(IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class

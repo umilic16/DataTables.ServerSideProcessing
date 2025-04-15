@@ -1,7 +1,7 @@
 ﻿using DataTables.ServerSideProcessing.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using static DataTables.ServerSideProcessing.EFCore.Handlers.ColumnFilterHandler;
-using static DataTables.ServerSideProcessing.EFCore.Handlers.SortHandler;
+using static DataTables.ServerSideProcessing.EFCore.Filtering.ColumnFilterHandler;
+using static DataTables.ServerSideProcessing.EFCore.Sorting.SortHandler;
 
 namespace DataTables.ServerSideProcessing.EFCore;
 public static class QueryBuilder
