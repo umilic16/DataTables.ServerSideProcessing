@@ -4,9 +4,9 @@ using System.Reflection;
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 internal static class GenericFilterHandler
 {
-    internal static IQueryable<T> HandleGenericFilter<T>(IQueryable<T> query, IEnumerable<string> properties, string? search = null) where T : class
+    internal static IQueryable<T> HandleGenericFilter<T>(this IQueryable<T> query, IEnumerable<string>? properties, string? search) where T : class
     {
-        if (string.IsNullOrEmpty(search) || !properties.Any())
+        if (string.IsNullOrEmpty(search) || properties?.Any() != true)
             return query;
 
         Expression? combinedExpression = null;

@@ -9,13 +9,9 @@ public static class QueryBuilder
 {
     public static IQueryable<T> BuildQuery<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null) where T : class
     {
-        if (properties != null)
-            query = HandleGenericFilter(query, properties, search); 
-        if (filters != null)
-            query = HandleColumnFilters(filters, query);
-        if (sortOrder != null)
-            query = HandleSorting(sortOrder, query);
-        return query;
+        return query.HandleGenericFilter(properties, search)
+                    .HandleColumnFilters(filters)
+                    .HandleSorting(sortOrder);
     }
 
     public async static Task<List<T>> ExecuteQuery<T>(this IQueryable<T> query, int skip, int pageSize, CancellationToken ct) where T : class
