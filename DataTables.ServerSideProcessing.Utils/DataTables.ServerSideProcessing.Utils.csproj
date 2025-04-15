@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DataTables.ServerSideProcessing.Data\DataTables.ServerSideProcessing.Data.csproj" />
   </ItemGroup>
 

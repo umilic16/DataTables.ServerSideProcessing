@@ -8,7 +8,7 @@ using System.Reflection;
 namespace DataTables.ServerSideProcessing.EFCore;
 public static class EFHelpers
 {
-    public static IQueryable<T> ParseFiltersIntoQuery<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
+    public static IQueryable<T> HandleColumnFilters<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
     {
         foreach (DataTableFilterBaseModel filterModel in filters)
         {

@@ -1,11 +1,10 @@
 ﻿using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
-using Microsoft.AspNetCore.Http;
 
 namespace DataTables.ServerSideProcessing.Utils;
 public static class RequestParser
 {
-    public static IEnumerable<SortModel> ParseSortOrder(IFormCollection requestFormData)
+    public static IEnumerable<SortModel> ParseSortOrder(Dictionary<string, string> requestFormData)
     {
         foreach (var key in requestFormData.Keys)
         {
@@ -30,7 +29,7 @@ public static class RequestParser
         }
     }
 
-    public static IEnumerable<DataTableFilterBaseModel> ParseFilters(IFormCollection requestFormData)
+    public static IEnumerable<DataTableFilterBaseModel> ParseFilters(Dictionary<string, string> requestFormData)
     {
         foreach (var key in requestFormData.Keys)
         {
