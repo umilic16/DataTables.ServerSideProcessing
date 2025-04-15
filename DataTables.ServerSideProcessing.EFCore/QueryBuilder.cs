@@ -13,6 +13,18 @@ public static class QueryBuilder
                     .HandleSorting(sortOrder);
     }
 
+    public static List<T> BuildAndExecuteQuery<T>(this IQueryable<T> query, int skip, int pageSize, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null) where T : class
+    {
+        return query.BuildQuery(filters, sortOrder, properties, search)
+                    .ExecuteQuery(skip, pageSize);
+    }
+
+    public static async Task<List<T>> BuildAndExecuteQueryAsync<T>(this IQueryable<T> query, int skip, int pageSize, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null, CancellationToken ct = default) where T : class
+    {
+        return await query.BuildQuery(filters, sortOrder, properties, search)
+                          .ExecuteQueryAsync(skip, pageSize, ct);
+    }
+
     public static IQueryable<T> HandleGenericFilter<T>(this IQueryable<T> query, IEnumerable<string>? properties = null, string? search = null) where T : class
     {
         return GenericFilterHandler.HandleGenericFilter(query, properties, search);
@@ -28,7 +40,12 @@ public static class QueryBuilder
         return SortHandler.HandleSorting(query, sortOrder);
     }
 
-    public async static Task<List<T>> ExecuteQuery<T>(this IQueryable<T> query, int skip, int pageSize, CancellationToken ct) where T : class
+    public static List<T> ExecuteQuery<T>(this IQueryable<T> query, int skip, int pageSize) where T : class
+    {
+        return pageSize != -1 ? query.Skip(skip).Take(pageSize).ToList() : query.ToList();
+    }
+
+    public static async Task<List<T>> ExecuteQueryAsync<T>(this IQueryable<T> query, int skip, int pageSize, CancellationToken ct = default) where T : class
     {
         return pageSize != -1 ? await query.Skip(skip).Take(pageSize).ToListAsync(ct) : await query.ToListAsync(ct);
     }
