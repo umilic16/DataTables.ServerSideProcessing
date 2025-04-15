@@ -8,7 +8,29 @@ using System.Reflection;
 namespace DataTables.ServerSideProcessing.EFCore;
 public static class EFHelpers
 {
-    public static IQueryable<T> HandleColumnFilters<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
+    public static IQueryable<T> BuildQuery<T>(IEnumerable<DataTableFilterBaseModel> filters, IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class
+    {
+        query = HandleColumnFilters(filters, query);
+        query = HandleSorting(sortOrder, query);
+        return query;
+    }
+
+    public static IQueryable<T> BuildQuery<T>(IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class
+    {
+        return HandleSorting(sortOrder, query);
+    }
+
+    public static IQueryable<T> BuildQuery<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
+    {
+        return HandleColumnFilters(filters, query);
+    }
+
+    public async static Task<List<T>> ExecuteQuery<T>(IQueryable<T> query, int skip, int pageSize, CancellationToken ct) where T : class
+    {
+        return pageSize != -1 ? await query.Skip(skip).Take(pageSize).ToListAsync(ct) : await query.ToListAsync(ct);
+    }
+
+    private static IQueryable<T> HandleColumnFilters<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
     {
         foreach (DataTableFilterBaseModel filterModel in filters)
         {
@@ -64,7 +86,7 @@ public static class EFHelpers
         return query;
     }
 
-    public static IQueryable<T> HandleSorting<T>(IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class
+    private static IQueryable<T> HandleSorting<T>(IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class
     {
         bool isFirstFlag = true;
         foreach (var sortModel in sortOrder)
@@ -88,11 +110,6 @@ public static class EFHelpers
             }
         }
         return query;
-    }
-
-    public async static Task<List<T>> ExecuteQuery<T>(IQueryable<T> query, int skip, int pageSize, CancellationToken ct) where T : class
-    {
-        return pageSize != -1 ? await query.Skip(skip).Take(pageSize).ToListAsync(ct) : await query.ToListAsync(ct);
     }
 
     private static Expression<Func<T, bool>> BuildDateWhereExpression<T>(string propertyName, DateTime searchValue)
