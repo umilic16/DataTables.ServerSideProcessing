@@ -1,36 +1,19 @@
 ﻿using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DataTables.ServerSideProcessing.EFCore;
-public static class EFHelpers
+namespace DataTables.ServerSideProcessing.EFCore.Handlers;
+internal static class ColumnFilterHandler
 {
-    public static IQueryable<T> BuildQuery<T>(IEnumerable<DataTableFilterBaseModel> filters, IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class
-    {
-        query = HandleColumnFilters(filters, query);
-        query = HandleSorting(sortOrder, query);
-        return query;
-    }
 
-    public static IQueryable<T> BuildQuery<T>(IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class
-    {
-        return HandleSorting(sortOrder, query);
-    }
-
-    public static IQueryable<T> BuildQuery<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
-    {
-        return HandleColumnFilters(filters, query);
-    }
-
-    public async static Task<List<T>> ExecuteQuery<T>(IQueryable<T> query, int skip, int pageSize, CancellationToken ct) where T : class
-    {
-        return pageSize != -1 ? await query.Skip(skip).Take(pageSize).ToListAsync(ct) : await query.ToListAsync(ct);
-    }
-
-    private static IQueryable<T> HandleColumnFilters<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
+    internal static IQueryable<T> HandleColumnFilters<T>(IEnumerable<DataTableFilterBaseModel> filters, IQueryable<T> query) where T : class
     {
         foreach (DataTableFilterBaseModel filterModel in filters)
         {
@@ -86,33 +69,7 @@ public static class EFHelpers
         return query;
     }
 
-    private static IQueryable<T> HandleSorting<T>(IEnumerable<SortModel> sortOrder, IQueryable<T> query) where T : class
-    {
-        bool isFirstFlag = true;
-        foreach (var sortModel in sortOrder)
-        {
-            if (ReflectionCache<T>.Properties.TryGetValue(sortModel.PropertyName, out string? propName))
-            {
-                if (isFirstFlag)
-                {
-                    query = sortModel.SortDirection == SortDirection.Ascending
-                        ? query.OrderBy(e => EF.Property<object>(e, propName))
-                        : query.OrderByDescending(e => EF.Property<object>(e, propName));
-
-                    isFirstFlag = false;
-                }
-                else
-                {
-                    query = sortModel.SortDirection == SortDirection.Ascending
-                        ? ((IOrderedQueryable<T>)query).ThenBy(e => EF.Property<object>(e, propName))
-                        : ((IOrderedQueryable<T>)query).ThenByDescending(e => EF.Property<object>(e, propName));
-                }
-            }
-        }
-        return query;
-    }
-
-    private static Expression<Func<T, bool>> BuildDateWhereExpression<T>(string propertyName, DateTime searchValue)
+    internal static Expression<Func<T, bool>> BuildDateWhereExpression<T>(string propertyName, DateTime searchValue)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
         (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Date);
@@ -122,7 +79,7 @@ public static class EFHelpers
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static Expression<Func<T, bool>> BuildNumericWhereExpression<T>(string propertyName, NumberFilter numberFilterType, string searchValue)
+    internal static Expression<Func<T, bool>> BuildNumericWhereExpression<T>(string propertyName, NumberFilter numberFilterType, string searchValue)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
         (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Number);
@@ -141,7 +98,7 @@ public static class EFHelpers
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static Expression<Func<T, bool>> BuildTextWhereExpression<T>(string propertyName, TextFilter? textFilterType, string searchValue)
+    internal static Expression<Func<T, bool>> BuildTextWhereExpression<T>(string propertyName, TextFilter? textFilterType, string searchValue)
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
         (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Text);
@@ -160,7 +117,7 @@ public static class EFHelpers
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static (MemberExpression memberAccess, Expression constantValue) PrepareExpressionData<T>(ParameterExpression parameter, string propertyName, object searchValue, ColumnFilterType columnType)
+    internal static (MemberExpression memberAccess, Expression constantValue) PrepareExpressionData<T>(ParameterExpression parameter, string propertyName, object searchValue, ColumnFilterType columnType)
     {
         PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
 
@@ -188,7 +145,7 @@ public static class EFHelpers
         return (memberAccess, constantValue);
     }
 
-    private static bool IsNumericType(Type type)
+    internal static bool IsNumericType(Type type)
     {
         return type == typeof(int) || type == typeof(double) || type == typeof(decimal) || type == typeof(float) ||
                type == typeof(long) || type == typeof(short);
