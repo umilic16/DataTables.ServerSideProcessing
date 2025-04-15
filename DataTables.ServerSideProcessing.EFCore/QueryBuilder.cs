@@ -1,13 +1,16 @@
 ﻿using DataTables.ServerSideProcessing.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using static DataTables.ServerSideProcessing.EFCore.Filtering.ColumnFilterHandler;
+using static DataTables.ServerSideProcessing.EFCore.Filtering.GenericFilterHandler;
 using static DataTables.ServerSideProcessing.EFCore.Sorting.SortHandler;
 
 namespace DataTables.ServerSideProcessing.EFCore;
 public static class QueryBuilder
 {
-    public static IQueryable<T> BuildQuery<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null) where T : class
+    public static IQueryable<T> BuildQuery<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null) where T : class
     {
+        if (properties != null)
+            query = HandleGenericFilter(query, properties, search); 
         if (filters != null)
             query = HandleColumnFilters(filters, query);
         if (sortOrder != null)

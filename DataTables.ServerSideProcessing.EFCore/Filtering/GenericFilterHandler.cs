@@ -1,13 +1,12 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
-internal class GenericFilterHandler
+internal static class GenericFilterHandler
 {
-    internal static IQueryable<T> HandleGenericFilter<T>(List<string> properties, string search, IQueryable<T> query) where T : class
+    internal static IQueryable<T> HandleGenericFilter<T>(IQueryable<T> query, IEnumerable<string> properties, string? search = null) where T : class
     {
-        if (string.IsNullOrEmpty(search) || properties.Count == 0)
+        if (string.IsNullOrEmpty(search) || !properties.Any())
             return query;
 
         Expression? combinedExpression = null;
