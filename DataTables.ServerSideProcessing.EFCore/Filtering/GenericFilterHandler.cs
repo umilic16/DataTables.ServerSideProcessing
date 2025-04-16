@@ -34,7 +34,7 @@ internal static class GenericFilterHandler
                 propertyAsString = Expression.Condition(nullCheck, defaultValue, toStringCall);
             }
 
-            var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
+            var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)])!;
             var searchExpression = Expression.Constant(search);
             var predicate = Expression.Call(propertyAsString, containsMethod, searchExpression);
 
