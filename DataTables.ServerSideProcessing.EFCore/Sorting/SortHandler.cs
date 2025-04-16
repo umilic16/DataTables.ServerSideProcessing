@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 namespace DataTables.ServerSideProcessing.EFCore.Sorting;
 internal static class SortHandler
 {
-    internal static IQueryable<T> HandleSorting<T>(this IQueryable<T> query, IEnumerable<SortModel>? sortOrder) where T : class
+    internal static IQueryable<T> HandleSorting<T>(this IQueryable<T> query, IEnumerable<SortModel> sortOrder) where T : class
     {
-        if (sortOrder?.Any() != true)
+        if (!sortOrder.Any())
             return query;
 
         bool isFirstFlag = true;

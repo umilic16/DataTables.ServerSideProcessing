@@ -7,9 +7,9 @@ using static DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilder;
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 internal static class ColumnFilterHandler
 {
-    internal static IQueryable<T> HandleColumnFilters<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel>? filters) where T : class
+    internal static IQueryable<T> HandleColumnFilters<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel> filters) where T : class
     {
-        if (filters?.Any() != true)
+        if (!filters.Any())
             return query;
 
         foreach (DataTableFilterBaseModel filterModel in filters)

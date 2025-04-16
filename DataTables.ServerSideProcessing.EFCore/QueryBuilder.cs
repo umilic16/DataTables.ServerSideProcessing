@@ -27,17 +27,17 @@ public static class QueryBuilder
 
     public static IQueryable<T> HandleGenericFilter<T>(this IQueryable<T> query, IEnumerable<string>? properties = null, string? search = null) where T : class
     {
-        return GenericFilterHandler.HandleGenericFilter(query, properties, search);
+        return properties == null || string.IsNullOrEmpty(search) ? query : GenericFilterHandler.HandleGenericFilter(query, properties, search);
     }
 
     public static IQueryable<T> HandleColumnFilters<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel>? filters = null) where T : class
     {
-        return ColumnFilterHandler.HandleColumnFilters(query, filters);
+        return filters == null ? query : ColumnFilterHandler.HandleColumnFilters(query, filters);
     }
 
     public static IQueryable<T> HandleSorting<T>(this IQueryable<T> query, IEnumerable<SortModel>? sortOrder = null) where T : class
     {
-        return SortHandler.HandleSorting(query, sortOrder);
+        return sortOrder == null ? query : SortHandler.HandleSorting(query, sortOrder);
     }
 
     public static List<T> ExecuteQuery<T>(this IQueryable<T> query, int skip, int pageSize) where T : class
