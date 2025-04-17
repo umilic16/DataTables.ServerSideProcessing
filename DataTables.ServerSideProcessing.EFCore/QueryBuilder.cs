@@ -13,13 +13,13 @@ public static class QueryBuilder
                     .HandleSorting(sortOrder);
     }
 
-    public static List<T> BuildAndExecuteQuery<T>(this IQueryable<T> query, int skip, int pageSize, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null) where T : class
+    public static List<T> BuildAndExecuteQuery<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null) where T : class
     {
         return query.BuildQuery(filters, sortOrder, properties, search)
                     .ExecuteQuery(skip, pageSize);
     }
 
-    public static async Task<List<T>> BuildAndExecuteQueryAsync<T>(this IQueryable<T> query, int skip, int pageSize, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null, CancellationToken ct = default) where T : class
+    public static async Task<List<T>> BuildAndExecuteQueryAsync<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null, CancellationToken ct = default) where T : class
     {
         return await query.BuildQuery(filters, sortOrder, properties, search)
                           .ExecuteQueryAsync(skip, pageSize, ct);
@@ -40,12 +40,12 @@ public static class QueryBuilder
         return sortOrder == null ? query : SortHandler.HandleSorting(query, sortOrder);
     }
 
-    public static List<T> ExecuteQuery<T>(this IQueryable<T> query, int skip, int pageSize) where T : class
+    public static List<T> ExecuteQuery<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1) where T : class
     {
         return pageSize != -1 ? query.Skip(skip).Take(pageSize).ToList() : query.ToList();
     }
 
-    public static async Task<List<T>> ExecuteQueryAsync<T>(this IQueryable<T> query, int skip, int pageSize, CancellationToken ct = default) where T : class
+    public static async Task<List<T>> ExecuteQueryAsync<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1, CancellationToken ct = default) where T : class
     {
         return pageSize != -1 ? await query.Skip(skip).Take(pageSize).ToListAsync(ct) : await query.ToListAsync(ct);
     }
