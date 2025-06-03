@@ -1,10 +1,11 @@
 ﻿using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace DataTables.ServerSideProcessing.Utils;
 public static class RequestParser
 {
-    public static IEnumerable<SortModel> ParseSortOrder(Dictionary<string, string> requestFormData)
+    public static IEnumerable<SortModel> ParseSortOrder(IFormCollection requestFormData)
     {
         foreach (var key in requestFormData.Keys)
         {
@@ -29,7 +30,7 @@ public static class RequestParser
         }
     }
 
-    public static IEnumerable<DataTableFilterBaseModel> ParseFilters(Dictionary<string, string> requestFormData)
+    public static IEnumerable<DataTableFilterBaseModel> ParseFilters(IFormCollection requestFormData)
     {
         foreach (var key in requestFormData.Keys)
         {
@@ -42,17 +43,17 @@ public static class RequestParser
                 string columnFilterTypeKey = $"filter[{propertyName}][columnFilterType]";
                 string columnValueTypeKey = $"filter[{propertyName}][columnValueType]";
                 string valueKey = $"filter[{propertyName}]";
-                if (!Enum.TryParse(requestFormData[columnFilterTypeKey].ToString(), out ColumnFilterType columnFilterType))
+                if (!Enum.TryParse(requestFormData[columnFilterTypeKey], out ColumnFilterType columnFilterType))
                 {
                     columnFilterType = ColumnFilterType.Text;
                 }
                 if (columnFilterType == ColumnFilterType.Text)
                 {
-                    if (!Enum.TryParse(requestFormData[columnValueTypeKey].ToString(), out ColumnValueType columnValueType))
+                    if (!Enum.TryParse(requestFormData[columnValueTypeKey], out ColumnValueType columnValueType))
                     {
                         columnValueType = ColumnValueType.Base;
                     }
-                    if (!Enum.TryParse(requestFormData[filterTypeKey].ToString(), out TextFilter filterType))
+                    if (!Enum.TryParse(requestFormData[filterTypeKey], out TextFilter filterType))
                     {
                         filterType = TextFilter.Contains;
                     }
@@ -66,7 +67,7 @@ public static class RequestParser
                 }
                 else if (columnFilterType == ColumnFilterType.Number)
                 {
-                    if (!Enum.TryParse(requestFormData[filterTypeKey].ToString(), out NumberFilter filterType))
+                    if (!Enum.TryParse(requestFormData[filterTypeKey], out NumberFilter filterType))
                     {
                         filterType = NumberFilter.Equals;
                     }
@@ -87,5 +88,17 @@ public static class RequestParser
                 }
             }
         }
+    }
+
+    public static DataTableRequest ParseRequest(IFormCollection requestFormData, bool parseSort = true, bool parseFilters = true)
+    {
+        return new DataTableRequest
+        {
+            Search = requestFormData["search[value]"],
+            Skip = requestFormData["start"].ToInt(),
+            PageSize = requestFormData["length"].ToInt(),
+            SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
+            Filters = parseFilters ? ParseFilters(requestFormData) : []
+        };
     }
 }
