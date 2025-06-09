@@ -25,13 +25,18 @@ internal static class GenericFilterHandler
             {
                 propertyAsString = Expression.Coalesce(propertyAccess, Expression.Constant(string.Empty));
             }
-            else
+            else if (!propertyType.IsValueType
+                     || Nullable.GetUnderlyingType(propertyType) != null)
             {
                 // Convert non-strings to string using ToString, adding null check
-                Expression nullCheck = Expression.Equal(propertyAccess, Expression.Constant(default, propertyType));
+                Expression nullCheck = Expression.Equal(propertyAccess, Expression.Constant(null, propertyType));
                 Expression defaultValue = Expression.Constant(string.Empty);
                 Expression toStringCall = Expression.Call(propertyAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!);
                 propertyAsString = Expression.Condition(nullCheck, defaultValue, toStringCall);
+            }
+            else
+            {
+                propertyAsString = Expression.Call(propertyAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!);
             }
 
             var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)])!;
