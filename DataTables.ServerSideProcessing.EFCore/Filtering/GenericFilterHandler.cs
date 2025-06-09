@@ -28,7 +28,7 @@ internal static class GenericFilterHandler
             else
             {
                 // Convert non-strings to string using ToString, adding null check
-                Expression nullCheck = Expression.Equal(propertyAccess, Expression.Constant(null, propertyType));
+                Expression nullCheck = Expression.Equal(propertyAccess, Expression.Constant(default, propertyType));
                 Expression defaultValue = Expression.Constant(string.Empty);
                 Expression toStringCall = Expression.Call(propertyAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!);
                 propertyAsString = Expression.Condition(nullCheck, defaultValue, toStringCall);
