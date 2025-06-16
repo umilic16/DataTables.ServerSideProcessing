@@ -1,3 +1,5 @@
+[![NuGet](https://img.shields.io/nuget/v/DataTables.ServerSideProcessing.EFCore.svg)](https://www.nuget.org/packages/DataTables.ServerSideProcessing.EFCore)
+
 A .NET library that helps with **server-side rendering** for [jQuery DataTables](https://datatables.net/) with **Entity Framework Core**.
 
 Supports:
