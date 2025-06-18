@@ -4,7 +4,6 @@
 
 ## 🛠 In Progress
 - [] Init only setters
-- [] Documentation
 - [] Central package management
 
 ## 📅 Upcoming / Backlog
@@ -13,5 +12,7 @@
 - [] Check if there are better solutions than reflection cache
 - [] Examples
 - [] Js helper methods
+- [] List based filters
 
 ## 🧹 Done
+- [x] Documentation
