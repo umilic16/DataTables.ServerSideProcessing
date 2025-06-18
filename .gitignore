@@ -3,9 +3,8 @@
 project.lock.json
 .DS_Store
 *.pyc
-nupkg/
-*.nuspec
-docs/
+legacy/
+nupkgs/
 
 # Visual Studio Code
 .vscode/*
