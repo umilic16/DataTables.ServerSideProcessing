@@ -3,7 +3,7 @@
 project.lock.json
 .DS_Store
 *.pyc
-legacy/
+docs/
 nupkgs/
 
 # Visual Studio Code
