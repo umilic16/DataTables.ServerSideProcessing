@@ -1,6 +1,6 @@
-﻿using DataTables.ServerSideProcessing.Data.Enums;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
+using DataTables.ServerSideProcessing.Data.Enums;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 /// <summary>
