@@ -5,7 +5,7 @@ namespace DataTables.ServerSideProcessing.Utils;
 /// <summary>
 /// Provides utility method for building DataTables-compatible responses for server-side processing.
 /// </summary>
-public class ResponseBuilder
+public static class ResponseBuilder
 {
     /// <summary>
     /// Builds a <see cref="DataTableResponse{TViewModel}"/> asynchronously based on the provided request form and data retrieval functions.
@@ -31,15 +31,15 @@ public class ResponseBuilder
         if (requestForm == null || requestForm.Count == 0)
             return new DataTableResponse<TViewModel>();
 
-        var totalCount = await totalCountFunc();
+        int totalCount = await totalCountFunc();
         if (totalCount == 0)
             return new DataTableResponse<TViewModel>() { Draw = requestForm["draw"] };
 
         var response = new DataTableResponse<TViewModel>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
 
-        var request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
+        DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
 
-        var filteredCount = await filteredCountFunc(request.Search);
+        int filteredCount = await filteredCountFunc(request.Search);
         if (filteredCount == 0)
             return response;
 
@@ -73,15 +73,15 @@ public class ResponseBuilder
         if (requestForm == null || requestForm.Count == 0)
             return new DataTableResponse<TViewModel>();
 
-        var totalCount = totalCountFunc();
+        int totalCount = totalCountFunc();
         if (totalCount == 0)
             return new DataTableResponse<TViewModel>() { Draw = requestForm["draw"] };
 
         var response = new DataTableResponse<TViewModel>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
 
-        var request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
+        DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
 
-        var filteredCount = filteredCountFunc(request.Search);
+        int filteredCount = filteredCountFunc(request.Search);
         if (filteredCount == 0)
             return response;
 

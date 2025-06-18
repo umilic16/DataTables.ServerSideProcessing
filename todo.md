@@ -3,8 +3,6 @@
 ## 📌 High Priority
 
 ## 🛠 In Progress
-- [] Init only setters
-- [] Central package management
 
 ## 📅 Upcoming / Backlog
 - [] Add DateTime format choice
@@ -16,3 +14,5 @@
 
 ## 🧹 Done
 - [x] Documentation
+- [x] Central package management
+- [x] Static Code analysis

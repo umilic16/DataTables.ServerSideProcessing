@@ -1,7 +1,7 @@
-﻿using DataTables.ServerSideProcessing.Data.Enums;
-using DataTables.ServerSideProcessing.Data.Models;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq.Expressions;
+using DataTables.ServerSideProcessing.Data.Enums;
+using DataTables.ServerSideProcessing.Data.Models;
 using static DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilder;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
@@ -68,7 +68,7 @@ internal static class ColumnFilterHandler
                 if (string.IsNullOrEmpty(filterDateModel.SearchValue))
                     continue;
 
-                if (!DateTime.TryParseExact(filterDateModel.SearchValue, "dd.MM.yyyy", null, DateTimeStyles.None, out DateTime datumParsed))
+                if (!DateTime.TryParseExact(filterDateModel.SearchValue, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datumParsed))
                     continue;
 
                 predicate = BuildDateWhereExpression<T>(
