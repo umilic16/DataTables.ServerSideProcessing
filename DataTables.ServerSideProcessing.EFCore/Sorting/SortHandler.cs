@@ -27,7 +27,7 @@ internal static class SortHandler
             return query;
 
         bool isFirstFlag = true;
-        foreach (var sortModel in sortOrder)
+        foreach (SortModel sortModel in sortOrder)
         {
             if (!ReflectionCache<T>.Properties.TryGetValue(sortModel.PropertyName, out string? propName))
                 throw new InvalidOperationException($"Property '{propName}' not found on type '{typeof(T).Name}'.");

@@ -30,7 +30,7 @@ internal static class GenericFilterHandler
         Expression? combinedExpression = null;
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e");
 
-        foreach (var property in properties)
+        foreach (string property in properties)
         {
             PropertyInfo? propertyInfo = typeof(T).GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{property}' not found on type '{typeof(T).Name}'.");
 
@@ -56,9 +56,9 @@ internal static class GenericFilterHandler
                 propertyAsString = Expression.Call(propertyAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!);
             }
 
-            var containsMethod = typeof(string).GetMethod("Contains", [typeof(string)])!;
-            var searchExpression = Expression.Constant(search);
-            var predicate = Expression.Call(propertyAsString, containsMethod, searchExpression);
+            MethodInfo containsMethod = typeof(string).GetMethod("Contains", [typeof(string)])!;
+            ConstantExpression searchExpression = Expression.Constant(search);
+            MethodCallExpression predicate = Expression.Call(propertyAsString, containsMethod, searchExpression);
 
             combinedExpression = combinedExpression == null
                 ? predicate

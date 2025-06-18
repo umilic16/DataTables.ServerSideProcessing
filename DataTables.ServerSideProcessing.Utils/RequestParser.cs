@@ -15,17 +15,17 @@ public static class RequestParser
     /// <returns>An enumerable of <see cref="SortModel"/> representing the sort order.</returns>
     public static IEnumerable<SortModel> ParseSortOrder(IFormCollection requestFormData)
     {
-        foreach (var key in requestFormData.Keys)
+        foreach (string key in requestFormData.Keys)
         {
             if (key.Contains("order[") && key.Contains("dir"))
             {
-                var start = key.IndexOf('[') + 1;
-                var end = key.IndexOf(']');
-                var indexString = key[start..end];
-                var index = indexString.ToInt();
-                var dirKey = $"order[{index}][dir]";
-                var columnIdx = requestFormData[$"order[{index}][column]"].ToInt();
-                var nameKey = $"columns[{columnIdx}][data]";
+                int start = key.IndexOf('[') + 1;
+                int end = key.IndexOf(']');
+                string indexString = key[start..end];
+                int index = indexString.ToInt();
+                string dirKey = $"order[{index}][dir]";
+                int columnIdx = requestFormData[$"order[{index}][column]"].ToInt();
+                string nameKey = $"columns[{columnIdx}][data]";
                 if (string.IsNullOrEmpty(requestFormData[nameKey]))
                     continue;
 
@@ -45,7 +45,7 @@ public static class RequestParser
     /// <returns>An enumerable of <see cref="DataTableFilterBaseModel"/> representing the column filters.</returns>
     public static IEnumerable<DataTableFilterBaseModel> ParseFilters(IFormCollection requestFormData)
     {
-        foreach (var key in requestFormData.Keys)
+        foreach (string key in requestFormData.Keys)
         {
             if (key.Contains("filter[") && key.Contains("columnFilterType"))
             {
