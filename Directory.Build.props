@@ -9,32 +9,6 @@
     <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <Title>DataTables Server-Side Processing using EFCore</Title>
-    <Authors>Uros Milic</Authors>
-    <Version>3.1.5</Version>
-    <PackageReleaseNotes>minor changes</PackageReleaseNotes>
-    <Description>
-      A .NET library that helps with server-side rendering for jQuery DataTables with Entity Framework Core.
-
-      Supports:
-
-      Multi-column sorting
-      Column-specific filtering (Contains, Equals, StartsWith, GreaterThan, etc.)
-      Seamless integration with EF Core IQueryable pipelines
-    </Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/umilic16/DataTables.ServerSideProcessing</RepositoryUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md" Pack="true" PackagePath="">
-      <Visible>false</Visible>
-    </None>
-  </ItemGroup>
-
   <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">
     <PackageReference Include="SonarAnalyzer.CSharp">
       <PrivateAssets>all</PrivateAssets>
