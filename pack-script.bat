@@ -1,0 +1,1 @@
+dotnet pack DataTables.ServerSideProcessing.EFCore\DataTables.ServerSideProcessing.EFCore.csproj -o nupkgs
