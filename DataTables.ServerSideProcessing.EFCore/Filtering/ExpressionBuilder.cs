@@ -3,8 +3,20 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
+/// <summary>
+/// Provides static helper methods for <see cref="ColumnFilterHandler"/> to build LINQ expressions for filtering entity properties.
+/// Supports building expressions for date, numeric, and text-based filters.
+/// </summary>
 internal static class ExpressionBuilder
 {
+    /// <summary>
+    /// Builds a LINQ expression to filter entities by a date property.
+    /// </summary>
+    /// <typeparam name="T">The entity type.</typeparam>
+    /// <param name="propertyName">The name of the date property.</param>
+    /// <param name="searchValue">The date value to filter by.</param>
+    /// <returns>An expression representing the filter.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the property is not found or the type does not match the filter type.</exception>
     internal static Expression<Func<T, bool>> BuildDateWhereExpression<T>(string propertyName, DateTime searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
@@ -15,6 +27,15 @@ internal static class ExpressionBuilder
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
+    /// <summary>
+    /// Builds a LINQ expression to filter entities by a numeric property using the specified filter type.
+    /// </summary>
+    /// <typeparam name="T">The entity type.</typeparam>
+    /// <param name="propertyName">The name of the numeric property.</param>
+    /// <param name="numberFilterType">The numeric filter type (e.g., Equals, GreaterThan, LessThanOrEqual).</param>
+    /// <param name="searchValue">The value to filter by, as a string.</param>
+    /// <returns>An expression representing the filter.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the property is not found or the type does not match the filter type.</exception>
     internal static Expression<Func<T, bool>> BuildNumericWhereExpression<T>(string propertyName, NumberFilter numberFilterType, string searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
@@ -34,6 +55,15 @@ internal static class ExpressionBuilder
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
+    /// <summary>
+    /// Builds a LINQ expression to filter entities by a text property using the specified filter type.
+    /// </summary>
+    /// <typeparam name="T">The entity type.</typeparam>
+    /// <param name="propertyName">The name of the text property.</param>
+    /// <param name="textFilterType">The text filter type (e.g., Equals, Contains, StartsWith).</param>
+    /// <param name="searchValue">The value to filter by.</param>
+    /// <returns>An expression representing the filter.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the property is not found or the type does not match the filter type.</exception>
     internal static Expression<Func<T, bool>> BuildTextWhereExpression<T>(string propertyName, TextFilter? textFilterType, string searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
@@ -53,6 +83,16 @@ internal static class ExpressionBuilder
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
+    /// <summary>
+    /// Prepares the member access and constant value expressions for a property filter.
+    /// </summary>
+    /// <typeparam name="T">The entity type.</typeparam>
+    /// <param name="parameter">The parameter expression representing the entity.</param>
+    /// <param name="propertyName">The property name to access.</param>
+    /// <param name="searchValue">The value to compare against.</param>
+    /// <param name="columnType">The type of column filter (eg., Text, Number, Date).</param>
+    /// <returns>A tuple containing the member access and constant value expressions.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the property is not found or the type does not match the filter type.</exception>
     private static (MemberExpression memberAccess, Expression constantValue) PrepareExpressionData<T>(ParameterExpression parameter, string propertyName, object searchValue, ColumnFilterType columnType) where T : class
     {
         PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
@@ -81,6 +121,11 @@ internal static class ExpressionBuilder
         return (memberAccess, constantValue);
     }
 
+    /// <summary>
+    /// Determines if a type is a supported numeric type.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns>True if the type is numeric; otherwise, false.</returns>
     private static bool IsNumericType(Type type)
     {
         return type == typeof(int) || type == typeof(double) || type == typeof(decimal) || type == typeof(float) ||

@@ -3,8 +3,16 @@ using DataTables.ServerSideProcessing.Data.Models;
 using Microsoft.AspNetCore.Http;
 
 namespace DataTables.ServerSideProcessing.Utils;
+/// <summary>
+/// Provides utility methods for parsing DataTables server-side processing requests.
+/// </summary>
 public static class RequestParser
 {
+    /// <summary>
+    /// Parses the sort order information from the DataTables request form data.
+    /// </summary>
+    /// <param name="requestFormData">The form data from the DataTables request.</param>
+    /// <returns>An enumerable of <see cref="SortModel"/> representing the sort order.</returns>
     public static IEnumerable<SortModel> ParseSortOrder(IFormCollection requestFormData)
     {
         foreach (var key in requestFormData.Keys)
@@ -30,6 +38,11 @@ public static class RequestParser
         }
     }
 
+    /// <summary>
+    /// Parses filter information from the DataTables request form data.
+    /// </summary>
+    /// <param name="requestFormData">The form data from the DataTables request.</param>
+    /// <returns>An enumerable of <see cref="DataTableFilterBaseModel"/> representing the column filters.</returns>
     public static IEnumerable<DataTableFilterBaseModel> ParseFilters(IFormCollection requestFormData)
     {
         foreach (var key in requestFormData.Keys)
@@ -86,10 +99,18 @@ public static class RequestParser
                         PropertyName = propertyName
                     };
                 }
+                // ColumnFilterType.List not supported yet
             }
         }
     }
 
+    /// <summary>
+    /// Parses a DataTables request from form data, including search, pagination, and optionally sorting and filters.
+    /// </summary>
+    /// <param name="requestFormData">The form data from the DataTables request.</param>
+    /// <param name="parseSort">Whether to parse sort order information.</param>
+    /// <param name="parseFilters">Whether to parse column filter information.</param>
+    /// <returns>A <see cref="DataTableRequest"/> object representing the parsed request.</returns>
     public static DataTableRequest ParseRequest(IFormCollection requestFormData, bool parseSort = true, bool parseFilters = true)
     {
         return new DataTableRequest
