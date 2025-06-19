@@ -73,8 +73,8 @@ public static class EfResponseBuilder
     /// <param name="entities">The queryable source of entities.</param>
     /// <param name="selector">An expression to map the entity to the view model.</param>
     /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
-    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TViewModel}"/>
