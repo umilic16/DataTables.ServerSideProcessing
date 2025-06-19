@@ -77,7 +77,7 @@ public static class EfResponseBuilder
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
-    /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TEntity}"/>
+    /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TViewModel}"/>
     /// containing the requested data and metadata.
     /// </returns>
     /// <exception cref="ArgumentException">Thrown if the request form is empty.</exception>
@@ -183,7 +183,7 @@ public static class EfResponseBuilder
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
-    /// A <see cref="DataTableResponse{TEntity}"/> containing the requested data and metadata.
+    /// A <see cref="DataTableResponse{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
     /// <exception cref="ArgumentException">Thrown if the request form is empty.</exception>
     public static DataTableResponse<TViewModel> BuildDataTableResponse<TEntity, TViewModel>(
