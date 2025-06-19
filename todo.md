@@ -5,13 +5,13 @@
 ## 🛠 In Progress
 
 ## 📅 Upcoming / Backlog
-- [] Add DateTime format choice
-- [] Reflection cache instantiation
-- [] Check if there are better solutions than reflection cache
-- [] Examples
-- [] Js helper methods
-- [] List based filters
-- [] Handle sorting for single columns
+- [ ] Add DateTime format choice
+- [ ] Reflection cache instantiation
+- [ ] Check if there are better solutions than reflection cache
+- [ ] Examples
+- [ ] Js helper methods
+- [ ] List based filters
+- [ ] Handle sorting for single columns
 
 ## 🧹 Done
 - [x] Documentation
