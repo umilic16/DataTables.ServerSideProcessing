@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace DataTables.ServerSideProcessing.Utils;
 /// <summary>
-/// Provides utility method for building DataTables-compatible responses for server-side processing.
+/// Provides utility methods for building DataTables-compatible responses for server-side processing.
 /// </summary>
 public static class ResponseBuilder
 {
