@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace DataTables.ServerSideProcessing.EFCore;
 /// <summary>
 /// Provides utility methods for building DataTables-compatible responses for server-side processing using Entity Framework Core.
-/// Supports both synchronous and asynchronous operations, with optional filtering, sorting, and mapping.
+/// Supports synchronous and asynchronous overloads, with optional global search, column filters, sorting, pagination, and projection.
 /// </summary>
 public static class EfResponseBuilder
 {
@@ -17,59 +17,58 @@ public static class EfResponseBuilder
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <typeparam name="TViewModel">The view model type to map the entity to.</typeparam>
-    /// <param name="requestForm">The form collection containing DataTables request parameters.</param>
-    /// <param name="entities">The queryable source of entities.</param>
-    /// <param name="selector">An expression to map the entity to the view model.</param>
-    /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
-    /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
-    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="form">The form collection containing DataTables request parameters.</param>
+    /// <param name="query">The queryable source of entities.</param>
+    /// <param name="projection">An expression to map the entity to the view model.</param>
+    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TViewModel}"/>
     /// containing the requested data and metadata.
     /// </returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="form"/>, <paramref name="query"/>, or <paramref name="projection"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="form"/> contains no entries.</exception>
     public static async Task<DataTableResponse<TViewModel>> BuildDataTableResponseAsync<TEntity, TViewModel>(
-        IFormCollection requestForm,
-        IQueryable<TEntity> entities,
-        Expression<Func<TEntity, TViewModel>> selector,
-        IEnumerable<string>? filterableFields = null,
-        bool parseSort = true,
-        bool parseFilters = true,
+        IFormCollection form,
+        IQueryable<TEntity> query,
+        Expression<Func<TEntity, TViewModel>> projection,
+        IEnumerable<string>? genericFilterFields = null,
+        bool applySort = true,
+        bool applyColumnFilters = true,
         CancellationToken ct = default)
         where TEntity : class
         where TViewModel : class
     {
-        ArgumentNullException.ThrowIfNull(requestForm);
-        ArgumentNullException.ThrowIfNull(entities);
-        ArgumentNullException.ThrowIfNull(selector);
+        ArgumentNullException.ThrowIfNull(form);
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(projection);
 
-        if (requestForm.Count == 0)
-            throw new ArgumentException("Request form cannot be empty.", nameof(requestForm));
+        if (form.Count == 0)
+            throw new ArgumentException("Request form cannot be empty.", nameof(form));
 
-        int totalCount = await entities.CountAsync(ct);
+        int totalCount = await query.CountAsync(ct);
         if (totalCount == 0)
-            return new DataTableResponse<TViewModel>() { Draw = requestForm["draw"] };
+            return new DataTableResponse<TViewModel>() { Draw = form["draw"] };
 
-        var response = new DataTableResponse<TViewModel>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
+        var response = new DataTableResponse<TViewModel>() { Draw = form["draw"], RecordsTotal = totalCount };
 
-        DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
+        DataTableRequest request = RequestParser.ParseRequest(form, applySort, applyColumnFilters);
 
-        int filteredCount = await entities.HandleGenericFilter(filterableFields, request.Search)
-                                          .Select(selector)
-                                          .HandleColumnFilters(request.Filters)
-                                          .CountAsync(ct);
+        IQueryable<TViewModel> baseQuery = query.HandleGenericFilter(genericFilterFields, request.Search)
+                                                .Select(projection)
+                                                .HandleColumnFilters(request.Filters);
+
+        int filteredCount = await baseQuery.CountAsync(ct);
 
         if (filteredCount == 0)
             return response;
 
         response.RecordsFiltered = filteredCount;
 
-        response.Data = await entities.HandleGenericFilter(filterableFields, request.Search)
-                                      .Select(selector)
-                                      .HandleColumnFilters(request.Filters)
-                                      .HandleSorting(request.SortOrder)
-                                      .ExecuteQueryAsync(request.Skip, request.PageSize, ct);
+        response.Data = await baseQuery.HandleSorting(request.SortOrder)
+                                       .ExecuteQueryAsync(request.Skip, request.PageSize, ct);
         return response;
     }
 
@@ -78,28 +77,29 @@ public static class EfResponseBuilder
     /// Applies optional filtering and sorting based on the DataTables request.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <param name="requestForm">The form collection containing DataTables request parameters.</param>
-    /// <param name="entities">The queryable source of entities.</param>
-    /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
-    /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
-    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="form">The form collection containing DataTables request parameters.</param>
+    /// <param name="query">The queryable source of entities.</param>
+    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TEntity}"/>
     /// containing the requested data and metadata.
     /// </returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="form"/> or <paramref name="query"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="form"/> contains no entries.</exception>
     public static async Task<DataTableResponse<TEntity>> BuildDataTableResponseAsync<TEntity>(
-        IFormCollection requestForm,
-        IQueryable<TEntity> entities,
-        IEnumerable<string>? filterableFields = null,
-        bool parseSort = true,
-        bool parseFilters = true,
+        IFormCollection form,
+        IQueryable<TEntity> query,
+        IEnumerable<string>? genericFilterFields = null,
+        bool applySort = true,
+        bool applyColumnFilters = true,
         CancellationToken ct = default)
         where TEntity : class
     {
 
-        return await BuildDataTableResponseAsync(requestForm, entities, x => x, filterableFields, parseSort, parseFilters, ct);
+        return await BuildDataTableResponseAsync(form, query, x => x, genericFilterFields, applySort, applyColumnFilters, ct);
     }
 
     /// <summary>
@@ -108,56 +108,55 @@ public static class EfResponseBuilder
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <typeparam name="TViewModel">The view model type to map the entity to.</typeparam>
-    /// <param name="requestForm">The form collection containing DataTables request parameters.</param>
-    /// <param name="entities">The queryable source of entities.</param>
-    /// <param name="selector">An expression to map the entity to the view model.</param>
-    /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
-    /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
-    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="form">The form collection containing DataTables request parameters.</param>
+    /// <param name="query">The queryable source of entities.</param>
+    /// <param name="projection">An expression to map the entity to the view model.</param>
+    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
     /// A <see cref="DataTableResponse{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="form"/>, <paramref name="query"/>, or <paramref name="projection"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="form"/> contains no entries.</exception>
     public static DataTableResponse<TViewModel> BuildDataTableResponse<TEntity, TViewModel>(
-        IFormCollection requestForm,
-        IQueryable<TEntity> entities,
-        Expression<Func<TEntity, TViewModel>> selector,
-        IEnumerable<string>? filterableFields = null,
-        bool parseSort = true,
-        bool parseFilters = true)
+        IFormCollection form,
+        IQueryable<TEntity> query,
+        Expression<Func<TEntity, TViewModel>> projection,
+        IEnumerable<string>? genericFilterFields = null,
+        bool applySort = true,
+        bool applyColumnFilters = true)
         where TEntity : class
         where TViewModel : class
     {
-        ArgumentNullException.ThrowIfNull(requestForm);
-        ArgumentNullException.ThrowIfNull(entities);
-        ArgumentNullException.ThrowIfNull(selector);
+        ArgumentNullException.ThrowIfNull(form);
+        ArgumentNullException.ThrowIfNull(query);
+        ArgumentNullException.ThrowIfNull(projection);
 
-        if (requestForm.Count == 0)
-            throw new ArgumentException("Request form cannot be empty.", nameof(requestForm));
+        if (form.Count == 0)
+            throw new ArgumentException("Request form cannot be empty.", nameof(form));
 
-        int totalCount = entities.Count();
+        int totalCount = query.Count();
         if (totalCount == 0)
-            return new DataTableResponse<TViewModel>() { Draw = requestForm["draw"] };
+            return new DataTableResponse<TViewModel>() { Draw = form["draw"] };
 
-        var response = new DataTableResponse<TViewModel>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
+        var response = new DataTableResponse<TViewModel>() { Draw = form["draw"], RecordsTotal = totalCount };
 
-        DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
+        DataTableRequest request = RequestParser.ParseRequest(form, applySort, applyColumnFilters);
 
-        int filteredCount = entities.HandleGenericFilter(filterableFields, request.Search)
-                                    .Select(selector)
-                                    .HandleColumnFilters(request.Filters)
-                                    .Count();
+        IQueryable<TViewModel> baseQuery = query.HandleGenericFilter(genericFilterFields, request.Search)
+                                                .Select(projection)
+                                                .HandleColumnFilters(request.Filters);
+
+        int filteredCount = baseQuery.Count();
 
         if (filteredCount == 0)
             return response;
 
         response.RecordsFiltered = filteredCount;
 
-        response.Data = entities.HandleGenericFilter(filterableFields, request.Search)
-                                .Select(selector)
-                                .HandleColumnFilters(request.Filters)
-                                .HandleSorting(request.SortOrder)
-                                .ExecuteQuery(request.Skip, request.PageSize);
+        response.Data = baseQuery.HandleSorting(request.SortOrder)
+                                 .ExecuteQuery(request.Skip, request.PageSize);
         return response;
     }
 
@@ -166,23 +165,24 @@ public static class EfResponseBuilder
     /// Applies optional filtering and sorting based on the DataTables request.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>
-    /// <param name="requestForm">The form collection containing DataTables request parameters.</param>
-    /// <param name="entities">The queryable source of entities.</param>
-    /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
-    /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
-    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="form">The form collection containing DataTables request parameters.</param>
+    /// <param name="query">The queryable source of entities.</param>
+    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
-    /// A <see cref="DataTableResponse{TEntity}"/> containing the requested data and metadata.
+    /// A <see cref="DataTableResponse{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="form"/> or <paramref name="query"/> is null.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="form"/> contains no entries.</exception>
     public static DataTableResponse<TEntity> BuildDataTableResponse<TEntity>(
-        IFormCollection requestForm,
-        IQueryable<TEntity> entities,
-        IEnumerable<string>? filterableFields = null,
-        bool parseSort = true,
-        bool parseFilters = true)
+        IFormCollection form,
+        IQueryable<TEntity> query,
+        IEnumerable<string>? genericFilterFields = null,
+        bool applySort = true,
+        bool applyColumnFilters = true)
         where TEntity : class
     {
-        return BuildDataTableResponse(requestForm, entities, x => x, filterableFields, parseSort, parseFilters);
+        return BuildDataTableResponse(form, query, x => x, genericFilterFields, applySort, applyColumnFilters);
     }
 }
