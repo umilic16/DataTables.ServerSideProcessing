@@ -16,7 +16,7 @@ public static class ResponseBuilder
     /// <param name="filteredCountFunc">A function that asynchronously returns the count of records after filtering, given a search string.</param>
     /// <param name="dataFunc">A function that asynchronously returns the data items for the current page, based on the parsed request.</param>
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
-    /// <param name="parseFilters">Indicates whether to parse filter information from the request form. Default is true.</param>
+    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TViewModel}"/>
     /// containing the requested data and metadata.
@@ -62,7 +62,7 @@ public static class ResponseBuilder
     /// <param name="filteredCountFunc">A function that asynchronously returns the count of records after filtering, given a search string.</param>
     /// <param name="dataFunc">A function that asynchronously returns the data items for the current page, based on the parsed request.</param>
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
-    /// <param name="parseFilters">Indicates whether to parse filter information from the request form. Default is true.</param>
+    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
     /// A <see cref="DataTableResponse{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
