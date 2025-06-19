@@ -20,7 +20,7 @@ public static class EfResponseBuilder
     /// <param name="form">The form collection containing DataTables request parameters.</param>
     /// <param name="query">The queryable source of entities.</param>
     /// <param name="projection">An expression to map the entity to the view model.</param>
-    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
@@ -79,7 +79,7 @@ public static class EfResponseBuilder
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <param name="form">The form collection containing DataTables request parameters.</param>
     /// <param name="query">The queryable source of entities.</param>
-    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
@@ -111,7 +111,7 @@ public static class EfResponseBuilder
     /// <param name="form">The form collection containing DataTables request parameters.</param>
     /// <param name="query">The queryable source of entities.</param>
     /// <param name="projection">An expression to map the entity to the view model.</param>
-    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
@@ -167,7 +167,7 @@ public static class EfResponseBuilder
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <param name="form">The form collection containing DataTables request parameters.</param>
     /// <param name="query">The queryable source of entities.</param>
-    /// <param name="genericFilterFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
