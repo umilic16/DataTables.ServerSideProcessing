@@ -20,6 +20,7 @@ public static class EfResponseBuilder
     /// <param name="entities">The queryable source of entities.</param>
     /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TEntity}"/>
@@ -31,6 +32,7 @@ public static class EfResponseBuilder
         IQueryable<TEntity> entities,
         IEnumerable<string>? filterableFields = null,
         bool parseSort = true,
+        bool parseFilters = true,
         CancellationToken ct = default)
         where TEntity : class
     {
@@ -43,16 +45,11 @@ public static class EfResponseBuilder
 
         var response = new DataTableResponse<TEntity>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
 
-        bool parseFilters = filterableFields?.Any() == true;
-
         DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
 
-        IQueryable<TEntity> filterQuery = entities.HandleGenericFilter(filterableFields, request.Search);
-
-        if (parseFilters)
-            filterQuery = filterQuery.HandleColumnFilters(request.Filters);
-
-        int filteredCount = await filterQuery.CountAsync(ct);
+        int filteredCount = await entities.HandleGenericFilter(filterableFields, request.Search)
+                                          .HandleColumnFilters(request.Filters)
+                                          .CountAsync(ct);
 
         if (filteredCount == 0)
             return response;
@@ -60,6 +57,7 @@ public static class EfResponseBuilder
         response.RecordsFiltered = filteredCount;
 
         response.Data = await entities.HandleGenericFilter(filterableFields, request.Search)
+                                      .HandleColumnFilters(request.Filters)
                                       .HandleSorting(request.SortOrder)
                                       .ExecuteQueryAsync(request.Skip, request.PageSize, ct);
         return response;
@@ -75,6 +73,7 @@ public static class EfResponseBuilder
     /// <param name="entities">The queryable source of entities.</param>
     /// <param name="selector">An expression to map the entity to the view model.</param>
     /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
+    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
@@ -88,6 +87,7 @@ public static class EfResponseBuilder
         Expression<Func<TEntity, TViewModel>> selector,
         IEnumerable<string>? filterableFields = null,
         bool parseSort = true,
+        bool parseFilters = true,
         CancellationToken ct = default)
         where TEntity : class
         where TViewModel : class
@@ -101,16 +101,12 @@ public static class EfResponseBuilder
 
         var response = new DataTableResponse<TViewModel>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
 
-        bool parseFilters = filterableFields?.Any() == true;
-
         DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
 
-        IQueryable<TEntity> filterQuery = entities.HandleGenericFilter(filterableFields, request.Search);
-
-        if (parseFilters)
-            filterQuery = filterQuery.HandleColumnFilters(request.Filters);
-
-        int filteredCount = await filterQuery.CountAsync(ct);
+        int filteredCount = await entities.HandleGenericFilter(filterableFields, request.Search)
+                                          .Select(selector)
+                                          .HandleColumnFilters(request.Filters)
+                                          .CountAsync(ct);
 
         if (filteredCount == 0)
             return response;
@@ -119,6 +115,7 @@ public static class EfResponseBuilder
 
         response.Data = await entities.HandleGenericFilter(filterableFields, request.Search)
                                       .Select(selector)
+                                      .HandleColumnFilters(request.Filters)
                                       .HandleSorting(request.SortOrder)
                                       .ExecuteQueryAsync(request.Skip, request.PageSize, ct);
         return response;
@@ -134,6 +131,7 @@ public static class EfResponseBuilder
     /// <param name="entities">The queryable source of entities.</param>
     /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
     /// A <see cref="DataTableResponse{TEntity}"/> containing the requested data and metadata.
     /// </returns>
@@ -142,7 +140,8 @@ public static class EfResponseBuilder
         IFormCollection requestForm,
         IQueryable<TEntity> entities,
         IEnumerable<string>? filterableFields = null,
-        bool parseSort = true)
+        bool parseSort = true,
+        bool parseFilters = true)
         where TEntity : class
     {
         if (requestForm.Count == 0)
@@ -154,25 +153,20 @@ public static class EfResponseBuilder
 
         var response = new DataTableResponse<TEntity>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
 
-        bool parseFilters = filterableFields?.Any() == true;
-
         DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
 
-        IQueryable<TEntity> filterQuery = entities.HandleGenericFilter(filterableFields, request.Search);
-
-        if (parseFilters)
-            filterQuery = filterQuery.HandleColumnFilters(request.Filters);
-
-        int filteredCount = filterQuery.Count();
-
+        int filteredCount = entities.HandleGenericFilter(filterableFields, request.Search)
+                                    .HandleColumnFilters(request.Filters)
+                                    .Count();
         if (filteredCount == 0)
             return response;
 
         response.RecordsFiltered = filteredCount;
 
         response.Data = entities.HandleGenericFilter(filterableFields, request.Search)
-                                      .HandleSorting(request.SortOrder)
-                                      .ExecuteQuery(request.Skip, request.PageSize);
+                                .HandleColumnFilters(request.Filters)
+                                .HandleSorting(request.SortOrder)
+                                .ExecuteQuery(request.Skip, request.PageSize);
         return response;
     }
 
@@ -187,6 +181,7 @@ public static class EfResponseBuilder
     /// <param name="selector">An expression to map the entity to the view model.</param>
     /// <param name="filterableFields">Optional list of fields to apply global search filtering.</param>
     /// <param name="parseSort">Indicates whether to parse sorting information from the request form. Default is true.</param>
+    /// <param name="parseFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
     /// <returns>
     /// A <see cref="DataTableResponse{TEntity}"/> containing the requested data and metadata.
     /// </returns>
@@ -196,7 +191,8 @@ public static class EfResponseBuilder
         IQueryable<TEntity> entities,
         Expression<Func<TEntity, TViewModel>> selector,
         IEnumerable<string>? filterableFields = null,
-        bool parseSort = true)
+        bool parseSort = true,
+        bool parseFilters = true)
         where TEntity : class
         where TViewModel : class
     {
@@ -209,16 +205,12 @@ public static class EfResponseBuilder
 
         var response = new DataTableResponse<TViewModel>() { Draw = requestForm["draw"], RecordsTotal = totalCount };
 
-        bool parseFilters = filterableFields?.Any() == true;
-
         DataTableRequest request = RequestParser.ParseRequest(requestForm, parseSort, parseFilters);
 
-        IQueryable<TEntity> filterQuery = entities.HandleGenericFilter(filterableFields, request.Search);
-
-        if (parseFilters)
-            filterQuery = filterQuery.HandleColumnFilters(request.Filters);
-
-        int filteredCount = filterQuery.Count();
+        int filteredCount = entities.HandleGenericFilter(filterableFields, request.Search)
+                                    .Select(selector)
+                                    .HandleColumnFilters(request.Filters)
+                                    .Count();
 
         if (filteredCount == 0)
             return response;
@@ -226,9 +218,10 @@ public static class EfResponseBuilder
         response.RecordsFiltered = filteredCount;
 
         response.Data = entities.HandleGenericFilter(filterableFields, request.Search)
-                                      .Select(selector)
-                                      .HandleSorting(request.SortOrder)
-                                      .ExecuteQuery(request.Skip, request.PageSize);
+                                .Select(selector)
+                                .HandleColumnFilters(request.Filters)
+                                .HandleSorting(request.SortOrder)
+                                .ExecuteQuery(request.Skip, request.PageSize);
         return response;
     }
 }
