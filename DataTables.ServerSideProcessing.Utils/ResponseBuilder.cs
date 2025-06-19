@@ -20,6 +20,9 @@ public static class ResponseBuilder
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="DataTableResponse{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Throws <see cref="ArgumentException"/> if the request form is empty.
+    /// </exception>
     public static async Task<DataTableResponse<TViewModel>> BuildDataTableResponseAsync<TViewModel>(
         IFormCollection requestForm,
         Func<Task<int>> totalCountFunc,
@@ -28,8 +31,8 @@ public static class ResponseBuilder
         bool parseSort = true,
         bool parseFilters = true)
     {
-        if (requestForm == null || requestForm.Count == 0)
-            return new DataTableResponse<TViewModel>();
+        if (requestForm.Count == 0)
+            throw new ArgumentException("Request form cannot be empty.", nameof(requestForm));
 
         int totalCount = await totalCountFunc();
         if (totalCount == 0)
@@ -62,6 +65,9 @@ public static class ResponseBuilder
     /// <returns>
     /// A <see cref="DataTableResponse{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
+    /// <exception cref="ArgumentException">
+    /// Throws <see cref="ArgumentException"/> if the request form is empty.
+    /// </exception>
     public static DataTableResponse<TViewModel> BuildDataTableResponse<TViewModel>(
         IFormCollection requestForm,
         Func<int> totalCountFunc,
@@ -70,8 +76,8 @@ public static class ResponseBuilder
         bool parseSort = true,
         bool parseFilters = true)
     {
-        if (requestForm == null || requestForm.Count == 0)
-            return new DataTableResponse<TViewModel>();
+        if (requestForm.Count == 0)
+            throw new ArgumentException("Request form cannot be empty.", nameof(requestForm));
 
         int totalCount = totalCountFunc();
         if (totalCount == 0)
