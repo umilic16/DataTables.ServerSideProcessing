@@ -17,7 +17,11 @@ public enum ColumnFilterType
     /// </summary>
     Date,
     /// <summary>
-    /// A list-based filter (e.g., dropdown selection). Not yet implemented.
+    /// A single-selection list filter (e.g., dropdown)
     /// </summary>
-    List
+    SingleSelect,
+    /// <summary>
+    /// A multi-selection list filter (e.g., multi-select dropdown or checklist)
+    /// </summary>
+    MultiSelect
 }

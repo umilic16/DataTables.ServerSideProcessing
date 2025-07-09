@@ -75,6 +75,24 @@ internal static class ColumnFilterHandler
                                     propName,
                                     datumParsed);
             }
+            else if (filterModel is DataTableSingleSelectFilterModel filterSingleSelectModel)
+            {
+                if (string.IsNullOrEmpty(filterSingleSelectModel.SearchValue))
+                    continue;
+
+                predicate = BuildSingleSelectWhereExpression<T>(
+                                    propName,
+                                    filterSingleSelectModel.SearchValue);
+            }
+            else if (filterModel is DataTableMultiSelectFilterModel filterMultiSelectModel)
+            {
+                if (filterMultiSelectModel.SearchValue.Count == 0)
+                    continue;
+
+                predicate = BuildMultiSelectWhereExpression<T>(
+                                    propName,
+                                    filterMultiSelectModel.SearchValue);
+            }
 
             if (predicate != null)
                 query = query.Where(predicate);

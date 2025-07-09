@@ -84,6 +84,45 @@ internal static class ExpressionBuilder
     }
 
     /// <summary>
+    /// Builds a LINQ expression to filter entities by a property using an <c>equals</c> comparison.
+    /// This is typically used for single-select dropdown filters, where the property value must exactly match the provided search value.
+    /// </summary>
+    /// <typeparam name="T">The entity type.</typeparam>
+    /// <param name="propertyName">The name of the property.</param>
+    /// <param name="searchValue">The value to filter by.</param>
+    /// <returns>An expression representing the filter.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the property is not found or the type does not match the filter type.</exception>
+    internal static Expression<Func<T, bool>> BuildSingleSelectWhereExpression<T>(string propertyName, string searchValue) where T : class
+    {
+        ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
+        (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.SingleSelect);
+
+        Expression comparison = Expression.Equal(memberAccess, constantValue);
+
+        return Expression.Lambda<Func<T, bool>>(comparison, parameter);
+    }
+
+    /// <summary>
+    /// Builds a LINQ expression to filter entities by a property using a <c>contains()</c> comparison.
+    /// This is typically used for multi-select dropdown filters, where the entity property is a list and
+    /// the filter checks if it contains the specified search value.
+    /// </summary>
+    /// <typeparam name="T">The entity type.</typeparam>
+    /// <param name="propertyName">The name of the property.</param>
+    /// <param name="searchValues">The value to filter by.</param>
+    /// <returns>An expression representing the filter.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the property is not found or the type does not match the filter type.</exception>
+    internal static Expression<Func<T, bool>> BuildMultiSelectWhereExpression<T>(string propertyName, List<string> searchValues) where T : class
+    {
+        ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
+        (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValues, ColumnFilterType.MultiSelect);
+
+        Expression comparison = Expression.Call(memberAccess, typeof(List<string>).GetMethod("Contains", [typeof(string)])!, constantValue);
+
+        return Expression.Lambda<Func<T, bool>>(comparison, parameter);
+    }
+
+    /// <summary>
     /// Prepares the member access and constant value expressions for a property filter.
     /// </summary>
     /// <typeparam name="T">The entity type.</typeparam>

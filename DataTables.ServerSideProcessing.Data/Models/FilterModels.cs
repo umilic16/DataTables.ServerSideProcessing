@@ -11,17 +11,25 @@ public abstract class DataTableFilterBaseModel
     /// Name of the property to filter.
     /// </summary>
     public required string PropertyName { get; init; }
+}
 
+/// <summary>
+/// Generic base class for all DataTable filter models.
+/// Contains the property name to filter on and the search value.
+/// </summary>
+/// <typeparam name="T">Type of the value used in the filter (e.g., string, int, DateTime).</typeparam>
+public abstract class DataTableFilterBaseModel<T> : DataTableFilterBaseModel
+{
     /// <summary>
     /// Value to search for in the filter.
     /// </summary>
-    public required string? SearchValue { get; set; }
+    public required T SearchValue { get; set; }
 }
 
 /// <summary>
 /// Filter model for text-based columns.
 /// </summary>
-public class DataTableTextFilterModel : DataTableFilterBaseModel
+public class DataTableTextFilterModel : DataTableFilterBaseModel<string?>
 {
     /// <summary>
     /// Type of the column (e.g., Base, AccNumber).
@@ -37,7 +45,7 @@ public class DataTableTextFilterModel : DataTableFilterBaseModel
 /// <summary>
 /// Filter model for numeric columns.
 /// </summary>
-public class DataTableNumberFilterModel : DataTableFilterBaseModel
+public class DataTableNumberFilterModel : DataTableFilterBaseModel<string?>
 {
     /// <summary>
     /// Type of the column (e.g., Int, Decimal).
@@ -53,6 +61,20 @@ public class DataTableNumberFilterModel : DataTableFilterBaseModel
 /// <summary>
 /// Filter model for DateTime columns.
 /// </summary>
-public class DataTableDateTimeFilterModel : DataTableFilterBaseModel
+public class DataTableDateTimeFilterModel : DataTableFilterBaseModel<string?>
+{
+}
+
+/// <summary>
+/// Filter model for SingleSelect columns.
+/// </summary>
+public class DataTableSingleSelectFilterModel : DataTableFilterBaseModel<string?>
+{
+}
+
+/// <summary>
+/// Filter model for MultiSelect columns.
+/// </summary>
+public class DataTableMultiSelectFilterModel : DataTableFilterBaseModel<List<string>>
 {
 }
