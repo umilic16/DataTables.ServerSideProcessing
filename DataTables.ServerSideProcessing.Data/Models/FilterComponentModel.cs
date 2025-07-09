@@ -19,7 +19,7 @@ public class FilterComponentModel
     public required string ColumnName { get; init; }
 
     /// <summary>
-    /// Type of filter to apply to the column (e.g., text, number, date, list).
+    /// Type of filter to apply to the column (e.g., text, number, date, multi-select).
     /// </summary>
     public required ColumnFilterType ColumnFilterType { get; init; }
 
