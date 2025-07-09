@@ -42,8 +42,9 @@ public static class RequestParser
     /// Parses filter information from the DataTables request form data.
     /// </summary>
     /// <param name="requestFormData">The form data from the DataTables request.</param>
+    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters. Defaults to ",".</param>
     /// <returns>An enumerable of <see cref="DataTableFilterBaseModel"/> representing the column filters.</returns>
-    public static IEnumerable<DataTableFilterBaseModel> ParseFilters(IFormCollection requestFormData)
+    public static IEnumerable<DataTableFilterBaseModel> ParseFilters(IFormCollection requestFormData, string multiSelectSeparator = ",")
     {
         foreach (string key in requestFormData.Keys)
         {
@@ -99,7 +100,22 @@ public static class RequestParser
                         PropertyName = propertyName
                     };
                 }
-                // ColumnFilterType.List not supported yet
+                else if (columnFilterType == ColumnFilterType.SingleSelect)
+                {
+                    yield return new DataTableSingleSelectFilterModel
+                    {
+                        SearchValue = requestFormData[valueKey],
+                        PropertyName = propertyName
+                    };
+                }
+                else if (columnFilterType == ColumnFilterType.MultiSelect)
+                {
+                    yield return new DataTableMultiSelectFilterModel
+                    {
+                        SearchValue = [.. requestFormData[valueKey].ToString().Split(multiSelectSeparator)],
+                        PropertyName = propertyName
+                    };
+                }
             }
         }
     }
