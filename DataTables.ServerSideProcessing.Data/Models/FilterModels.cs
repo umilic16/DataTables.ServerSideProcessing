@@ -16,6 +16,7 @@ public abstract class DataTableFilterBaseModel
 /// <summary>
 /// Generic base class for all DataTable filter models.
 /// Contains the property name to filter on and the search value.
+/// Inherits from <see cref="DataTableFilterBaseModel"/>.
 /// </summary>
 /// <typeparam name="T">Type of the value used in the filter (e.g., string, int, DateTime).</typeparam>
 public abstract class DataTableFilterBaseModel<T> : DataTableFilterBaseModel
@@ -28,6 +29,7 @@ public abstract class DataTableFilterBaseModel<T> : DataTableFilterBaseModel
 
 /// <summary>
 /// Filter model for text-based columns.
+/// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
 public class DataTableTextFilterModel : DataTableFilterBaseModel<string?>
 {
@@ -44,6 +46,7 @@ public class DataTableTextFilterModel : DataTableFilterBaseModel<string?>
 
 /// <summary>
 /// Filter model for numeric columns.
+/// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
 public class DataTableNumberFilterModel : DataTableFilterBaseModel<string?>
 {
@@ -60,6 +63,7 @@ public class DataTableNumberFilterModel : DataTableFilterBaseModel<string?>
 
 /// <summary>
 /// Filter model for DateTime columns.
+/// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
 public class DataTableDateTimeFilterModel : DataTableFilterBaseModel<string?>
 {
@@ -67,6 +71,7 @@ public class DataTableDateTimeFilterModel : DataTableFilterBaseModel<string?>
 
 /// <summary>
 /// Filter model for SingleSelect columns.
+/// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
 public class DataTableSingleSelectFilterModel : DataTableFilterBaseModel<string?>
 {
@@ -74,6 +79,7 @@ public class DataTableSingleSelectFilterModel : DataTableFilterBaseModel<string?
 
 /// <summary>
 /// Filter model for MultiSelect columns.
+/// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>List&lt;string&gt;</c> as the type parameter.
 /// </summary>
 public class DataTableMultiSelectFilterModel : DataTableFilterBaseModel<List<string>>
 {
