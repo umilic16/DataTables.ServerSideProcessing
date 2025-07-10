@@ -9,6 +9,8 @@ namespace DataTables.ServerSideProcessing.Data.Models;
 /// </summary>
 public abstract class FilterComponentBaseModel
 {
+    private protected FilterComponentBaseModel() { }
+
     /// <summary>
     /// Name of the table to which the filter applies.
     /// </summary>
@@ -31,7 +33,7 @@ public abstract class FilterComponentBaseModel
 /// Used to provide metadata for rendering and processing column filters, including
 /// the type of value the column holds (e.g., base, account number, int, decimal).
 /// </summary>
-public class FilterComponentModel : FilterComponentBaseModel
+public sealed class FilterComponentModel : FilterComponentBaseModel
 {
     /// <summary>
     /// Type of the column value (e.g., base, account number, int, decimal).
@@ -61,7 +63,7 @@ public class FilterComponentSelectModel<V, T> : FilterComponentBaseModel where V
 /// Provides a list of available values for selection.
 /// Inherits from <see cref="FilterComponentSelectModel"/>.
 /// </summary>
-public class FilterComponentSelectModel : FilterComponentSelectModel<string, string>
+public sealed class FilterComponentSelectModel : FilterComponentSelectModel<string, string>
 {
 
 }

@@ -7,6 +7,8 @@ namespace DataTables.ServerSideProcessing.Data.Models;
 /// </summary>
 public abstract class DataTableFilterBaseModel
 {
+    private protected DataTableFilterBaseModel() { }
+
     /// <summary>
     /// Name of the property to filter.
     /// </summary>
@@ -21,6 +23,7 @@ public abstract class DataTableFilterBaseModel
 /// <typeparam name="T">Type of the value used in the filter (e.g., string, int, DateTime).</typeparam>
 public abstract class DataTableFilterBaseModel<T> : DataTableFilterBaseModel
 {
+    private protected DataTableFilterBaseModel() { }
     /// <summary>
     /// Value to search for in the filter.
     /// </summary>
@@ -31,7 +34,7 @@ public abstract class DataTableFilterBaseModel<T> : DataTableFilterBaseModel
 /// Filter model for text-based columns.
 /// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
-public class DataTableTextFilterModel : DataTableFilterBaseModel<string?>
+public sealed class DataTableTextFilterModel : DataTableFilterBaseModel<string?>
 {
     /// <summary>
     /// Type of the column (e.g., Base, AccNumber).
@@ -48,7 +51,7 @@ public class DataTableTextFilterModel : DataTableFilterBaseModel<string?>
 /// Filter model for numeric columns.
 /// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
-public class DataTableNumberFilterModel : DataTableFilterBaseModel<string?>
+public sealed class DataTableNumberFilterModel : DataTableFilterBaseModel<string?>
 {
     /// <summary>
     /// Type of the column (e.g., Int, Decimal).
@@ -65,7 +68,7 @@ public class DataTableNumberFilterModel : DataTableFilterBaseModel<string?>
 /// Filter model for DateTime columns.
 /// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
-public class DataTableDateTimeFilterModel : DataTableFilterBaseModel<string?>
+public sealed class DataTableDateTimeFilterModel : DataTableFilterBaseModel<string?>
 {
 }
 
@@ -73,7 +76,7 @@ public class DataTableDateTimeFilterModel : DataTableFilterBaseModel<string?>
 /// Filter model for SingleSelect columns.
 /// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
-public class DataTableSingleSelectFilterModel : DataTableFilterBaseModel<string?>
+public sealed class DataTableSingleSelectFilterModel : DataTableFilterBaseModel<string?>
 {
 }
 
@@ -81,6 +84,6 @@ public class DataTableSingleSelectFilterModel : DataTableFilterBaseModel<string?
 /// Filter model for MultiSelect columns.
 /// Inherits from <see cref="DataTableFilterBaseModel{T}"/> with <c>List&lt;string&gt;</c> as the type parameter.
 /// </summary>
-public class DataTableMultiSelectFilterModel : DataTableFilterBaseModel<List<string>>
+public sealed class DataTableMultiSelectFilterModel : DataTableFilterBaseModel<List<string>>
 {
 }

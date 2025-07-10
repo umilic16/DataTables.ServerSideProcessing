@@ -4,7 +4,7 @@
 /// Represents a request for server-side processing of a DataTable.
 /// Contains search, pagination, sorting, and filtering definition.
 /// </summary>
-public class DataTableRequest
+public sealed class DataTableRequest
 {
     /// <summary>
     /// The global search term to filter all columns.
