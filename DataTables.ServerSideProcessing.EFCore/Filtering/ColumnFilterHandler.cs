@@ -31,7 +31,7 @@ internal static class ColumnFilterHandler
 
         foreach (DataTableFilterBaseModel filterModel in filters)
         {
-            if (!ReflectionCache<T>.Properties.TryGetValue(filterModel.PropertyName, out string? propName))
+            if (!ReflectionCache<T>.s_properties.TryGetValue(filterModel.PropertyName, out string? propName))
                 throw new InvalidOperationException($"Property '{propName}' not found on type '{typeof(T).Name}'.");
 
             Expression<Func<T, bool>>? predicate = null;

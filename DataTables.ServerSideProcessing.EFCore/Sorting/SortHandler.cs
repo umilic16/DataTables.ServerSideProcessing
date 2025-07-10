@@ -29,7 +29,7 @@ internal static class SortHandler
         bool isFirstFlag = true;
         foreach (SortModel sortModel in sortOrder)
         {
-            if (!ReflectionCache<T>.Properties.TryGetValue(sortModel.PropertyName, out string? propName))
+            if (!ReflectionCache<T>.s_properties.TryGetValue(sortModel.PropertyName, out string? propName))
                 throw new InvalidOperationException($"Property '{propName}' not found on type '{typeof(T).Name}'.");
 
             if (isFirstFlag)

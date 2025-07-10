@@ -9,7 +9,7 @@ internal static class ReflectionCache<T> where T : class
     /// <summary>
     /// A case-insensitive set containing the names of all public properties of <typeparamref name="T"/>.
     /// </summary>
-    internal static readonly HashSet<string> Properties = new(
+    internal static readonly HashSet<string> s_properties = new(
         typeof(T).GetProperties().Select(p => p.Name),
         StringComparer.InvariantCultureIgnoreCase);
 }
