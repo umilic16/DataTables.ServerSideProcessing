@@ -39,20 +39,70 @@ internal static class ExpressionBuilder
     internal static Expression<Func<T, bool>> BuildNumericWhereExpression<T>(string propertyName, NumberFilter numberFilterType, string searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
-        (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Number);
-
-        Expression comparison = numberFilterType switch
+        Expression comparison;
+        if (numberFilterType != NumberFilter.Between)
         {
-            NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
-            NumberFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
-            NumberFilter.GreaterThan => Expression.GreaterThan(memberAccess, constantValue),
-            NumberFilter.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
-            NumberFilter.LessThan => Expression.LessThan(memberAccess, constantValue),
-            NumberFilter.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
-            _ => throw new NotImplementedException(),
-        };
+            (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Number);
 
+            comparison = numberFilterType switch
+            {
+                NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
+                NumberFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
+                NumberFilter.GreaterThan => Expression.GreaterThan(memberAccess, constantValue),
+                NumberFilter.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
+                NumberFilter.LessThan => Expression.LessThan(memberAccess, constantValue),
+                NumberFilter.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
+                _ => throw new NotImplementedException()
+            };
+        }
+        else
+        {
+            comparison = BuildNumericBetweenExpression<T>(propertyName, searchValue, parameter);
+        }
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
+    }
+
+    private static Expression BuildNumericBetweenExpression<T>(string propertyName, string searchValue, ParameterExpression parameter) where T : class
+    {
+        Expression comparison;
+        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
+
+        MemberExpression memberAccess = Expression.Property(parameter, propertyInfo);
+
+        // Get the actual type of the property (e.g., int, double?, decimal)
+        Type propertyType = propertyInfo.PropertyType;
+        // Get the underlying type if it's nullable (e.g., int from int?)
+        Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+        if (!IsNumericType(underlyingType))
+            throw new InvalidOperationException($"Property '{propertyName}' is not a numeric type.");
+
+        string[] parts = searchValue.Split(';');
+        if (parts.Length != 2)
+            throw new ArgumentException("Invalid format for 'Between'. Expected at least 1 and at most 2 numbers separated with ';'.");
+
+        if (string.IsNullOrEmpty(parts[1]))
+        {
+            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
+            comparison = Expression.GreaterThanOrEqual(memberAccess, Expression.Constant(lowerValue));
+        }
+        else if (string.IsNullOrEmpty(parts[0]))
+        {
+            object upperValue = Convert.ChangeType(parts[1], underlyingType);
+            comparison = Expression.LessThanOrEqual(memberAccess, Expression.Constant(upperValue));
+        }
+        else
+        {
+            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
+            object upperValue = Convert.ChangeType(parts[1], underlyingType);
+
+            Expression lowerBound = Expression.GreaterThanOrEqual(memberAccess, Expression.Constant(lowerValue));
+            Expression upperBound = Expression.LessThanOrEqual(memberAccess, Expression.Constant(upperValue));
+
+            comparison = Expression.AndAlso(lowerBound, upperBound);
+        }
+
+        return comparison;
     }
 
     /// <summary>
