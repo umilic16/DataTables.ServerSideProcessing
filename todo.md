@@ -3,18 +3,13 @@
 ## 📌 High Priority
 
 ## 🛠 In Progress
-- [ ] Records for DTOs?
 
 ## 📅 Upcoming / Backlog
-- [ ] Check if enumerables are enumerated multiple times somewhere
-- [ ] Add DateTime format choice
+- [ ] Add DateTime, decimal format choice (per function and/or global config)
 - [ ] Reflection cache instantiation
 - [ ] Check if there are better solutions than reflection cache
 - [ ] Add examples, improve documentation
 - [ ] Js helper methods
-- [ ] Handle sorting for single columns (?)
-- [ ] Try parse for parsers
-- [ ] List instead IEnumerable for request params?
 
 ## 🧹 Done
 - [x] Documentation
