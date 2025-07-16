@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 using DataTables.ServerSideProcessing.Data.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 /// <summary>
@@ -125,8 +126,12 @@ internal static class ExpressionBuilder
             TextFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
             TextFilter.Contains => Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue),
             TextFilter.DoesntContain => Expression.Not(Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue)),
-            TextFilter.StartsWith => Expression.Call(memberAccess, typeof(string).GetMethod("StartsWith", [typeof(string)])!, constantValue),
-            TextFilter.EndsWith => Expression.Call(memberAccess, typeof(string).GetMethod("EndsWith", [typeof(string)])!, constantValue),
+            TextFilter.StartsWith => Expression.Call(typeof(DbFunctionsExtensions), nameof(DbFunctionsExtensions.Like),
+                                                     Type.EmptyTypes, Expression.Constant(EF.Functions), memberAccess,
+                                                     Expression.Constant($"{searchValue}%")),
+            TextFilter.EndsWith => Expression.Call(typeof(DbFunctionsExtensions), nameof(DbFunctionsExtensions.Like),
+                                                     Type.EmptyTypes, Expression.Constant(EF.Functions), memberAccess,
+                                                     Expression.Constant($"%{searchValue}")),
             _ => throw new NotImplementedException(),
         };
 
