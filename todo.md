@@ -5,6 +5,7 @@
 ## 🛠 In Progress
 
 ## 📅 Upcoming / Backlog
+- [ ] Add DateTime range filtering
 - [ ] Add decimal format choice (per function and/or global config)
 - [ ] Add separator choice for 'Between' filter
 - [ ] Reflection cache instantiation
