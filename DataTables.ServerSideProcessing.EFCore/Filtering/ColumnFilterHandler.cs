@@ -68,7 +68,7 @@ internal static class ColumnFilterHandler
                 if (string.IsNullOrEmpty(filterDateModel.SearchValue))
                     continue;
 
-                if (!DateTime.TryParseExact(filterDateModel.SearchValue, "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime datumParsed))
+                if (!DateTime.TryParse(filterDateModel.SearchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime datumParsed))
                     continue;
 
                 predicate = BuildDateWhereExpression<T>(
