@@ -84,18 +84,18 @@ internal static class ExpressionBuilder
 
         if (string.IsNullOrEmpty(parts[1]))
         {
-            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
+            object lowerValue = Convert.ChangeType(parts[0], propertyType);
             comparison = Expression.GreaterThanOrEqual(memberAccess, Expression.Constant(lowerValue));
         }
         else if (string.IsNullOrEmpty(parts[0]))
         {
-            object upperValue = Convert.ChangeType(parts[1], underlyingType);
+            object upperValue = Convert.ChangeType(parts[1], propertyType);
             comparison = Expression.LessThanOrEqual(memberAccess, Expression.Constant(upperValue));
         }
         else
         {
-            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
-            object upperValue = Convert.ChangeType(parts[1], underlyingType);
+            object lowerValue = Convert.ChangeType(parts[0], propertyType);
+            object upperValue = Convert.ChangeType(parts[1], propertyType);
 
             Expression lowerBound = Expression.GreaterThanOrEqual(memberAccess, Expression.Constant(lowerValue));
             Expression upperBound = Expression.LessThanOrEqual(memberAccess, Expression.Constant(upperValue));
