@@ -7,7 +7,7 @@ public enum TextFilter
     /// <summary>
     /// The value contains the specified substring.
     /// </summary>
-    Contains,
+    Contains = NumberFilter.Between + 1, // Note: Update if another option is added after NumberFilter.Between
 
     /// <summary>
     /// The value does not contain the specified substring.

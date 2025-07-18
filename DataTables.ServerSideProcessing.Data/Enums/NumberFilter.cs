@@ -37,5 +37,5 @@ public enum NumberFilter
     /// <summary>
     /// Checks if the value is between two specified numbers (inclusive).
     /// </summary>
-    Between
+    Between // Note: Update TextFilter first option if adding options after this
 }
