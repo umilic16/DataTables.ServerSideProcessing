@@ -82,23 +82,24 @@ internal static class ExpressionBuilder
         if (parts.Length != 2)
             throw new ArgumentException("Invalid format for 'Between'. Expected at least 1 and at most 2 numbers separated with ';'.");
 
+        var memberAccessNullable = Expression.Convert(memberAccess, underlyingType);
         if (string.IsNullOrEmpty(parts[1]))
         {
-            object lowerValue = Convert.ChangeType(parts[0], propertyType);
-            comparison = Expression.GreaterThanOrEqual(memberAccess, Expression.Constant(lowerValue));
+            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
+            comparison = Expression.GreaterThanOrEqual(memberAccessNullable, Expression.Constant(lowerValue));
         }
         else if (string.IsNullOrEmpty(parts[0]))
         {
-            object upperValue = Convert.ChangeType(parts[1], propertyType);
-            comparison = Expression.LessThanOrEqual(memberAccess, Expression.Constant(upperValue));
+            object upperValue = Convert.ChangeType(parts[1], underlyingType);
+            comparison = Expression.LessThanOrEqual(memberAccessNullable, Expression.Constant(upperValue));
         }
         else
         {
-            object lowerValue = Convert.ChangeType(parts[0], propertyType);
-            object upperValue = Convert.ChangeType(parts[1], propertyType);
+            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
+            object upperValue = Convert.ChangeType(parts[1], underlyingType);
 
-            Expression lowerBound = Expression.GreaterThanOrEqual(memberAccess, Expression.Constant(lowerValue));
-            Expression upperBound = Expression.LessThanOrEqual(memberAccess, Expression.Constant(upperValue));
+            Expression lowerBound = Expression.GreaterThanOrEqual(memberAccessNullable, Expression.Constant(lowerValue));
+            Expression upperBound = Expression.LessThanOrEqual(memberAccessNullable, Expression.Constant(upperValue));
 
             comparison = Expression.AndAlso(lowerBound, upperBound);
         }
