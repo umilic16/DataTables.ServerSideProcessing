@@ -35,7 +35,7 @@ public enum NumberFilter
     GreaterThanOrEqual,
 
     /// <summary>
-    /// Checks if the value is between two specified numbers (inclusive). Not yet implemented.
+    /// Checks if the value is between two specified numbers (inclusive).
     /// </summary>
     Between
 }
