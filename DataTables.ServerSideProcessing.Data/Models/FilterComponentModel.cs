@@ -61,7 +61,7 @@ public class FilterComponentSelectModel<V, T> : FilterComponentBaseModel where V
 /// <summary>
 /// Represents a filter component for columns with selectable values (e.g., dropdowns, multi-selects).
 /// Provides a list of available values for selection.
-/// Inherits from <see cref="FilterComponentSelectModel"/>.
+/// Inherits from <see cref="FilterComponentSelectModel{V,T}"/>.
 /// </summary>
 public sealed class FilterComponentSelectModel : FilterComponentSelectModel<string, string>
 {

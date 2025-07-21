@@ -24,6 +24,7 @@ public abstract class DataTableFilterBaseModel
 public abstract class DataTableFilterBaseModel<T> : DataTableFilterBaseModel
 {
     private protected DataTableFilterBaseModel() { }
+
     /// <summary>
     /// Value to search for in the filter.
     /// </summary>
