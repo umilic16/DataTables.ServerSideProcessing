@@ -21,7 +21,27 @@ internal static class ExpressionBuilder
     internal static Expression<Func<T, bool>> BuildDateWhereExpression<T>(string propertyName, DateTime searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
-        (MemberExpression memberAccess, Expression constantValue) = PrepareExpressionData<T>(parameter, propertyName, searchValue, ColumnFilterType.Date);
+        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
+
+        MemberExpression memberAccess = Expression.Property(parameter, propertyInfo);
+
+        // Get the actual type of the property (e.g., int, double?, decimal)
+        Type propertyType = propertyInfo.PropertyType;
+        // Get the underlying type if it's nullable (e.g., int from int?)
+        Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+
+        if (underlyingType != typeof(DateTime) && underlyingType != typeof(DateOnly))
+            throw new InvalidOperationException($"Property '{propertyName}' is not a DateTime/DateOnly type.");
+
+        Expression constantValue;
+        if (underlyingType == typeof(DateOnly))
+        {
+            constantValue = Expression.Constant(DateOnly.FromDateTime(searchValue), propertyType);
+        }
+        else
+        {
+            constantValue = Expression.Constant(searchValue, propertyType);
+        }
 
         Expression comparison = Expression.Equal(memberAccess, constantValue);
 
@@ -215,9 +235,6 @@ internal static class ExpressionBuilder
 
         if (columnType == ColumnFilterType.Number && !IsNumericType(underlyingType))
             throw new InvalidOperationException($"Property '{propertyName}' is not a numeric type.");
-
-        if (columnType == ColumnFilterType.Date && underlyingType != typeof(DateTime))
-            throw new InvalidOperationException($"Property '{propertyName}' is not a DateTime type.");
 
         if (columnType == ColumnFilterType.Text && underlyingType != typeof(string))
             throw new InvalidOperationException($"Property '{propertyName}' is not a string type.");
