@@ -94,10 +94,15 @@ public static class RequestParser
                 }
                 else if (columnFilterType == ColumnFilterType.Date)
                 {
+                    if (!Enum.TryParse(requestFormData[filterTypeKey], out NumberFilter filterType))
+                    {
+                        filterType = NumberFilter.Equals;
+                    }
                     yield return new DataTableDateTimeFilterModel
                     {
                         SearchValue = requestFormData[valueKey],
-                        PropertyName = propertyName
+                        PropertyName = propertyName,
+                        FilterType = filterType
                     };
                 }
                 else if (columnFilterType == ColumnFilterType.SingleSelect)

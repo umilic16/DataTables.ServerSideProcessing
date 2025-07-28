@@ -71,6 +71,10 @@ public sealed class DataTableNumberFilterModel : DataTableFilterBaseModel<string
 /// </summary>
 public sealed class DataTableDateTimeFilterModel : DataTableFilterBaseModel<string?>
 {
+    /// <summary>
+    /// Type of filter to apply (e.g., Equals, Between).
+    /// </summary>
+    public required NumberFilter FilterType { get; init; }
 }
 
 /// <summary>

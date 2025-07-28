@@ -1,8 +1,6 @@
-﻿using System.Globalization;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
-using static DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilder;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 /// <summary>
@@ -44,7 +42,7 @@ internal static class ColumnFilterHandler
                 if (filterTextModel.ColumnType == ColumnValueType.AccNumber)
                     filterTextModel.SearchValue = filterTextModel.SearchValue.Replace("-", "");
 
-                predicate = BuildTextWhereExpression<T>(
+                predicate = TextExpressionBuilder.Build<T>(
                                     propName,
                                     filterTextModel.FilterType,
                                     filterTextModel.SearchValue);
@@ -58,7 +56,7 @@ internal static class ColumnFilterHandler
                 if (filterNumberModel.ColumnType == ColumnValueType.Decimal)
                     filterNumberModel.SearchValue = filterNumberModel.SearchValue.Replace(".", "");
 
-                predicate = BuildNumericWhereExpression<T>(
+                predicate = NumericExpressionBuilder.Build<T>(
                                     propName,
                                     filterNumberModel.FilterType,
                                     filterNumberModel.SearchValue);
@@ -68,19 +66,17 @@ internal static class ColumnFilterHandler
                 if (string.IsNullOrEmpty(filterDateModel.SearchValue))
                     continue;
 
-                if (!DateTime.TryParse(filterDateModel.SearchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime datumParsed))
-                    continue;
-
-                predicate = BuildDateWhereExpression<T>(
+                predicate = DateExpressionBuilder.Build<T>(
                                     propName,
-                                    datumParsed);
+                                    filterDateModel.FilterType,
+                                    filterDateModel.SearchValue);
             }
             else if (filterModel is DataTableSingleSelectFilterModel filterSingleSelectModel)
             {
                 if (string.IsNullOrEmpty(filterSingleSelectModel.SearchValue))
                     continue;
 
-                predicate = BuildSingleSelectWhereExpression<T>(
+                predicate = SelectExpressionBuilder.BuildSingleSelect<T>(
                                     propName,
                                     filterSingleSelectModel.SearchValue);
             }
@@ -89,7 +85,7 @@ internal static class ColumnFilterHandler
                 if (filterMultiSelectModel.SearchValue.Count == 0)
                     continue;
 
-                predicate = BuildMultiSelectWhereExpression<T>(
+                predicate = SelectExpressionBuilder.BuildMultiSelect<T>(
                                     propName,
                                     filterMultiSelectModel.SearchValue);
             }

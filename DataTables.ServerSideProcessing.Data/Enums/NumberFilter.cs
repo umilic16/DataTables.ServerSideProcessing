@@ -1,7 +1,8 @@
 ﻿namespace DataTables.ServerSideProcessing.Data.Enums;
 /// <summary>
-/// Specifies the available numeric filter operations.
+/// Specifies the available numeric or date filter operations.
 /// </summary>
+// Note: After 4.3.0 used for date filters too, naming stayed the same for backward compatibility
 public enum NumberFilter
 {
     /// <summary>
