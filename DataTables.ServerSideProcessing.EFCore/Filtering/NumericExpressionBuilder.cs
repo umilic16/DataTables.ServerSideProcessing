@@ -34,7 +34,7 @@ internal static class NumericExpressionBuilder
         Expression comparison;
         if (filterType != NumberFilter.Between)
         {
-            ConstantExpression constantValue = Expression.Constant(Convert.ChangeType(searchValue, underlyingType));
+            ConstantExpression constantValue = searchValue.CreateConstant(propertyType, underlyingType);
             comparison = filterType switch
             {
                 NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
@@ -48,12 +48,12 @@ internal static class NumericExpressionBuilder
         }
         else
         {
-            comparison = Between(memberAccess, underlyingType, searchValue);
+            comparison = Between(memberAccess, underlyingType, propertyType, searchValue);
         }
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static Expression Between(MemberExpression memberAccess, Type underlyingType, string searchValue)
+    private static Expression Between(MemberExpression memberAccess, Type underlyingType, Type propertyType, string searchValue)
     {
         Expression comparison;
 
@@ -61,24 +61,23 @@ internal static class NumericExpressionBuilder
         if (parts.Length != 2)
             throw new ArgumentException("Invalid format for 'Between'. Expected at least 1 and at most 2 numbers separated with ';'.");
 
-        var memberAccessNullable = Expression.Convert(memberAccess, underlyingType);
         if (string.IsNullOrEmpty(parts[1]))
         {
-            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
-            comparison = Expression.GreaterThanOrEqual(memberAccessNullable, Expression.Constant(lowerValue));
+            ConstantExpression lowerValue = parts[0].CreateConstant(propertyType, underlyingType);
+            comparison = Expression.GreaterThanOrEqual(memberAccess, lowerValue);
         }
         else if (string.IsNullOrEmpty(parts[0]))
         {
-            object upperValue = Convert.ChangeType(parts[1], underlyingType);
-            comparison = Expression.LessThanOrEqual(memberAccessNullable, Expression.Constant(upperValue));
+            ConstantExpression upperValue = parts[1].CreateConstant(propertyType, underlyingType);
+            comparison = Expression.LessThanOrEqual(memberAccess, upperValue);
         }
         else
         {
-            object lowerValue = Convert.ChangeType(parts[0], underlyingType);
-            object upperValue = Convert.ChangeType(parts[1], underlyingType);
+            ConstantExpression lowerValue = parts[0].CreateConstant(propertyType, underlyingType);
+            ConstantExpression upperValue = parts[1].CreateConstant(propertyType, underlyingType);
 
-            Expression lowerBound = Expression.GreaterThanOrEqual(memberAccessNullable, Expression.Constant(lowerValue));
-            Expression upperBound = Expression.LessThanOrEqual(memberAccessNullable, Expression.Constant(upperValue));
+            Expression lowerBound = Expression.GreaterThanOrEqual(memberAccess, lowerValue);
+            Expression upperBound = Expression.LessThanOrEqual(memberAccess, upperValue);
 
             comparison = Expression.AndAlso(lowerBound, upperBound);
         }

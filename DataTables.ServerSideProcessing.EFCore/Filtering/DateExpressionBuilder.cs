@@ -37,7 +37,7 @@ internal static class DateExpressionBuilder
         Expression comparison;
         if (filterType != NumberFilter.Between)
         {
-            ConstantExpression constantValue = DateConstant(searchValue, underlyingType);
+            ConstantExpression constantValue = DateConstant(searchValue, underlyingType, propertyType);
             comparison = filterType switch
             {
                 NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
@@ -51,37 +51,36 @@ internal static class DateExpressionBuilder
         }
         else
         {
-            comparison = Between(memberAccess, underlyingType, searchValue);
+            comparison = Between(memberAccess, underlyingType, propertyType, searchValue);
         }
 
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
 
-    private static Expression Between(MemberExpression memberAccess, Type underlyingType, string searchValue)
+    private static Expression Between(MemberExpression memberAccess, Type underlyingType, Type propertyType, string searchValue)
     {
         Expression comparison;
         string[] parts = searchValue.Split(';');
         if (parts.Length != 2)
             throw new ArgumentException("Invalid format for 'Between'. Expected at least 1 and at most 2 numbers separated with ';'.");
 
-        var memberAccessNullable = Expression.Convert(memberAccess, underlyingType);
         if (string.IsNullOrEmpty(parts[1]))
         {
-            ConstantExpression lowerValue = DateConstant(parts[0], underlyingType);
-            comparison = Expression.GreaterThanOrEqual(memberAccessNullable, lowerValue);
+            ConstantExpression lowerValue = DateConstant(parts[0], underlyingType, propertyType);
+            comparison = Expression.GreaterThanOrEqual(memberAccess, lowerValue);
         }
         else if (string.IsNullOrEmpty(parts[0]))
         {
-            ConstantExpression upperValue = DateConstant(parts[1], underlyingType);
-            comparison = Expression.LessThanOrEqual(memberAccessNullable, upperValue);
+            ConstantExpression upperValue = DateConstant(parts[1], underlyingType, propertyType);
+            comparison = Expression.LessThanOrEqual(memberAccess, upperValue);
         }
         else
         {
-            ConstantExpression lowerValue = DateConstant(parts[0], underlyingType);
-            ConstantExpression upperValue = DateConstant(parts[1], underlyingType);
+            ConstantExpression lowerValue = DateConstant(parts[0], underlyingType, propertyType);
+            ConstantExpression upperValue = DateConstant(parts[1], underlyingType, propertyType);
 
-            Expression lowerBound = Expression.GreaterThanOrEqual(memberAccessNullable, lowerValue);
-            Expression upperBound = Expression.LessThanOrEqual(memberAccessNullable, upperValue);
+            Expression lowerBound = Expression.GreaterThanOrEqual(memberAccess, lowerValue);
+            Expression upperBound = Expression.LessThanOrEqual(memberAccess, upperValue);
 
             comparison = Expression.AndAlso(lowerBound, upperBound);
         }
@@ -89,20 +88,20 @@ internal static class DateExpressionBuilder
         return comparison;
     }
 
-    private static ConstantExpression DateConstant(string searchValue, Type underlyingType)
+    private static ConstantExpression DateConstant(string searchValue, Type underlyingType, Type propertyType)
     {
         if (underlyingType == typeof(DateTime))
         {
             if (!DateTime.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateTime dateParsed))
                 throw new ArgumentException($"Invalid date format: {searchValue}. Expected format is based on current culture ({CultureInfo.CurrentCulture.Name}).");
 
-            return Expression.Constant(dateParsed);
+            return Expression.Constant(dateParsed, propertyType);
         }
         else if (underlyingType == typeof(DateOnly))
         {
             if (!DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateOnly dateParsed))
                 throw new ArgumentException($"Invalid date format: {searchValue}. Expected format is based on current culture ({CultureInfo.CurrentCulture.Name}).");
-            return Expression.Constant(dateParsed);
+            return Expression.Constant(dateParsed, propertyType);
         }
         else
         {

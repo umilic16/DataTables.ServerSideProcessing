@@ -32,7 +32,7 @@ internal static class TextExpressionBuilder
         if (underlyingType != typeof(string))
             throw new InvalidOperationException($"Property '{propertyName}' is not a string type.");
 
-        ConstantExpression constantValue = Expression.Constant(searchValue);
+        ConstantExpression constantValue = searchValue.CreateConstant(propertyType, underlyingType);
         Expression comparison = filterType switch
         {
             TextFilter.Equals => Expression.Equal(memberAccess, constantValue),
