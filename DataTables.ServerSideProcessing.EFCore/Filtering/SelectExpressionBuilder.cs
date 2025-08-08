@@ -31,7 +31,7 @@ internal static class SelectExpressionBuilder
 
         Expression memberAsString = propertyType == typeof(string) ?
             memberAccess : // e.Property for string properties
-            Expression.Call(memberAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!); // e.Property.ToString() for non-string properties
+            Expression.Call(memberAccess, typeof(object).GetMethod(nameof(ToString))!); // e.Property.ToString() for non-string properties
 
         ConstantExpression constantList = Expression.Constant(searchValues);
         // searchValues.Contains(e.Property.ToString())
@@ -69,7 +69,7 @@ internal static class SelectExpressionBuilder
 
         Expression memberAsString = propertyType == typeof(string) ?
             memberAccess : // e.Property for string properties
-            Expression.Call(memberAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!); // e.Property.ToString() for non-string properties
+            Expression.Call(memberAccess, typeof(object).GetMethod(nameof(ToString))!); // e.Property.ToString() for non-string properties
 
         ConstantExpression constantValue = Expression.Constant(searchValue);
         Expression comparison = Expression.Equal(memberAsString, constantValue);
