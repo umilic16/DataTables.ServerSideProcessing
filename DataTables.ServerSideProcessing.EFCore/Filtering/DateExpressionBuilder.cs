@@ -22,7 +22,8 @@ internal static class DateExpressionBuilder
     internal static Expression<Func<T, bool>> Build<T>(string propertyName, NumberFilter filterType, string searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
-        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
+        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+            ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
 
         MemberExpression memberAccess = Expression.Property(parameter, propertyInfo);
 

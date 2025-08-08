@@ -32,7 +32,8 @@ internal static class GenericFilterHandler
 
         foreach (string property in properties)
         {
-            PropertyInfo? propertyInfo = typeof(T).GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{property}' not found on type '{typeof(T).Name}'.");
+            PropertyInfo? propertyInfo = typeof(T).GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+                ?? throw new InvalidOperationException($"Property '{property}' not found on type '{typeof(T).Name}'.");
 
             Type propertyType = propertyInfo.PropertyType;
 
@@ -42,8 +43,7 @@ internal static class GenericFilterHandler
             {
                 propertyAsString = Expression.Coalesce(propertyAccess, Expression.Constant(string.Empty));
             }
-            else if (!propertyType.IsValueType
-                     || Nullable.GetUnderlyingType(propertyType) != null)
+            else if (!propertyType.IsValueType || Nullable.GetUnderlyingType(propertyType) is not null)
             {
                 // Convert non-strings to string using ToString, adding null check
                 Expression nullCheck = Expression.Equal(propertyAccess, Expression.Constant(null, propertyType));

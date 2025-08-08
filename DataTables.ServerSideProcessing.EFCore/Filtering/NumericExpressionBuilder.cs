@@ -19,7 +19,8 @@ internal static class NumericExpressionBuilder
     internal static Expression<Func<T, bool>> Build<T>(string propertyName, NumberFilter filterType, string searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
-        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance) ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
+        PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+            ?? throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
 
         MemberExpression memberAccess = Expression.Property(parameter, propertyInfo);
 
@@ -28,8 +29,7 @@ internal static class NumericExpressionBuilder
         // Get the underlying type if it's nullable (e.g., int from int?)
         Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
-        if (!IsNumericType(underlyingType))
-            throw new InvalidOperationException($"Property '{propertyName}' is not a numeric type.");
+        if (!IsNumericType(underlyingType)) throw new InvalidOperationException($"Property '{propertyName}' is not a numeric type.");
 
         Expression comparison;
         if (filterType != NumberFilter.Between)
