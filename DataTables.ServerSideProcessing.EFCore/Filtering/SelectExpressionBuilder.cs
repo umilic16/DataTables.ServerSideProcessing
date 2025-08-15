@@ -5,21 +5,9 @@ namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 
 internal static class SelectExpressionBuilder
 {
-
-    /// <summary>
-    /// Builds a LINQ expression to filter entities by a property using a <c>Contains()</c> comparison.
-    /// This is typically used for multi-select dropdown filters.
-    /// The filter checks if the entity property's string representation is present in the provided search values list.
-    /// </summary>
-    /// <typeparam name="T">The entity type.</typeparam>
-    /// <param name="propertyName">The name of the property.</param>
-    /// <param name="searchValues">The values to filter by.</param>
-    /// <returns>An expression representing the filter.</returns>
-    /// <exception cref="ArgumentException">Thrown if the search values list is null or empty.</exception>
-    /// <exception cref="InvalidOperationException">Thrown if the property is not found on the entity type.</exception>
-    internal static Expression<Func<T, bool>> BuildMultiSelect<T>(string propertyName, List<string> searchValues) where T : class
+    internal static Expression<Func<T, bool>> BuildMultiSelect<T>(string propertyName, string[] searchValues) where T : class
     {
-        if (searchValues == null || searchValues.Count == 0) throw new ArgumentException("Search values list cannot be null or empty.", nameof(searchValues));
+        if (searchValues == null || searchValues.Length == 0) throw new ArgumentException("Search values list cannot be null or empty.", nameof(searchValues));
 
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e");
         PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
@@ -48,15 +36,6 @@ internal static class SelectExpressionBuilder
         return Expression.Lambda<Func<T, bool>>(containsCall, parameter);
     }
 
-    /// <summary>
-    /// Builds a LINQ expression to filter entities by a property using an <c>Equals</c> comparison.
-    /// This is typically used for single-select dropdown filters, where the property value must exactly match the provided search value.
-    /// </summary>
-    /// <typeparam name="T">The entity type.</typeparam>
-    /// <param name="propertyName">The name of the property.</param>
-    /// <param name="searchValue">The value to filter by.</param>
-    /// <returns>An expression representing the filter.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the property is not found.</exception>
     internal static Expression<Func<T, bool>> BuildSingleSelect<T>(string propertyName, string searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"

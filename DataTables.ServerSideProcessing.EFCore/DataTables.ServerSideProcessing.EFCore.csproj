@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DataTables.ServerSideProcessing.Data\DataTables.ServerSideProcessing.Data.csproj" />
-    <ProjectReference Include="..\DataTables.ServerSideProcessing.Utils\DataTables.ServerSideProcessing.Utils.csproj" />
   </ItemGroup>
 </Project>

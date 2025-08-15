@@ -1,17 +1,16 @@
 ﻿namespace DataTables.ServerSideProcessing.Data.Enums;
 /// <summary>
-/// Specifies the available numeric or date filter operations.
+/// Specifies the available filter operations.
 /// </summary>
-// Note: After 4.3.0 used for date filters too, naming stayed the same for backward compatibility
-public enum NumberFilter
+public enum FilterOperations
 {
     /// <summary>
-    /// Checks if the value is equal to the specified number.
+    /// Checks if the value is equal to the specified value.
     /// </summary>
     Equals,
 
     /// <summary>
-    /// Checks if the value is not equal to the specified number.
+    /// Checks if the value is not equal to the specified value.
     /// </summary>
     NotEqual,
 
@@ -38,5 +37,25 @@ public enum NumberFilter
     /// <summary>
     /// Checks if the value is between two specified numbers (inclusive).
     /// </summary>
-    Between // Note: Update TextFilter first option if adding options after this
+    Between,
+
+    /// <summary>
+    /// The value contains the specified substring.
+    /// </summary>
+    Contains,
+
+    /// <summary>
+    /// The value does not contain the specified substring.
+    /// </summary>
+    DoesNotContain,
+
+    /// <summary>
+    /// The value starts with the specified substring.
+    /// </summary>
+    StartsWith,
+
+    /// <summary>
+    /// The value ends with the specified substring.
+    /// </summary>
+    EndsWith
 }

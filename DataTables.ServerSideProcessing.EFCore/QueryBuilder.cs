@@ -1,4 +1,5 @@
 ﻿using DataTables.ServerSideProcessing.Data.Models;
+using DataTables.ServerSideProcessing.Data.Models.Abstractions;
 using DataTables.ServerSideProcessing.EFCore.Filtering;
 using DataTables.ServerSideProcessing.EFCore.Sorting;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,12 @@ public static class QueryBuilder
     /// <param name="properties">Optional property names for generic search.</param>
     /// <param name="search">Optional search string for generic filtering.</param>
     /// <returns>The query with filters and sorting applied.</returns>
-    public static IQueryable<T> BuildQuery<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null) where T : class
+    public static IQueryable<T> Build<T>(
+        this IQueryable<T> query,
+        FilterModel[]? filters = null,
+        SortModel[]? sortOrder = null,
+        string[]? properties = null,
+        string? search = null) where T : class
     {
         return query.HandleGenericFilter(properties, search)
                     .HandleColumnFilters(filters)
@@ -39,10 +45,17 @@ public static class QueryBuilder
     /// <param name="properties">Optional property names for generic search.</param>
     /// <param name="search">Optional search string for generic filtering.</param>
     /// <returns>A list of results after applying filters, sorting, and pagination.</returns>
-    public static List<T> BuildAndExecuteQuery<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null) where T : class
+    public static List<T> BuildAndToList<T>(
+        this IQueryable<T> query,
+        int skip = 0,
+        int pageSize = -1,
+        FilterModel[]? filters = null,
+        SortModel[]? sortOrder = null,
+        string[]? properties = null,
+        string? search = null) where T : class
     {
-        return query.BuildQuery(filters, sortOrder, properties, search)
-                    .ExecuteQuery(skip, pageSize);
+        return query.Build(filters, sortOrder, properties, search)
+                    .ToList(skip, pageSize);
     }
 
     /// <summary>
@@ -59,10 +72,18 @@ public static class QueryBuilder
     /// <param name="search">Optional search string for generic filtering.</param>
     /// <param name="ct">A cancellation token.</param>
     /// <returns>A task representing the asynchronous operation, with a list of results.</returns>
-    public static async Task<List<T>> BuildAndExecuteQueryAsync<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1, IEnumerable<DataTableFilterBaseModel>? filters = null, IEnumerable<SortModel>? sortOrder = null, IEnumerable<string>? properties = null, string? search = null, CancellationToken ct = default) where T : class
+    public static async Task<List<T>> BuildAndToListAsync<T>(
+        this IQueryable<T> query,
+        int skip = 0,
+        int pageSize = -1,
+        FilterModel[]? filters = null,
+        SortModel[]? sortOrder = null,
+        string[]? properties = null,
+        string? search = null,
+        CancellationToken ct = default) where T : class
     {
-        return await query.BuildQuery(filters, sortOrder, properties, search)
-                          .ExecuteQueryAsync(skip, pageSize, ct);
+        return await query.Build(filters, sortOrder, properties, search)
+                          .ToListAsync(skip, pageSize, ct);
     }
 
     /// <summary>
@@ -73,7 +94,10 @@ public static class QueryBuilder
     /// <param name="properties">The property names to search.</param>
     /// <param name="search">The search string.</param>
     /// <returns>The filtered query.</returns>
-    public static IQueryable<T> HandleGenericFilter<T>(this IQueryable<T> query, IEnumerable<string>? properties, string? search) where T : class
+    public static IQueryable<T> HandleGenericFilter<T>(
+        this IQueryable<T> query,
+        string[]? properties,
+        string? search) where T : class
     {
         return properties == null || string.IsNullOrEmpty(search) ? query : GenericFilterHandler.HandleGenericFilter(query, properties, search);
     }
@@ -85,7 +109,9 @@ public static class QueryBuilder
     /// <param name="query">The source query.</param>
     /// <param name="filters">The column filters to apply.</param>
     /// <returns>The filtered query.</returns>
-    public static IQueryable<T> HandleColumnFilters<T>(this IQueryable<T> query, IEnumerable<DataTableFilterBaseModel>? filters) where T : class
+    public static IQueryable<T> HandleColumnFilters<T>(
+        this IQueryable<T> query,
+        FilterModel[]? filters) where T : class
     {
         return filters == null ? query : ColumnFilterHandler.HandleColumnFilters(query, filters);
     }
@@ -97,7 +123,9 @@ public static class QueryBuilder
     /// <param name="query">The source query.</param>
     /// <param name="sortOrder">The sort order definitions.</param>
     /// <returns>The sorted query.</returns>
-    public static IQueryable<T> HandleSorting<T>(this IQueryable<T> query, IEnumerable<SortModel>? sortOrder) where T : class
+    public static IQueryable<T> HandleSorting<T>(
+        this IQueryable<T> query,
+        SortModel[]? sortOrder) where T : class
     {
         return sortOrder == null ? query : SortHandler.HandleSorting(query, sortOrder);
     }
@@ -110,7 +138,10 @@ public static class QueryBuilder
     /// <param name="skip">The number of records to skip.</param>
     /// <param name="pageSize">The number of records to take. If -1, returns all records.</param>
     /// <returns>A list of results.</returns>
-    public static List<T> ExecuteQuery<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1) where T : class
+    public static List<T> ToList<T>(
+        this IQueryable<T> query,
+        int skip = 0,
+        int pageSize = -1) where T : class
     {
         return pageSize != -1 ? query.Skip(skip).Take(pageSize).ToList() : query.ToList();
     }
@@ -124,7 +155,11 @@ public static class QueryBuilder
     /// <param name="pageSize">The number of records to take. If -1, returns all records.</param>
     /// <param name="ct">A cancellation token.</param>
     /// <returns>A task representing the asynchronous operation, with a list of results.</returns>
-    public static async Task<List<T>> ExecuteQueryAsync<T>(this IQueryable<T> query, int skip = 0, int pageSize = -1, CancellationToken ct = default) where T : class
+    public static async Task<List<T>> ToListAsync<T>(
+        this IQueryable<T> query,
+        int skip = 0,
+        int pageSize = -1,
+        CancellationToken ct = default) where T : class
     {
         return pageSize != -1 ? await query.Skip(skip).Take(pageSize).ToListAsync(ct) : await query.ToListAsync(ct);
     }

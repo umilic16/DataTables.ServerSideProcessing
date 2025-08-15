@@ -2,29 +2,12 @@
 using System.Reflection;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
-/// <summary>
-/// Provides an extension method for applying generic filtering to <see cref="IQueryable{T}"/> source
-/// based on a set of property names and a search string.
-/// </summary>
+
 internal static class GenericFilterHandler
 {
-    /// <summary>
-    /// Filters the query by checking if any of the specified properties of <typeparamref name="T"/> contain the given search string.
-    /// </summary>
-    /// <typeparam name="T">The entity type.</typeparam>
-    /// <param name="query">The source query to filter.</param>
-    /// <param name="properties">A collection of property names to search within.</param>
-    /// <param name="search">The search string to look for in the property values.</param>
-    /// <returns>
-    /// An <see cref="IQueryable{T}"/> filtered such that any of the specified properties contain the search string.
-    /// If <paramref name="properties"/> is empty, the original query is returned.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if a property name in <paramref name="properties"/> does not exist on <typeparamref name="T"/>.
-    /// </exception>
-    internal static IQueryable<T> HandleGenericFilter<T>(this IQueryable<T> query, IEnumerable<string> properties, string search) where T : class
+    internal static IQueryable<T> HandleGenericFilter<T>(this IQueryable<T> query, string[] properties, string search) where T : class
     {
-        if (!properties.Any())
+        if (properties.Length == 0)
             return query;
 
         Expression? combinedExpression = null;

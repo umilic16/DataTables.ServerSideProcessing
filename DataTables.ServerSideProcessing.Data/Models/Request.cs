@@ -1,10 +1,12 @@
-﻿namespace DataTables.ServerSideProcessing.Data.Models;
+﻿using DataTables.ServerSideProcessing.Data.Models.Abstractions;
+
+namespace DataTables.ServerSideProcessing.Data.Models;
 
 /// <summary>
 /// Represents a request for server-side processing of a DataTable.
 /// Contains search, pagination, sorting, and filtering definition.
 /// </summary>
-public sealed class DataTableRequest
+public sealed class Request
 {
     /// <summary>
     /// The global search term to filter all columns.
@@ -24,10 +26,10 @@ public sealed class DataTableRequest
     /// <summary>
     /// The collection of sort definitions.
     /// </summary>
-    public IEnumerable<SortModel>? SortOrder { get; set; }
+    public SortModel[]? SortOrder { get; set; }
 
     /// <summary>
     /// The collection of column-specific filter definition.
     /// </summary>
-    public IEnumerable<DataTableFilterBaseModel>? Filters { get; set; }
+    public FilterModel[]? Filters { get; set; }
 }

@@ -4,12 +4,12 @@
 /// Represents a generic response model for DataTables server-side processing.
 /// </summary>
 /// <typeparam name="T">The type of data contained in the response.</typeparam>
-public sealed class DataTableResponse<T>
+public sealed class Response<T>
 {
     /// <summary>
     /// Data to be returned to the DataTable.
     /// </summary>
-    public IEnumerable<T> Data { get; set; } = [];
+    public List<T> Data { get; set; } = [];
 
     /// <summary>
     /// Draw counter that ensures Ajax requests from DataTables are in sequence.

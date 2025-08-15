@@ -4,22 +4,10 @@ using System.Reflection;
 using DataTables.ServerSideProcessing.Data.Enums;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
-/// <summary>
-/// Provides static helper methods for <see cref="ColumnFilterHandler"/> to build LINQ expressions for filtering entity properties.
-/// Supports building expressions for date, numeric, and text-based filters.
-/// </summary>
+
 internal static class DateExpressionBuilder
 {
-    /// <summary>
-    /// Builds a LINQ expression to filter entities by a date property.
-    /// </summary>
-    /// <typeparam name="T">The entity type.</typeparam>
-    /// <param name="propertyName">The name of the date property.</param>
-    /// <param name="filterType">The filter type (e.g., Equals, GreaterThan, LessThanOrEqual).</param>
-    /// <param name="searchValue">The date value to filter by.</param>
-    /// <returns>An expression representing the filter.</returns>
-    /// <exception cref="InvalidOperationException">Thrown if the property is not found or the type does not match the filter type.</exception>
-    internal static Expression<Func<T, bool>> Build<T>(string propertyName, NumberFilter filterType, string searchValue) where T : class
+    internal static Expression<Func<T, bool>> Build<T>(string propertyName, FilterOperations filterType, string searchValue) where T : class
     {
         ParameterExpression parameter = Expression.Parameter(typeof(T), "e"); // "e"
         PropertyInfo? propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
@@ -36,17 +24,17 @@ internal static class DateExpressionBuilder
             throw new InvalidOperationException($"Property '{propertyName}' is not a DateTime/DateOnly type.");
 
         Expression comparison;
-        if (filterType != NumberFilter.Between)
+        if (filterType != FilterOperations.Between)
         {
             ConstantExpression constantValue = DateConstant(searchValue, underlyingType, propertyType);
             comparison = filterType switch
             {
-                NumberFilter.Equals => Expression.Equal(memberAccess, constantValue),
-                NumberFilter.NotEqual => Expression.NotEqual(memberAccess, constantValue),
-                NumberFilter.GreaterThan => Expression.GreaterThan(memberAccess, constantValue),
-                NumberFilter.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
-                NumberFilter.LessThan => Expression.LessThan(memberAccess, constantValue),
-                NumberFilter.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
+                FilterOperations.Equals => Expression.Equal(memberAccess, constantValue),
+                FilterOperations.NotEqual => Expression.NotEqual(memberAccess, constantValue),
+                FilterOperations.GreaterThan => Expression.GreaterThan(memberAccess, constantValue),
+                FilterOperations.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
+                FilterOperations.LessThan => Expression.LessThan(memberAccess, constantValue),
+                FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
                 _ => throw new NotImplementedException()
             };
         }

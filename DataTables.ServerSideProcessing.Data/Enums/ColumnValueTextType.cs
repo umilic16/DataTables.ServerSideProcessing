@@ -1,8 +1,8 @@
 ﻿namespace DataTables.ServerSideProcessing.Data.Enums;
 /// <summary>
-/// Specifies the type of value a column can hold.
+/// Specifies the type of value a text column can hold.
 /// </summary>
-public enum ColumnValueType
+public enum ColumnValueTextType
 {
     /// <summary>
     /// The default or base type.
@@ -13,14 +13,4 @@ public enum ColumnValueType
     /// Represents an account number type.
     /// </summary>
     AccNumber,
-
-    /// <summary>
-    /// Represents an integer type.
-    /// </summary>
-    Int,
-
-    /// <summary>
-    /// Represents a decimal type.
-    /// </summary>
-    Decimal
 }
