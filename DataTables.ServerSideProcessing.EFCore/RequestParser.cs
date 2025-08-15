@@ -138,8 +138,9 @@ public static class RequestParser
     /// <param name="requestFormData">The form data from the DataTables request.</param>
     /// <param name="parseSort">Whether to parse sort order information.</param>
     /// <param name="parseFilters">Whether to parse column filter information.</param>
+    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters. Defaults to ",".</param>
     /// <returns>A <see cref="Request"/> object representing the parsed request.</returns>
-    public static Request ParseRequest(IFormCollection requestFormData, bool parseSort = true, bool parseFilters = true)
+    public static Request ParseRequest(IFormCollection requestFormData, bool parseSort = true, bool parseFilters = true, string multiSelectSeparator = ",")
     {
         return new Request
         {
@@ -147,7 +148,7 @@ public static class RequestParser
             Skip = requestFormData["start"].ToInt(),
             PageSize = requestFormData["length"].ToInt(),
             SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
-            Filters = parseFilters ? ParseFilters(requestFormData) : []
+            Filters = parseFilters ? ParseFilters(requestFormData, multiSelectSeparator) : []
         };
     }
 

@@ -22,6 +22,7 @@ public static class ResponseBuilder
     /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters when parsing the request. Defaults to ",".</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="Response{TViewModel}"/>
@@ -36,6 +37,7 @@ public static class ResponseBuilder
         string[]? genericFilterFields = null,
         bool applySort = true,
         bool applyColumnFilters = true,
+        string multiSelectSeparator = ",",
         CancellationToken ct = default)
         where TEntity : class
         where TViewModel : class
@@ -53,7 +55,7 @@ public static class ResponseBuilder
 
         var response = new Response<TViewModel>() { Draw = form["draw"], RecordsTotal = totalCount };
 
-        Request request = RequestParser.ParseRequest(form, applySort, applyColumnFilters);
+        Request request = RequestParser.ParseRequest(form, applySort, applyColumnFilters, multiSelectSeparator);
 
         IQueryable<TViewModel> baseQuery = query.HandleGenericFilter(genericFilterFields, request.Search)
                                                 .Select(projection)
@@ -81,6 +83,7 @@ public static class ResponseBuilder
     /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters when parsing the request. Defaults to ",".</param>
     /// <param name="ct">Cancellation token.</param>
     /// <returns>
     /// A <see cref="Task{TResult}"/> representing the asynchronous operation, with a <see cref="Response{TEntity}"/>
@@ -94,11 +97,12 @@ public static class ResponseBuilder
         string[]? genericFilterFields = null,
         bool applySort = true,
         bool applyColumnFilters = true,
+        string multiSelectSeparator = ",",
         CancellationToken ct = default)
         where TEntity : class
     {
 
-        return await BuildAsync(form, query, x => x, genericFilterFields, applySort, applyColumnFilters, ct);
+        return await BuildAsync(form, query, x => x, genericFilterFields, applySort, applyColumnFilters, multiSelectSeparator, ct);
     }
 
     /// <summary>
@@ -113,6 +117,7 @@ public static class ResponseBuilder
     /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters when parsing the request. Defaults to ",".</param>
     /// <returns>
     /// A <see cref="Response{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
@@ -124,7 +129,8 @@ public static class ResponseBuilder
         Expression<Func<TEntity, TViewModel>> projection,
         string[]? genericFilterFields = null,
         bool applySort = true,
-        bool applyColumnFilters = true)
+        bool applyColumnFilters = true,
+        string multiSelectSeparator = ",")
         where TEntity : class
         where TViewModel : class
     {
@@ -141,7 +147,7 @@ public static class ResponseBuilder
 
         var response = new Response<TViewModel>() { Draw = form["draw"], RecordsTotal = totalCount };
 
-        Request request = RequestParser.ParseRequest(form, applySort, applyColumnFilters);
+        Request request = RequestParser.ParseRequest(form, applySort, applyColumnFilters, multiSelectSeparator);
 
         IQueryable<TViewModel> baseQuery = query.HandleGenericFilter(genericFilterFields, request.Search)
                                                 .Select(projection)
@@ -169,6 +175,7 @@ public static class ResponseBuilder
     /// <param name="genericFilterFields">Optional list of property names on which to apply filtering using the search value from the request.</param>
     /// <param name="applySort">Indicates whether to parse sorting information from the request form. Default is true.</param>
     /// <param name="applyColumnFilters">Indicates whether to parse column filter information from the request form. Default is true.</param>
+    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters when parsing the request. Defaults to ",".</param>
     /// <returns>
     /// A <see cref="Response{TViewModel}"/> containing the requested data and metadata.
     /// </returns>
@@ -179,9 +186,10 @@ public static class ResponseBuilder
         IQueryable<TEntity> query,
         string[]? genericFilterFields = null,
         bool applySort = true,
-        bool applyColumnFilters = true)
+        bool applyColumnFilters = true,
+        string multiSelectSeparator = ",")
         where TEntity : class
     {
-        return Build(form, query, x => x, genericFilterFields, applySort, applyColumnFilters);
+        return Build(form, query, x => x, genericFilterFields, applySort, applyColumnFilters, multiSelectSeparator);
     }
 }
