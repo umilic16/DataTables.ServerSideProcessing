@@ -3,7 +3,7 @@ using System.Numerics;
 using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
 using DataTables.ServerSideProcessing.Data.Models.Abstractions;
-using DataTables.ServerSideProcessing.Data.Models.Filter;
+using DataTables.ServerSideProcessing.Data.Models.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
@@ -63,24 +63,24 @@ public static class RequestParser
                 int end = key.IndexOf(']');
                 string propertyName = key[start..end];
                 string filterTypeKey = $"filter[{propertyName}][filterType]";
-                string columnFilterTypeKey = $"filter[{propertyName}][columnFilterType]";
-                string columnValueTypeKey = $"filter[{propertyName}][columnValueType]";
+                string filterCategoryKey = $"filter[{propertyName}][columnFilterType]";
+                string valueCategoryKey = $"filter[{propertyName}][columnValueType]";
                 string valueKey = $"filter[{propertyName}]";
                 var searchValue = requestFormData[valueKey].ToString();
                 if (string.IsNullOrEmpty(searchValue))
                     continue;
 
-                if (!Enum.TryParse(requestFormData[columnFilterTypeKey], out ColumnFilterType columnFilterType))
+                if (!Enum.TryParse(requestFormData[filterCategoryKey], out FilterCategory filterCategory))
                     continue;
 
-                if (columnFilterType == ColumnFilterType.Text)
+                if (filterCategory == FilterCategory.Text)
                 {
-                    if (!Enum.TryParse(requestFormData[columnValueTypeKey], out ColumnValueTextType columnValueType))
+                    if (!Enum.TryParse(requestFormData[valueCategoryKey], out TextColumn valueCategory))
                         continue;
                     if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
                         continue;
 
-                    if (columnValueType == ColumnValueTextType.AccNumber)
+                    if (valueCategory == TextColumn.AccNumber)
                         searchValue = searchValue.Replace("-", "");
 
                     filters.Add(new TextFilter
@@ -88,33 +88,33 @@ public static class RequestParser
                         SearchValue = searchValue,
                         PropertyName = propertyName,
                         FilterType = filterType,
-                        ColumnType = columnValueType
+                        ColumnType = valueCategory
                     });
                 }
-                else if (columnFilterType == ColumnFilterType.Number)
+                else if (filterCategory == FilterCategory.Numeric)
                 {
-                    if (!Enum.TryParse(requestFormData[columnValueTypeKey], out ColumnValueNumericType columnValueType))
+                    if (!Enum.TryParse(requestFormData[valueCategoryKey], out NumericColumn valueCategory))
                         continue;
                     if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
                         continue;
 
-                    if (columnValueType == ColumnValueNumericType.Decimal)
+                    if (valueCategory == NumericColumn.Decimal)
                     {
                         AddNumericFilter<decimal>(searchValue, propertyName, filterType, filters, betweenSeparator);
                     }
-                    else if (columnValueType == ColumnValueNumericType.Int)
+                    else if (valueCategory == NumericColumn.Int)
                     {
                         AddNumericFilter<int>(searchValue, propertyName, filterType, filters, betweenSeparator);
                     }
                 }
-                else if (columnFilterType == ColumnFilterType.Date)
+                else if (filterCategory == FilterCategory.Date)
                 {
                     if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
                         continue;
 
                     AddDateFilter(searchValue, propertyName, filterType, filters, betweenSeparator);
                 }
-                else if (columnFilterType == ColumnFilterType.SingleSelect)
+                else if (filterCategory == FilterCategory.SingleSelect)
                 {
                     filters.Add(new SingleSelectFilter
                     {
@@ -122,7 +122,7 @@ public static class RequestParser
                         PropertyName = propertyName
                     });
                 }
-                else if (columnFilterType == ColumnFilterType.MultiSelect)
+                else if (filterCategory == FilterCategory.MultiSelect)
                 {
                     var searchValues = searchValue.Split(multiSelectSeparator, StringSplitOptions.RemoveEmptyEntries);
                     if (searchValues.Length == 0)

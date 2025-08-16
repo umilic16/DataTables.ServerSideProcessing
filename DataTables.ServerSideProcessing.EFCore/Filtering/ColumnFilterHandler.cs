@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 using DataTables.ServerSideProcessing.Data.Models.Abstractions;
-using DataTables.ServerSideProcessing.Data.Models.Filter;
+using DataTables.ServerSideProcessing.Data.Models.Filters;
 using DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;

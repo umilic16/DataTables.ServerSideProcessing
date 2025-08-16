@@ -24,9 +24,10 @@ public abstract class FilterComponentModel
     public required string ColumnName { get; init; }
 
     /// <summary>
-    /// Type of filter to apply to the column (e.g., text, number, date, single-select, multi-select).
+    /// Defines the category of the filter (e.g., text, numeric, date, etc.),
+    /// which determines the type of UI control rendered and filtering behavior applied.
     /// </summary>
-    public required ColumnFilterType ColumnFilterType { get; init; }
+    public required FilterCategory FilterCategory { get; init; }
 
 }
 
@@ -38,14 +39,15 @@ public abstract class FilterComponentModel
 /// validation, and processing logic based on the column's value type.
 /// </summary>
 /// <typeparam name="T">
-/// An enumeration that specifies the type or semantic category of the column value, used to determine
-/// appropriate filter UI and validation.
+/// An enumeration that specifies the type or semantic category of the column value.
 /// </typeparam>
 public abstract class FilterComponentModel<T> : FilterComponentModel where T : Enum
 {
+    private protected FilterComponentModel() { }
+
     /// <summary>
-    /// Type of the column value (e.g., base, account number, int, decimal).
-    /// Determines how the filter input is rendered and validated.
+    /// Specifies the value category of the column (e.g., base, account number, integer, decimal).
+    /// This determines the rendering and validation logic for the filter input.
     /// </summary>
-    public required T ColumnValueType { get; init; }
+    public required T ValueCategory { get; init; }
 }
