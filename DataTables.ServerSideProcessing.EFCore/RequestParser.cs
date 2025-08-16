@@ -49,91 +49,91 @@ public static class RequestParser
     /// Parses filter information from the DataTables request form data.
     /// </summary>
     /// <param name="requestFormData">The form data from the DataTables request.</param>
-    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters. Defaults to ",".</param>
-    /// <param name="betweenSeparator">Separator to be used for 'Between' filters. Defaults to ";".</param>
+    /// <param name="options">Configuration options for parsing filters.</param>
     /// <returns>An array of <see cref="FilterModel"/> representing the column filters.</returns>
-    public static FilterModel[] ParseFilters(IFormCollection requestFormData, string multiSelectSeparator = ",", string betweenSeparator = ";")
+    public static FilterModel[] ParseFilters(IFormCollection requestFormData, FilterParsingOptions? options = default)
     {
+        options ??= FilterParsingOptions.Default;
         List<FilterModel> filters = [];
         foreach (string key in requestFormData.Keys)
         {
-            if (key.Contains("filter[") && key.Contains("columnFilterType"))
+            if (!key.StartsWith($"{options.Prefix}[") || !key.EndsWith($"{options.FilterTypeKey}]"))
+                continue;
+
+            int start = key.IndexOf('[') + 1;
+            int end = key.IndexOf(']');
+            string propertyName = key[start..end];
+            string filterTypeKey = $"{options.Prefix}[{propertyName}][{options.FilterTypeKey}]";
+            string filterCategoryKey = $"{options.Prefix}[{propertyName}][{options.FilterCategoryKey}]";
+            string valueCategoryKey = $"{options.Prefix}[{propertyName}][{options.ValueCategoryKey}]";
+            string valueKey = $"{options.Prefix}[{propertyName}]";
+            var searchValue = requestFormData[valueKey].ToString();
+            if (string.IsNullOrEmpty(searchValue))
+                continue;
+
+            if (!Enum.TryParse(requestFormData[filterCategoryKey], out FilterCategory filterCategory))
+                continue;
+
+            if (filterCategory == FilterCategory.Text)
             {
-                int start = key.IndexOf('[') + 1;
-                int end = key.IndexOf(']');
-                string propertyName = key[start..end];
-                string filterTypeKey = $"filter[{propertyName}][filterType]";
-                string filterCategoryKey = $"filter[{propertyName}][columnFilterType]";
-                string valueCategoryKey = $"filter[{propertyName}][columnValueType]";
-                string valueKey = $"filter[{propertyName}]";
-                var searchValue = requestFormData[valueKey].ToString();
-                if (string.IsNullOrEmpty(searchValue))
+                if (!Enum.TryParse(requestFormData[valueCategoryKey], out TextColumn valueCategory))
+                    continue;
+                if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
                     continue;
 
-                if (!Enum.TryParse(requestFormData[filterCategoryKey], out FilterCategory filterCategory))
+                if (valueCategory == TextColumn.AccNumber)
+                    searchValue = searchValue.Replace("-", "");
+
+                filters.Add(new TextFilter
+                {
+                    SearchValue = searchValue,
+                    PropertyName = propertyName,
+                    FilterType = filterType,
+                    ColumnType = valueCategory
+                });
+            }
+            else if (filterCategory == FilterCategory.Numeric)
+            {
+                if (!Enum.TryParse(requestFormData[valueCategoryKey], out NumericColumn valueCategory))
+                    continue;
+                if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
                     continue;
 
-                if (filterCategory == FilterCategory.Text)
+                if (valueCategory == NumericColumn.Decimal)
                 {
-                    if (!Enum.TryParse(requestFormData[valueCategoryKey], out TextColumn valueCategory))
-                        continue;
-                    if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
-                        continue;
-
-                    if (valueCategory == TextColumn.AccNumber)
-                        searchValue = searchValue.Replace("-", "");
-
-                    filters.Add(new TextFilter
-                    {
-                        SearchValue = searchValue,
-                        PropertyName = propertyName,
-                        FilterType = filterType,
-                        ColumnType = valueCategory
-                    });
+                    AddNumericFilter<decimal>(searchValue, propertyName, filterType, filters, options.BetweenSeparator);
                 }
-                else if (filterCategory == FilterCategory.Numeric)
+                else if (valueCategory == NumericColumn.Int)
                 {
-                    if (!Enum.TryParse(requestFormData[valueCategoryKey], out NumericColumn valueCategory))
-                        continue;
-                    if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
-                        continue;
+                    AddNumericFilter<int>(searchValue, propertyName, filterType, filters, options.BetweenSeparator);
+                }
+            }
+            else if (filterCategory == FilterCategory.Date)
+            {
+                if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
+                    continue;
 
-                    if (valueCategory == NumericColumn.Decimal)
-                    {
-                        AddNumericFilter<decimal>(searchValue, propertyName, filterType, filters, betweenSeparator);
-                    }
-                    else if (valueCategory == NumericColumn.Int)
-                    {
-                        AddNumericFilter<int>(searchValue, propertyName, filterType, filters, betweenSeparator);
-                    }
-                }
-                else if (filterCategory == FilterCategory.Date)
+                AddDateFilter(searchValue, propertyName, filterType, filters, options.BetweenSeparator);
+            }
+            else if (filterCategory == FilterCategory.SingleSelect)
+            {
+                filters.Add(new SingleSelectFilter
                 {
-                    if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
-                        continue;
+                    SearchValue = searchValue,
+                    PropertyName = propertyName
+                });
+            }
+            else if (filterCategory == FilterCategory.MultiSelect)
+            {
+                var searchValues = searchValue.Split(options.MultiSelectSeparator, StringSplitOptions.RemoveEmptyEntries);
+                if (searchValues.Length == 0)
+                    continue;
 
-                    AddDateFilter(searchValue, propertyName, filterType, filters, betweenSeparator);
-                }
-                else if (filterCategory == FilterCategory.SingleSelect)
+                filters.Add(new MultiSelectFilter
                 {
-                    filters.Add(new SingleSelectFilter
-                    {
-                        SearchValue = searchValue,
-                        PropertyName = propertyName
-                    });
-                }
-                else if (filterCategory == FilterCategory.MultiSelect)
-                {
-                    var searchValues = searchValue.Split(multiSelectSeparator, StringSplitOptions.RemoveEmptyEntries);
-                    if (searchValues.Length == 0)
-                        continue;
-
-                    filters.Add(new MultiSelectFilter
-                    {
-                        SearchValue = searchValues,
-                        PropertyName = propertyName
-                    });
-                }
+                    SearchValue = searchValues,
+                    PropertyName = propertyName
+                });
             }
         }
         return [.. filters];
@@ -145,15 +145,13 @@ public static class RequestParser
     /// <param name="requestFormData">The form data from the DataTables request.</param>
     /// <param name="parseSort">Whether to parse sort order information.</param>
     /// <param name="parseFilters">Whether to parse column filter information.</param>
-    /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters. Defaults to ",".</param>
-    /// <param name="betweenSeparator">Separator to be used for 'Between' filters. Defaults to ";".</param>
+    /// <param name="options">Configuration options for parsing filters.</param>
     /// <returns>A <see cref="Request"/> object representing the parsed request.</returns>
     public static Request ParseRequest(
         IFormCollection requestFormData,
         bool parseSort = true,
         bool parseFilters = true,
-        string multiSelectSeparator = ",",
-        string betweenSeparator = ";")
+        FilterParsingOptions? options = default)
     {
         return new Request
         {
@@ -161,7 +159,7 @@ public static class RequestParser
             Skip = requestFormData["start"].ToInt(),
             PageSize = requestFormData["length"].ToInt(),
             SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
-            Filters = parseFilters ? ParseFilters(requestFormData, multiSelectSeparator, betweenSeparator) : []
+            Filters = parseFilters ? ParseFilters(requestFormData, options) : []
         };
     }
 

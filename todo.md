@@ -4,11 +4,9 @@
 
 ## 🛠 In Progress
 
--   [ ] Refactor models, enums
--   [ ] Add separator choice for 'Between' filter
-
 ## 📅 Upcoming / Backlog
 
+-   [ ] Improve how data is sent from the frontend
 -   [ ] Add logging warnings
 -   [ ] Add components?
 -   [ ] Add global configuration support
@@ -19,6 +17,8 @@
 
 ## 🧹 Done
 
+-   [x] Refactor models, enums
+-   [x] Add separator choice for 'Between' filter
 -   [x] Filters are enumerated multiple times, switch to different collection type
 -   [x] Add DateTime range filtering
 -   [x] Documentation
