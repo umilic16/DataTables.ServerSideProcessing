@@ -19,7 +19,7 @@ public abstract class FilterModel
 /// Contains the property name to filter on and the search value.
 /// Inherits from <see cref="FilterModel"/>.
 /// </summary>
-/// <typeparam name="T">Type of the value used in the filter (e.g., string, int, DateTime).</typeparam>
+/// <typeparam name="T">Type of the value used in the filter (e.g., string, int, DateOnly).</typeparam>
 public abstract class FilterModel<T> : FilterModel
 {
     private protected FilterModel() { }

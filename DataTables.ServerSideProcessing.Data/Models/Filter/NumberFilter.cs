@@ -1,3 +1,4 @@
+using System.Numerics;
 using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models.Abstractions;
 
@@ -5,17 +6,18 @@ namespace DataTables.ServerSideProcessing.Data.Models.Filter;
 
 /// <summary>
 /// Filter model for numeric columns.
-/// Inherits from <see cref="FilterModel{T}"/> with <c>string?</c> as the type parameter.
+/// Inherits from <see cref="FilterModel{T}"/> where <typeparamref name="T"/> implements <see cref="INumber{T}"/>.
 /// </summary>
-public sealed class NumberFilter : FilterModel<string?>
+/// <typeparam name="T">The numeric type of the column (e.g., int, decimal) that implements <see cref="INumber{T}"/>.</typeparam>
+public sealed class NumberFilter<T> : FilterModel<T> where T : INumber<T>
 {
     /// <summary>
-    /// Type of the column (e.g., Int, Decimal).
+    /// Type of the numeric column (e.g., Int, Decimal).
     /// </summary>
     public ColumnValueNumericType ColumnType { get; init; } = ColumnValueNumericType.Int;
 
     /// <summary>
-    /// Type of number filter to apply (e.g., Equals, Between).
+    /// Type of filter to apply (e.g., Equals, Between).
     /// </summary>
     public required FilterOperations FilterType { get; init; }
 }

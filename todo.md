@@ -4,14 +4,14 @@
 
 ## 🛠 In Progress
 
--   [ ] Better models, enums
+-   [ ] Refactor models, enums
+-   [ ] Add separator choice for 'Between' filter
 
 ## 📅 Upcoming / Backlog
 
--   [ ] Filters are enumerated multiple times, switch to different collection type
+-   [ ] Add logging warnings
 -   [ ] Add components?
--   [ ] Add decimal format choice (per function and/or global config)
--   [ ] Add separator choice for 'Between' filter
+-   [ ] Add global configuration support
 -   [ ] Reflection cache instantiation
 -   [ ] Check if there are better solutions than reflection cache
 -   [ ] Add examples, improve documentation
@@ -19,6 +19,7 @@
 
 ## 🧹 Done
 
+-   [x] Filters are enumerated multiple times, switch to different collection type
 -   [x] Add DateTime range filtering
 -   [x] Documentation
 -   [x] Central package management

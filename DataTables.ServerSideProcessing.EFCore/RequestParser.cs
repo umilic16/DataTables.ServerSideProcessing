@@ -1,4 +1,6 @@
-﻿using DataTables.ServerSideProcessing.Data.Enums;
+﻿using System.Globalization;
+using System.Numerics;
+using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
 using DataTables.ServerSideProcessing.Data.Models.Abstractions;
 using DataTables.ServerSideProcessing.Data.Models.Filter;
@@ -48,8 +50,9 @@ public static class RequestParser
     /// </summary>
     /// <param name="requestFormData">The form data from the DataTables request.</param>
     /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters. Defaults to ",".</param>
+    /// <param name="betweenSeparator">Separator to be used for 'Between' filters. Defaults to ";".</param>
     /// <returns>An array of <see cref="FilterModel"/> representing the column filters.</returns>
-    public static FilterModel[] ParseFilters(IFormCollection requestFormData, string multiSelectSeparator = ",")
+    public static FilterModel[] ParseFilters(IFormCollection requestFormData, string multiSelectSeparator = ",", string betweenSeparator = ";")
     {
         List<FilterModel> filters = [];
         foreach (string key in requestFormData.Keys)
@@ -63,23 +66,26 @@ public static class RequestParser
                 string columnFilterTypeKey = $"filter[{propertyName}][columnFilterType]";
                 string columnValueTypeKey = $"filter[{propertyName}][columnValueType]";
                 string valueKey = $"filter[{propertyName}]";
+                var searchValue = requestFormData[valueKey].ToString();
+                if (string.IsNullOrEmpty(searchValue))
+                    continue;
+
                 if (!Enum.TryParse(requestFormData[columnFilterTypeKey], out ColumnFilterType columnFilterType))
-                {
-                    columnFilterType = ColumnFilterType.Text;
-                }
+                    continue;
+
                 if (columnFilterType == ColumnFilterType.Text)
                 {
                     if (!Enum.TryParse(requestFormData[columnValueTypeKey], out ColumnValueTextType columnValueType))
-                    {
-                        columnValueType = ColumnValueTextType.Base;
-                    }
+                        continue;
                     if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
-                    {
-                        filterType = FilterOperations.Contains;
-                    }
+                        continue;
+
+                    if (columnValueType == ColumnValueTextType.AccNumber)
+                        searchValue = searchValue.Replace("-", "");
+
                     filters.Add(new TextFilter
                     {
-                        SearchValue = requestFormData[valueKey],
+                        SearchValue = searchValue,
                         PropertyName = propertyName,
                         FilterType = filterType,
                         ColumnType = columnValueType
@@ -87,43 +93,44 @@ public static class RequestParser
                 }
                 else if (columnFilterType == ColumnFilterType.Number)
                 {
+                    if (!Enum.TryParse(requestFormData[columnValueTypeKey], out ColumnValueNumericType columnValueType))
+                        continue;
                     if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
+                        continue;
+
+                    if (columnValueType == ColumnValueNumericType.Decimal)
                     {
-                        filterType = FilterOperations.Equals;
+                        AddNumericFilter<decimal>(searchValue, propertyName, filterType, filters, betweenSeparator);
                     }
-                    filters.Add(new NumberFilter
+                    else if (columnValueType == ColumnValueNumericType.Int)
                     {
-                        SearchValue = requestFormData[valueKey],
-                        PropertyName = propertyName,
-                        FilterType = filterType
-                    });
+                        AddNumericFilter<int>(searchValue, propertyName, filterType, filters, betweenSeparator);
+                    }
                 }
                 else if (columnFilterType == ColumnFilterType.Date)
                 {
                     if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
-                    {
-                        filterType = FilterOperations.Equals;
-                    }
-                    filters.Add(new DateTimeFilter
-                    {
-                        SearchValue = requestFormData[valueKey],
-                        PropertyName = propertyName,
-                        FilterType = filterType
-                    });
+                        continue;
+
+                    AddDateFilter(searchValue, propertyName, filterType, filters, betweenSeparator);
                 }
                 else if (columnFilterType == ColumnFilterType.SingleSelect)
                 {
                     filters.Add(new SingleSelectFilter
                     {
-                        SearchValue = requestFormData[valueKey],
+                        SearchValue = searchValue,
                         PropertyName = propertyName
                     });
                 }
                 else if (columnFilterType == ColumnFilterType.MultiSelect)
                 {
+                    var searchValues = searchValue.Split(multiSelectSeparator, StringSplitOptions.RemoveEmptyEntries);
+                    if (searchValues.Length == 0)
+                        continue;
+
                     filters.Add(new MultiSelectFilter
                     {
-                        SearchValue = [.. requestFormData[valueKey].ToString().Split(multiSelectSeparator)],
+                        SearchValue = searchValues,
                         PropertyName = propertyName
                     });
                 }
@@ -139,8 +146,14 @@ public static class RequestParser
     /// <param name="parseSort">Whether to parse sort order information.</param>
     /// <param name="parseFilters">Whether to parse column filter information.</param>
     /// <param name="multiSelectSeparator">Separator to be used to split values from multi-select filters. Defaults to ",".</param>
+    /// <param name="betweenSeparator">Separator to be used for 'Between' filters. Defaults to ";".</param>
     /// <returns>A <see cref="Request"/> object representing the parsed request.</returns>
-    public static Request ParseRequest(IFormCollection requestFormData, bool parseSort = true, bool parseFilters = true, string multiSelectSeparator = ",")
+    public static Request ParseRequest(
+        IFormCollection requestFormData,
+        bool parseSort = true,
+        bool parseFilters = true,
+        string multiSelectSeparator = ",",
+        string betweenSeparator = ";")
     {
         return new Request
         {
@@ -148,7 +161,7 @@ public static class RequestParser
             Skip = requestFormData["start"].ToInt(),
             PageSize = requestFormData["length"].ToInt(),
             SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
-            Filters = parseFilters ? ParseFilters(requestFormData, multiSelectSeparator) : []
+            Filters = parseFilters ? ParseFilters(requestFormData, multiSelectSeparator, betweenSeparator) : []
         };
     }
 
@@ -160,5 +173,81 @@ public static class RequestParser
     private static int ToInt(this StringValues value)
     {
         return int.TryParse(value, out int result) ? result : -1;
+    }
+
+    private static void AddNumericFilter<T>(
+        string searchValue,
+        string propertyName,
+        FilterOperations filterType,
+        List<FilterModel> filters,
+        string betweenSeparator) where T : INumber<T>
+    {
+        if (filterType != FilterOperations.Between)
+        {
+            if (!T.TryParse(searchValue, CultureInfo.CurrentCulture, out var parsedValue))
+                return;
+
+            filters.Add(new NumberFilter<T>
+            {
+                SearchValue = parsedValue,
+                PropertyName = propertyName,
+                FilterType = filterType
+            });
+        }
+        else
+        {
+            var searchValues = searchValue.Split(betweenSeparator);
+            for (int i = 0; i < 2; i++)
+            {
+                if (string.IsNullOrEmpty(searchValues[i])
+                    || !T.TryParse(searchValues[i], CultureInfo.CurrentCulture, out var parsedValue))
+                    continue;
+
+                filters.Add(new NumberFilter<T>
+                {
+                    SearchValue = parsedValue,
+                    PropertyName = propertyName,
+                    FilterType = i == 0 ? FilterOperations.GreaterThanOrEqual : FilterOperations.LessThanOrEqual
+                });
+            }
+        }
+    }
+
+    private static void AddDateFilter(
+        string searchValue,
+        string propertyName,
+        FilterOperations filterType,
+        List<FilterModel> filters,
+        string betweenSeparator)
+    {
+        if (filterType != FilterOperations.Between)
+        {
+            if (!DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateOnly parsedValue))
+                return;
+
+            filters.Add(new DateFilter
+            {
+                SearchValue = parsedValue,
+                PropertyName = propertyName,
+                FilterType = filterType
+            });
+        }
+        else
+        {
+            var searchValues = searchValue.Split(betweenSeparator);
+            for (int i = 0; i < 2; i++)
+            {
+                if (string.IsNullOrEmpty(searchValues[i])
+                    || (!DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateOnly parsedValue)))
+                    continue;
+
+                filters.Add(new DateFilter
+                {
+                    SearchValue = i == 0 ? parsedValue : parsedValue.AddDays(1), // Add 1 day to the end date to make it inclusive
+                    PropertyName = propertyName,
+                    FilterType = i == 0 ? FilterOperations.GreaterThanOrEqual : FilterOperations.LessThanOrEqual
+                });
+            }
+        }
     }
 }

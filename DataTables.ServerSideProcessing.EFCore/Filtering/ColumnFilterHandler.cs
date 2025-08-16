@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
-using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models.Abstractions;
 using DataTables.ServerSideProcessing.Data.Models.Filter;
+using DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 
@@ -17,63 +17,16 @@ internal static class ColumnFilterHandler
             if (!ReflectionCache<T>.s_properties.TryGetValue(filterModel.PropertyName, out string? propName))
                 throw new InvalidOperationException($"Property '{propName}' not found on type '{typeof(T).Name}'.");
 
-            Expression<Func<T, bool>>? predicate = null;
-
-            if (filterModel is Data.Models.Filter.TextFilter filterTextModel)
+            Expression<Func<T, bool>>? predicate = filterModel switch
             {
-                if (string.IsNullOrEmpty(filterTextModel.SearchValue))
-                    continue;
-
-                if (filterTextModel.ColumnType == ColumnValueTextType.AccNumber)
-                    filterTextModel.SearchValue = filterTextModel.SearchValue.Replace("-", "");
-
-                predicate = TextExpressionBuilder.Build<T>(
-                                    propName,
-                                    filterTextModel.FilterType,
-                                    filterTextModel.SearchValue);
-
-            }
-            else if (filterModel is NumberFilter filterNumberModel)
-            {
-                if (string.IsNullOrEmpty(filterNumberModel.SearchValue))
-                    continue;
-
-                if (filterNumberModel.ColumnType == ColumnValueNumericType.Decimal)
-                    filterNumberModel.SearchValue = filterNumberModel.SearchValue.Replace(".", "");
-
-                predicate = NumericExpressionBuilder.Build<T>(
-                                    propName,
-                                    filterNumberModel.FilterType,
-                                    filterNumberModel.SearchValue);
-            }
-            else if (filterModel is DateTimeFilter filterDateModel)
-            {
-                if (string.IsNullOrEmpty(filterDateModel.SearchValue))
-                    continue;
-
-                predicate = DateExpressionBuilder.Build<T>(
-                                    propName,
-                                    filterDateModel.FilterType,
-                                    filterDateModel.SearchValue);
-            }
-            else if (filterModel is SingleSelectFilter filterSingleSelectModel)
-            {
-                if (string.IsNullOrEmpty(filterSingleSelectModel.SearchValue))
-                    continue;
-
-                predicate = SelectExpressionBuilder.BuildSingleSelect<T>(
-                                    propName,
-                                    filterSingleSelectModel.SearchValue);
-            }
-            else if (filterModel is MultiSelectFilter filterMultiSelectModel)
-            {
-                if (filterMultiSelectModel.SearchValue.Length == 0)
-                    continue;
-
-                predicate = SelectExpressionBuilder.BuildMultiSelect<T>(
-                                    propName,
-                                    filterMultiSelectModel.SearchValue);
-            }
+                TextFilter tf => TextExpressionBuilder.Build<T>(propName, tf.FilterType, tf.SearchValue),
+                NumberFilter<int> nif => NumericExpressionBuilder.Build<T, int>(propName, nif.FilterType, nif.SearchValue),
+                NumberFilter<decimal> ndf => NumericExpressionBuilder.Build<T, decimal>(propName, ndf.FilterType, ndf.SearchValue),
+                DateFilter df => DateExpressionBuilder.Build<T>(propName, df.FilterType, df.SearchValue),
+                SingleSelectFilter ssf => SelectExpressionBuilder.BuildSingleSelect<T>(propName, ssf.SearchValue),
+                MultiSelectFilter msf => MultiSelectExpressionBuilder.BuildMultiSelect<T>(propName, msf.SearchValue),
+                _ => null
+            };
 
             if (predicate != null)
                 query = query.Where(predicate);
