@@ -21,7 +21,6 @@ public class ResponseBuilder<TEntity, TViewModel>
     private readonly IQueryable<TEntity> _query;
     private bool _applySorting = true;
     private bool _applyColumnFilters = true;
-    private FilterParsingOptions _filterParsingOptions = FilterParsingOptions.Default;
     private string[]? _globalFilterProperties;
     private bool ApplyGlobalFilter => _globalFilterProperties is { Length: > 0 };
     private Expression<Func<TEntity, TViewModel>>? _projection;
@@ -70,20 +69,13 @@ public class ResponseBuilder<TEntity, TViewModel>
     }
 
     /// <summary>
-    /// Configures whether column filters should be applied to the query and allows customization of filter parsing options.
+    /// Enables or disables applying column filters to the query.
     /// </summary>
     /// <param name="applyColumnFilters">If <c>true</c>, column filters are applied; otherwise, they are skipped. Default is <c>true</c>.</param>
-    /// <param name="config">An optional action to configure <see cref="FilterParsingOptions"/>.</param>
     /// <returns>The current <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TViewModel> WithColumnFilters(bool applyColumnFilters = true, Action<FilterParsingOptions>? config = null)
+    public ResponseBuilder<TEntity, TViewModel> WithColumnFilters(bool applyColumnFilters = true)
     {
         _applyColumnFilters = applyColumnFilters;
-        if (config is not null)
-        {
-            var configuration = new FilterParsingOptions();
-            config(configuration);
-            _filterParsingOptions = configuration;
-        }
         return this;
     }
 
@@ -110,7 +102,7 @@ public class ResponseBuilder<TEntity, TViewModel>
 
         var response = new Response<TViewModel>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, _filterParsingOptions);
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
         IQueryable<TViewModel> baseQuery;
         // no need to check if global filter / column filter / sorting should be handled or not here,
@@ -156,7 +148,7 @@ public class ResponseBuilder<TEntity, TViewModel>
 
         var response = new Response<TViewModel>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, _filterParsingOptions);
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
         IQueryable<TViewModel> baseQuery;
         // no need to check if global filter / column filter / sorting should be handled or not here,
