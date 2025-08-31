@@ -9,9 +9,7 @@
 -   [ ] Improve how data is sent from the frontend
 -   [ ] Add logging warnings
 -   [ ] Add components?
--   [ ] Add global configuration support
--   [ ] Reflection cache instantiation
--   [ ] Check if there are better solutions than reflection cache
+-   [ ] Add global configuration support (e.g. modifying Default instance of FilterParsingOptions...)
 -   [ ] Add examples, improve documentation
 -   [ ] Js helper methods
 
