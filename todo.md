@@ -17,6 +17,7 @@
 
 ## 🧹 Done
 
+-   [x] Refactor ResponseBuilder to Fluent API
 -   [x] Refactor models, enums
 -   [x] Add separator choice for 'Between' filter
 -   [x] Filters are enumerated multiple times, switch to different collection type

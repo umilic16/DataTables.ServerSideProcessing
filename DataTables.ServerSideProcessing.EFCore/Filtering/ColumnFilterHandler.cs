@@ -7,9 +7,9 @@ namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 
 internal static class ColumnFilterHandler
 {
-    internal static IQueryable<T> HandleColumnFilters<T>(this IQueryable<T> query, FilterModel[] filters) where T : class
+    internal static IQueryable<T> HandleColumnFilters<T>(this IQueryable<T> query, FilterModel[]? filters) where T : class
     {
-        if (filters.Length == 0)
+        if (filters is not { Length: > 0 })
             return query;
 
         foreach (FilterModel filterModel in filters)

@@ -3,11 +3,11 @@ using System.Reflection;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 
-internal static class GenericFilterHandler
+internal static class GlobalFilterHandler
 {
-    internal static IQueryable<T> HandleGenericFilter<T>(this IQueryable<T> query, string[] properties, string search) where T : class
+    internal static IQueryable<T> HandleGlobalFilter<T>(this IQueryable<T> query, string[]? properties, string? search) where T : class
     {
-        if (properties.Length == 0)
+        if (properties is not { Length: > 0 } || string.IsNullOrEmpty(search))
             return query;
 
         Expression? combinedExpression = null;

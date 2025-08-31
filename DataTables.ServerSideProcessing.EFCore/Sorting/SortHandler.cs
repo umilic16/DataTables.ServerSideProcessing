@@ -6,9 +6,9 @@ namespace DataTables.ServerSideProcessing.EFCore.Sorting;
 
 internal static class SortHandler
 {
-    internal static IQueryable<T> HandleSorting<T>(this IQueryable<T> query, SortModel[] sortOrder) where T : class
+    internal static IQueryable<T> HandleSorting<T>(this IQueryable<T> query, SortModel[]? sortOrder) where T : class
     {
-        if (sortOrder.Length == 0)
+        if (sortOrder is not { Length: > 0 })
             return query;
 
         bool isFirstFlag = true;

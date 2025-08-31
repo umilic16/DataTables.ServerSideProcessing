@@ -143,19 +143,21 @@ public static class RequestParser
     /// Parses a DataTables request from form data, including search, pagination, and optionally sorting and filters.
     /// </summary>
     /// <param name="requestFormData">The form data from the DataTables request.</param>
+    /// <param name="parseSearch">Whether to parse global search information.</param>
     /// <param name="parseSort">Whether to parse sort order information.</param>
     /// <param name="parseFilters">Whether to parse column filter information.</param>
     /// <param name="options">Configuration options for parsing filters.</param>
     /// <returns>A <see cref="Request"/> object representing the parsed request.</returns>
     public static Request ParseRequest(
         IFormCollection requestFormData,
+        bool parseSearch = true,
         bool parseSort = true,
         bool parseFilters = true,
         FilterParsingOptions? options = default)
     {
         return new Request
         {
-            Search = requestFormData["search[value]"],
+            Search = parseSearch ? requestFormData["search[value]"].ToString() : null,
             Skip = requestFormData["start"].ToInt(),
             PageSize = requestFormData["length"].ToInt(),
             SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
