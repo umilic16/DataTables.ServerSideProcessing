@@ -4,12 +4,15 @@
 
 ## 🛠 In Progress
 
+-   [ ] Add tests
+
 ## 📅 Upcoming / Backlog
 
+-   [ ] CI/CD
 -   [ ] Improve how data is sent from the frontend
 -   [ ] Add logging warnings
 -   [ ] Add components?
--   [ ] Add global configuration support (e.g. modifying Default instance of FilterParsingOptions...)
+-   [ ] Add global configuration support (e.g. modifying Default instance of FilterParsingOptions, RequestParser...)
 -   [ ] Add examples, improve documentation
 -   [ ] Js helper methods
 

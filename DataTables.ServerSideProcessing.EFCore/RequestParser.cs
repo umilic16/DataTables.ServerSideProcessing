@@ -8,17 +8,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 namespace DataTables.ServerSideProcessing.EFCore;
-/// <summary>
-/// Provides utility methods for parsing DataTables server-side processing requests.
-/// </summary>
-public static class RequestParser
+
+internal static class RequestParser
 {
-    /// <summary>
-    /// Parses the sort order information from the DataTables request form data.
-    /// </summary>
-    /// <param name="requestFormData">The form data from the DataTables request.</param>
-    /// <returns>An array of <see cref="SortModel"/> representing the sort order.</returns>
-    public static SortModel[] ParseSortOrder(IFormCollection requestFormData)
+    internal static Request ParseRequest(IFormCollection requestFormData, bool parseSearch, bool parseSort, bool parseFilters, FilterParsingOptions options)
+        => new()
+        {
+            Search = parseSearch ? requestFormData["search[value]"].ToString() : null,
+            Skip = requestFormData["start"].ToInt(),
+            PageSize = requestFormData["length"].ToInt(),
+            SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
+            Filters = parseFilters ? ParseFilters(requestFormData, options) : []
+        };
+
+    private static SortModel[] ParseSortOrder(IFormCollection requestFormData)
     {
         List<SortModel> sortModels = [];
         foreach (string key in requestFormData.Keys)
@@ -45,15 +48,8 @@ public static class RequestParser
         return [.. sortModels];
     }
 
-    /// <summary>
-    /// Parses filter information from the DataTables request form data.
-    /// </summary>
-    /// <param name="requestFormData">The form data from the DataTables request.</param>
-    /// <param name="options">Configuration options for parsing filters.</param>
-    /// <returns>An array of <see cref="FilterModel"/> representing the column filters.</returns>
-    public static FilterModel[] ParseFilters(IFormCollection requestFormData, FilterParsingOptions? options = default)
+    private static FilterModel[] ParseFilters(IFormCollection requestFormData, FilterParsingOptions options)
     {
-        options ??= FilterParsingOptions.Default;
         List<FilterModel> filters = [];
         foreach (string key in requestFormData.Keys)
         {
@@ -137,32 +133,6 @@ public static class RequestParser
             }
         }
         return [.. filters];
-    }
-
-    /// <summary>
-    /// Parses a DataTables request from form data, including search, pagination, and optionally sorting and filters.
-    /// </summary>
-    /// <param name="requestFormData">The form data from the DataTables request.</param>
-    /// <param name="parseSearch">Whether to parse global search information.</param>
-    /// <param name="parseSort">Whether to parse sort order information.</param>
-    /// <param name="parseFilters">Whether to parse column filter information.</param>
-    /// <param name="options">Configuration options for parsing filters.</param>
-    /// <returns>A <see cref="Request"/> object representing the parsed request.</returns>
-    public static Request ParseRequest(
-        IFormCollection requestFormData,
-        bool parseSearch = true,
-        bool parseSort = true,
-        bool parseFilters = true,
-        FilterParsingOptions? options = default)
-    {
-        return new Request
-        {
-            Search = parseSearch ? requestFormData["search[value]"].ToString() : null,
-            Skip = requestFormData["start"].ToInt(),
-            PageSize = requestFormData["length"].ToInt(),
-            SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
-            Filters = parseFilters ? ParseFilters(requestFormData, options) : []
-        };
     }
 
     private static int ToInt(this string value)
