@@ -21,7 +21,7 @@ public class ResponseBuilder<TEntity, TViewModel>
     private readonly IQueryable<TEntity> _query;
     private bool _applySorting = true;
     private bool _applyColumnFilters = true;
-    private FilterParsingOptions? _filterParsingOptions = FilterParsingOptions.Default;
+    private FilterParsingOptions _filterParsingOptions = FilterParsingOptions.Default;
     private string[]? _globalFilterProperties;
     private bool ApplyGlobalFilter => _globalFilterProperties is { Length: > 0 };
     private Expression<Func<TEntity, TViewModel>>? _projection;
