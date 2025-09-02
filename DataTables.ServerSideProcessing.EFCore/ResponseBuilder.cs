@@ -76,29 +76,27 @@ public class ResponseBuilder<TEntity, TResult>
     }
 
     /// <summary>
-    /// Configures whether sorting should be applied to the query.
+    /// Disables applying sorting to the query.
     /// </summary>
-    /// <param name="applySorting">If <c>true</c>, sorting is applied; otherwise, sorting is skipped. Default is <c>true</c>.</param>
     /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TResult> WithSorting(bool applySorting = true)
+    public ResponseBuilder<TEntity, TResult> WithoutSorting()
     {
-        _applySorting = applySorting;
+        _applySorting = false;
         return this;
     }
 
     /// <summary>
-    /// Enables or disables applying column filters to the query.
+    /// Disables applying column filters to the query.
     /// </summary>
-    /// <param name="applyColumnFilters">If <c>true</c>, column filters are applied; otherwise, they are skipped. Default is <c>true</c>.</param>
     /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TResult> WithColumnFilters(bool applyColumnFilters = true)
+    public ResponseBuilder<TEntity, TResult> WithoutColumnFilters()
     {
-        _applyColumnFilters = applyColumnFilters;
+        _applyColumnFilters = false;
         return this;
     }
 
     /// <summary>
-    /// Configures global filtering fields to be used for DataTables "search" input.
+    /// Enables global filtering on the specified properties using the DataTables "search" input.
     /// </summary>
     /// <param name="properties">The names of the entity properties to include in global search.</param>
     /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
