@@ -25,7 +25,7 @@ public class ResponseBuilder<TEntity, TViewModel>
     private bool ApplyGlobalFilter => _globalFilterProperties is { Length: > 0 };
     private Expression<Func<TEntity, TViewModel>>? _projection;
 
-    private ResponseBuilder(IFormCollection form, IQueryable<TEntity> query)
+    private ResponseBuilder(IQueryable<TEntity> query, IFormCollection form)
     {
         ArgumentNullException.ThrowIfNull(form);
         ArgumentNullException.ThrowIfNull(query);
@@ -38,13 +38,13 @@ public class ResponseBuilder<TEntity, TViewModel>
     }
 
     /// <summary>
-    /// Creates a new <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance from a form collection and entity query.
+    /// Creates a new <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance with a form collection and entity query.
     /// </summary>
-    /// <param name="form">The form collection containing DataTables request parameters.</param>
     /// <param name="query">The queryable source of entities.</param>
+    /// <param name="form">The form collection containing DataTables request parameters.</param>
     /// <returns>A new instance of <see cref="ResponseBuilder{TEntity, TViewModel}"/>.</returns>
-    public static ResponseBuilder<TEntity, TViewModel> From(IFormCollection form, IQueryable<TEntity> query)
-        => new(form, query);
+    public static ResponseBuilder<TEntity, TViewModel> From(IQueryable<TEntity> query, IFormCollection form)
+        => new(query, form);
 
     /// <summary>
     /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TViewModel"/>.
@@ -55,6 +55,24 @@ public class ResponseBuilder<TEntity, TViewModel>
     {
         _projection = projection;
         return this;
+    }
+
+    /// <summary>
+    /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TViewModel"/>.
+    /// </summary>
+    /// <typeparam name="TNewViewModel">The type to project the entity into.</typeparam>
+    /// <param name="projection">An expression that maps an entity to the view model.</param>
+    /// <returns>
+    /// A new <see cref="ResponseBuilder{TEntity, TNewViewModel}"/> instance configured with the specified projection,
+    /// enabling fluent configuration with the new view model type.
+    /// </returns>
+    public ResponseBuilder<TEntity, TNewViewModel> WithProjection<TNewViewModel>(Expression<Func<TEntity, TNewViewModel>> projection)
+        where TNewViewModel : class
+    {
+        return new ResponseBuilder<TEntity, TNewViewModel>(_query, _form)
+        {
+            _projection = projection
+        };
     }
 
     /// <summary>
