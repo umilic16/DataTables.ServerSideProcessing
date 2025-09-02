@@ -9,13 +9,13 @@ namespace DataTables.ServerSideProcessing.EFCore;
 /// <summary>
 /// Provides a fluent API for building DataTables-compatible server-side responses using Entity Framework Core.
 /// Supports synchronous and asynchronous execution with features such as global search, column filters,
-/// sorting, pagination, and projection of entities to view models.
+/// sorting, pagination, and mapping entities to the specified result type.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity in the query.</typeparam>
-/// <typeparam name="TViewModel">The type of the view model to project the entity into.</typeparam>
-public class ResponseBuilder<TEntity, TViewModel>
+/// <typeparam name="TResult">The type to project the entity into.</typeparam>
+public class ResponseBuilder<TEntity, TResult>
     where TEntity : class
-    where TViewModel : class
+    where TResult : class
 {
     private readonly IFormCollection _form;
     private readonly IQueryable<TEntity> _query;
@@ -23,7 +23,7 @@ public class ResponseBuilder<TEntity, TViewModel>
     private bool _applyColumnFilters = true;
     private string[]? _globalFilterProperties;
     private bool ApplyGlobalFilter => _globalFilterProperties is { Length: > 0 };
-    private Expression<Func<TEntity, TViewModel>>? _projection;
+    private Expression<Func<TEntity, TResult>>? _projection;
 
     private ResponseBuilder(IQueryable<TEntity> query, IFormCollection form)
     {
@@ -38,38 +38,38 @@ public class ResponseBuilder<TEntity, TViewModel>
     }
 
     /// <summary>
-    /// Creates a new <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance with a form collection and entity query.
+    /// Creates a new <see cref="ResponseBuilder{TEntity, TResult}"/> instance with a form collection and entity query.
     /// </summary>
     /// <param name="query">The queryable source of entities.</param>
     /// <param name="form">The form collection containing DataTables request parameters.</param>
-    /// <returns>A new instance of <see cref="ResponseBuilder{TEntity, TViewModel}"/>.</returns>
-    public static ResponseBuilder<TEntity, TViewModel> From(IQueryable<TEntity> query, IFormCollection form)
+    /// <returns>A new instance of <see cref="ResponseBuilder{TEntity, TResult}"/>.</returns>
+    public static ResponseBuilder<TEntity, TResult> From(IQueryable<TEntity> query, IFormCollection form)
         => new(query, form);
 
     /// <summary>
-    /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TViewModel"/>.
+    /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TResult"/>.
     /// </summary>
-    /// <param name="projection">An expression that maps an entity to the view model.</param>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TViewModel> WithProjection(Expression<Func<TEntity, TViewModel>> projection)
+    /// <param name="projection">An expression that maps entities to the result type.</param>
+    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
+    public ResponseBuilder<TEntity, TResult> WithProjection(Expression<Func<TEntity, TResult>> projection)
     {
         _projection = projection;
         return this;
     }
 
     /// <summary>
-    /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TViewModel"/>.
+    /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TResult"/>.
     /// </summary>
-    /// <typeparam name="TNewViewModel">The type to project the entity into.</typeparam>
-    /// <param name="projection">An expression that maps an entity to the view model.</param>
+    /// <typeparam name="TResultNew">The type to project the entity into.</typeparam>
+    /// <param name="projection">An expression that maps entities to the result type.</param>
     /// <returns>
-    /// A new <see cref="ResponseBuilder{TEntity, TNewViewModel}"/> instance configured with the specified projection,
-    /// enabling fluent configuration with the new view model type.
+    /// A new <see cref="ResponseBuilder{TEntity, TResultNew}"/> instance configured with the specified projection,
+    /// enabling fluent configuration with the new result type.
     /// </returns>
-    public ResponseBuilder<TEntity, TNewViewModel> WithProjection<TNewViewModel>(Expression<Func<TEntity, TNewViewModel>> projection)
-        where TNewViewModel : class
+    public ResponseBuilder<TEntity, TResultNew> WithProjection<TResultNew>(Expression<Func<TEntity, TResultNew>> projection)
+        where TResultNew : class
     {
-        return new ResponseBuilder<TEntity, TNewViewModel>(_query, _form)
+        return new ResponseBuilder<TEntity, TResultNew>(_query, _form)
         {
             _projection = projection
         };
@@ -79,8 +79,8 @@ public class ResponseBuilder<TEntity, TViewModel>
     /// Configures whether sorting should be applied to the query.
     /// </summary>
     /// <param name="applySorting">If <c>true</c>, sorting is applied; otherwise, sorting is skipped. Default is <c>true</c>.</param>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TViewModel> WithSorting(bool applySorting = true)
+    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
+    public ResponseBuilder<TEntity, TResult> WithSorting(bool applySorting = true)
     {
         _applySorting = applySorting;
         return this;
@@ -90,8 +90,8 @@ public class ResponseBuilder<TEntity, TViewModel>
     /// Enables or disables applying column filters to the query.
     /// </summary>
     /// <param name="applyColumnFilters">If <c>true</c>, column filters are applied; otherwise, they are skipped. Default is <c>true</c>.</param>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TViewModel> WithColumnFilters(bool applyColumnFilters = true)
+    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
+    public ResponseBuilder<TEntity, TResult> WithColumnFilters(bool applyColumnFilters = true)
     {
         _applyColumnFilters = applyColumnFilters;
         return this;
@@ -101,8 +101,8 @@ public class ResponseBuilder<TEntity, TViewModel>
     /// Configures global filtering fields to be used for DataTables "search" input.
     /// </summary>
     /// <param name="properties">The names of the entity properties to include in global search.</param>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TViewModel}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TViewModel> WithGlobalFilter(params string[] properties)
+    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
+    public ResponseBuilder<TEntity, TResult> WithGlobalFilter(params string[] properties)
     {
         _globalFilterProperties = properties;
         return this;
@@ -113,16 +113,16 @@ public class ResponseBuilder<TEntity, TViewModel>
     /// </summary>
     /// <param name="ct">A <see cref="CancellationToken"/> for cancelling the operation.</param>
     /// <returns>A <see cref="Task{Response}"/> containing the response data and metadata.</returns>
-    public async Task<Response<TViewModel>> BuildAsync(CancellationToken ct = default)
+    public async Task<Response<TResult>> BuildAsync(CancellationToken ct = default)
     {
         int totalCount = await _query.CountAsync(ct);
-        if (totalCount == 0) return new Response<TViewModel>() { Draw = _form["draw"] };
+        if (totalCount == 0) return new Response<TResult>() { Draw = _form["draw"] };
 
-        var response = new Response<TViewModel>() { Draw = _form["draw"], RecordsTotal = totalCount };
+        var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
         Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
-        IQueryable<TViewModel> baseQuery;
+        IQueryable<TResult> baseQuery;
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
@@ -135,7 +135,7 @@ public class ResponseBuilder<TEntity, TViewModel>
         else
         {
             baseQuery = _query.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                              .Cast<TViewModel>()
+                              .Cast<TResult>()
                               .HandleColumnFilters(request.Filters);
         }
 
@@ -158,17 +158,17 @@ public class ResponseBuilder<TEntity, TViewModel>
     /// <summary>
     /// Builds a DataTables-compatible response synchronously.
     /// </summary>
-    /// <returns>A <see cref="Response{TViewModel}"/> containing the response data and metadata.</returns>
-    public Response<TViewModel> Build()
+    /// <returns>A <see cref="Response{TResult}"/> containing the response data and metadata.</returns>
+    public Response<TResult> Build()
     {
         int totalCount = _query.Count();
-        if (totalCount == 0) return new Response<TViewModel>() { Draw = _form["draw"] };
+        if (totalCount == 0) return new Response<TResult>() { Draw = _form["draw"] };
 
-        var response = new Response<TViewModel>() { Draw = _form["draw"], RecordsTotal = totalCount };
+        var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
         Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
-        IQueryable<TViewModel> baseQuery;
+        IQueryable<TResult> baseQuery;
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
@@ -182,7 +182,7 @@ public class ResponseBuilder<TEntity, TViewModel>
         {
             baseQuery = _query.HandleGlobalFilter(_globalFilterProperties, request.Search)
                               .HandleColumnFilters(request.Filters)
-                              .Cast<TViewModel>();
+                              .Cast<TResult>();
         }
 
         int filteredCount = baseQuery.Count();
