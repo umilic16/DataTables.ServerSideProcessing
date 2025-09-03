@@ -8,6 +8,7 @@
 
 ## 📅 Upcoming / Backlog
 
+-   [ ] Select/MultiSelect generic (instead of just string) support
 -   [ ] CI/CD
 -   [ ] Improve how data is sent from the frontend
 -   [ ] Add logging warnings
