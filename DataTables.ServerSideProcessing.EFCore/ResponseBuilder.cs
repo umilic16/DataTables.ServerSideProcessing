@@ -98,7 +98,7 @@ public class ResponseBuilder<TEntity, TResult>
     /// <summary>
     /// Enables global filtering on the specified properties using the DataTables "search" input.
     /// </summary>
-    /// <param name="properties">The names of the entity properties to include in global search.</param>
+    /// <param name="properties">The names of the properties to include in global search.</param>
     /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
     public ResponseBuilder<TEntity, TResult> WithGlobalFilter(params string[] properties)
     {
@@ -120,29 +120,19 @@ public class ResponseBuilder<TEntity, TResult>
 
         Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
-        IQueryable<TResult> baseQuery;
+        IQueryable<TResult> baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        if (_projection != null)
-        {
-            baseQuery = _query.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                              .Select(_projection)
-                              .HandleColumnFilters(request.Filters);
-        }
-        else
-        {
-            baseQuery = _query.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                              .Cast<TResult>()
-                              .HandleColumnFilters(request.Filters);
-        }
+        baseQuery = baseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
+                             .HandleColumnFilters(request.Filters);
 
         int filteredCount = await baseQuery.CountAsync(ct);
 
         if (filteredCount == 0) return response;
 
         response.RecordsFiltered = filteredCount;
-
 
         baseQuery = baseQuery.HandleSorting(request.SortOrder);
 
@@ -166,22 +156,13 @@ public class ResponseBuilder<TEntity, TResult>
 
         Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
-        IQueryable<TResult> baseQuery;
+        IQueryable<TResult> baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        if (_projection != null)
-        {
-            baseQuery = _query.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                              .Select(_projection)
-                              .HandleColumnFilters(request.Filters);
-        }
-        else
-        {
-            baseQuery = _query.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                              .HandleColumnFilters(request.Filters)
-                              .Cast<TResult>();
-        }
+        baseQuery = baseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
+                             .HandleColumnFilters(request.Filters);
 
         int filteredCount = baseQuery.Count();
 
