@@ -13,7 +13,7 @@ namespace DataTables.ServerSideProcessing.EFCore;
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity in the query.</typeparam>
 /// <typeparam name="TResult">The type to project the entity into.</typeparam>
-public class ResponseBuilder<TEntity, TResult>
+public sealed class ResponseBuilder<TEntity, TResult>
     where TEntity : class
     where TResult : class
 {
