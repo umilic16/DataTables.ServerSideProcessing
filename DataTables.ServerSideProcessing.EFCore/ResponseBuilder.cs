@@ -25,6 +25,21 @@ public sealed class ResponseBuilder<TEntity, TResult>
     private bool ApplyGlobalFilter => _globalFilterProperties is { Length: > 0 };
     private Expression<Func<TEntity, TResult>>? _projection;
 
+    /// <summary>
+    /// Gets the query with projection applied, but before any filtering or sorting.
+    /// </summary>
+    public IQueryable<TResult>? BaseQuery { get; private set; }
+
+    /// <summary>
+    /// Gets the query with projection, global filters, and column filters applied, but without sorting.
+    /// </summary>
+    public IQueryable<TResult>? FilteredQuery { get; private set; }
+
+    /// <summary>
+    /// Gets the final query with projection, filters and sorting applied.
+    /// </summary>
+    public IQueryable<TResult>? FinalQuery { get; private set; }
+
     private ResponseBuilder(IQueryable<TEntity> query, IFormCollection form)
     {
         ArgumentNullException.ThrowIfNull(form);
@@ -107,10 +122,13 @@ public sealed class ResponseBuilder<TEntity, TResult>
     }
 
     /// <summary>
-    /// Builds a DataTables-compatible response asynchronously.
+    /// Processes the DataTables request and executes the configured query pipeline asynchronously,
+    /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
-    /// <param name="ct">A <see cref="CancellationToken"/> for cancelling the operation.</param>
-    /// <returns>A <see cref="Task{Response}"/> containing the response data and metadata.</returns>
+    /// <param name="ct">A cancellation token to cancel the operation.</param>
+    /// <returns>
+    /// A <see cref="Response{TResult}"/> containing the data and metadata required by DataTables.
+    /// </returns>
     public async Task<Response<TResult>> BuildAsync(CancellationToken ct = default)
     {
         int totalCount = await _query.CountAsync(ct);
@@ -120,33 +138,36 @@ public sealed class ResponseBuilder<TEntity, TResult>
 
         Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
-        IQueryable<TResult> baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        baseQuery = baseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                             .HandleColumnFilters(request.Filters);
+        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
+                                 .HandleColumnFilters(request.Filters);
 
-        int filteredCount = await baseQuery.CountAsync(ct);
+        int filteredCount = await FilteredQuery.CountAsync(ct);
 
         if (filteredCount == 0) return response;
 
         response.RecordsFiltered = filteredCount;
 
-        baseQuery = baseQuery.HandleSorting(request.SortOrder);
+        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
 
         response.Data = request.PageSize != -1
-            ? await baseQuery.Skip(request.Skip).Take(request.PageSize).ToListAsync(ct)
-            : await baseQuery.ToListAsync(ct);
+            ? await FinalQuery.Skip(request.Skip).Take(request.PageSize).ToListAsync(ct)
+            : await FinalQuery.ToListAsync(ct);
 
         return response;
     }
 
     /// <summary>
-    /// Builds a DataTables-compatible response synchronously.
+    /// Processes the DataTables request and executes the configured query pipeline,
+    /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
-    /// <returns>A <see cref="Response{TResult}"/> containing the response data and metadata.</returns>
+    /// <returns>
+    /// A <see cref="Response{TResult}"/> containing the data and metadata required by DataTables.
+    /// </returns>
     public Response<TResult> Build()
     {
         int totalCount = _query.Count();
@@ -156,25 +177,25 @@ public sealed class ResponseBuilder<TEntity, TResult>
 
         Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
 
-        IQueryable<TResult> baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        baseQuery = baseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                             .HandleColumnFilters(request.Filters);
+        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
+                                 .HandleColumnFilters(request.Filters);
 
-        int filteredCount = baseQuery.Count();
+        int filteredCount = FilteredQuery.Count();
 
         if (filteredCount == 0) return response;
 
         response.RecordsFiltered = filteredCount;
 
-        baseQuery = baseQuery.HandleSorting(request.SortOrder);
+        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
 
         response.Data = request.PageSize != -1
-            ? baseQuery.Skip(request.Skip).Take(request.PageSize).ToList()
-            : baseQuery.ToList();
+            ? FinalQuery.Skip(request.Skip).Take(request.PageSize).ToList()
+            : FinalQuery.ToList();
 
         return response;
     }

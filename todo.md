@@ -19,6 +19,7 @@
 
 ## 🧹 Done
 
+-   [x] Add a way of accessing built query (from different stages)
 -   [x] Refactor ResponseBuilder to Fluent API
 -   [x] Refactor models, enums
 -   [x] Add separator choice for 'Between' filter
