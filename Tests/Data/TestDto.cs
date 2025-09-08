@@ -2,6 +2,7 @@
 
 public class TestDto
 {
+    public int Id { get; set; }
     public int IntVal { get; set; }
     public int? NullInt { get; set; }
     public decimal DecVal { get; set; }

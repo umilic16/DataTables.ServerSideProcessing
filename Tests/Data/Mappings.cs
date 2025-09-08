@@ -7,6 +7,7 @@ public static class Mappings
     public static Expression<Func<TestEntity, TestDto>> SelectDto => entity =>
         new TestDto
         {
+            Id = entity.Id,
             IntVal = entity.IntVal,
             NullInt = entity.NullableInt,
             DecVal = entity.DecimalVal,

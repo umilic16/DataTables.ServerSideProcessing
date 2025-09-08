@@ -87,7 +87,7 @@ public static class DbHelpers
                 DecimalVal = 123.164646m,
                 NullableDecimal = -321.0054m,
                 DateTimeVal = now.AddDays(125),
-                NullableDateTime = now.AddMonths(-45),
+                NullableDateTime = now.AddYears(5),
                 DateOnlyVal = DateOnly.FromDateTime(now.AddYears(5)),
                 NullableDateOnly = DateOnly.FromDateTime(now.AddDays(-18000)),
                 EnumVal = Something.Gamma,
