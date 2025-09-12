@@ -15,7 +15,8 @@ internal static class NumericExpressionBuilder
 
         if (!underlyingType.IsNumericType()) throw new InvalidOperationException($"Property '{propertyName}' must be of type 'int' but is of type '{propertyType.Name}'.");
 
-        ConstantExpression constantValue = Expression.Constant(searchValue, underlyingType);
+        // Create a constant expression using the converted value BUT typed as the *original* property type (including Nullable<>)
+        ConstantExpression constantValue = Expression.Constant(searchValue, propertyType);
         Expression comparison = filterType switch
         {
             FilterOperations.Equals => Expression.Equal(memberAccess, constantValue),
