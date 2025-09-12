@@ -6,13 +6,17 @@ namespace Tests.Fixtures;
 public class MySqlFixture : IAsyncLifetime, ITestDbFixture
 {
     private readonly MySqlContainer _container = new MySqlBuilder().Build();
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();
         var options = new DbContextOptionsBuilder<TestDbContext>().UseMySQL(ConnectionString).Options;
         DbHelpers.InitializeDatabase(options);
     }
-    public Task DisposeAsync() => _container.DisposeAsync().AsTask();
+    public async ValueTask DisposeAsync()
+    {
+        await _container.DisposeAsync();
+        GC.SuppressFinalize(this);
+    }
     public TestDbContext CreateContext()
     {
         var options = new DbContextOptionsBuilder<TestDbContext>().UseMySQL(ConnectionString).Options;

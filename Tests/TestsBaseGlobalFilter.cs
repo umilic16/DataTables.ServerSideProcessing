@@ -12,7 +12,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = "123";
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Where(x => x.IntVal.ToString().Contains(searchValue)
                                                        || (x.NullableInt == null ? string.Empty : x.NullableInt.ToString())!.Contains(searchValue)
                                                        || x.DecimalVal.ToString().Contains(searchValue)
@@ -27,7 +27,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Act
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithGlobalFilter(nameof(TestEntity.IntVal), nameof(TestEntity.NullableInt), nameof(TestEntity.DecimalVal), nameof(TestEntity.NullableDecimal))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -40,7 +40,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = "123";
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Select(Mappings.SelectDto)
                                            .Where(x => x.IntVal.ToString().Contains(searchValue)
                                                        || (x.NullInt == null ? string.Empty : x.NullInt.ToString())!.Contains(searchValue)
@@ -57,7 +57,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithProjection(Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.IntVal), nameof(TestDto.NullInt), nameof(TestDto.DecVal), nameof(TestDto.NullDec))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -70,7 +70,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = DateTime.Now.AddYears(5).Date.ToString();
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Where(x => x.DateTimeVal.ToString().Contains(searchValue)
                                                        || (x.NullableDateTime == null ? string.Empty : x.NullableDateTime.ToString())!.Contains(searchValue)
                                                        || x.DateOnlyVal.ToString().Contains(searchValue)
@@ -85,7 +85,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Act
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithGlobalFilter(nameof(TestEntity.DateTimeVal), nameof(TestEntity.NullableDateTime), nameof(TestEntity.DateOnlyVal), nameof(TestEntity.NullableDateOnly))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -98,7 +98,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = DateTime.Now.AddYears(5).Date.ToString();
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Select(Mappings.SelectDto)
                                            .Where(x => x.DtVal.ToString().Contains(searchValue)
                                                        || (x.NullDt == null ? string.Empty : x.NullDt.ToString())!.Contains(searchValue)
@@ -115,7 +115,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithProjection(Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.DtVal), nameof(TestDto.NullDt), nameof(TestDto.DoVal), nameof(TestDto.NullDo))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
@@ -129,7 +129,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = Something.Alpha.ToString();
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Where(x => x.EnumVal.ToString().Contains(searchValue)
                                                        || (x.NullableEnum == null ? string.Empty : x.NullableEnum.ToString())!.Contains(searchValue))
                                            .ToList();
@@ -142,7 +142,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Act
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithGlobalFilter(nameof(TestEntity.EnumVal), nameof(TestEntity.NullableEnum))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -155,7 +155,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = "1";
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Select(Mappings.SelectDto)
                                            .Where(x => x.EnumVal.ToString().Contains(searchValue)
                                                        || (x.NullableEnum == null ? string.Empty : x.NullableEnum.ToString())!.Contains(searchValue))
@@ -170,7 +170,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithProjection(Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.EnumVal), nameof(TestDto.NullableEnum))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -183,7 +183,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = "123";
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Where(x => x.BoolVal.ToString().Contains(searchValue)
                                                        || (x.NullableBool == null ? string.Empty : x.NullableBool.ToString())!.Contains(searchValue))
                                            .ToList();
@@ -196,7 +196,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Act
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithGlobalFilter(nameof(TestEntity.BoolVal), nameof(TestEntity.NullableBool))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -209,7 +209,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = "123";
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Select(Mappings.SelectDto)
                                            .Where(x => x.BoolVal.ToString().Contains(searchValue)
                                                        || (x.NullableBool == null ? string.Empty : x.NullableBool.ToString())!.Contains(searchValue))
@@ -224,7 +224,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithProjection(Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.BoolVal), nameof(TestDto.NullableBool))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -237,7 +237,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = "test";
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Where(x => x.StringVal.Contains(searchValue)
                                                        || (x.NullableString == null ? string.Empty : x.NullableString.ToString())!.Contains(searchValue))
                                            .ToList();
@@ -250,7 +250,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Act
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithGlobalFilter(nameof(TestEntity.StringVal), nameof(TestEntity.NullableString))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -263,7 +263,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = "~!@#$";
-        var recordsTotal = await context.TestEntities.CountAsync();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Select(Mappings.SelectDto)
                                            .Where(x => x.StrVal.Contains(searchValue)
                                                        || (x.NullStr == null ? string.Empty : x.NullStr.ToString())!.Contains(searchValue))
@@ -278,7 +278,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         var result = await contextNew.TestEntities.ForDataTable(form)
                                                   .WithProjection(Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.StrVal), nameof(TestDto.NullStr))
-                                                  .BuildAsync();
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);

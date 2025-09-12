@@ -22,7 +22,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -48,7 +48,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -70,7 +70,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -96,7 +96,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -118,7 +118,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -144,7 +144,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -166,7 +166,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -192,7 +192,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -214,7 +214,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -240,7 +240,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -262,7 +262,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -288,7 +288,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -310,7 +310,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -336,7 +336,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -358,7 +358,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -384,7 +384,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -406,7 +406,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -432,7 +432,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -454,7 +454,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -480,7 +480,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -502,7 +502,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -528,7 +528,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -550,7 +550,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -576,7 +576,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -598,7 +598,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -624,7 +624,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -646,7 +646,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
 
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
@@ -672,7 +672,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         // Act
         var response = await contextNew.TestEntities.ForDataTable(form)
                                                     .WithProjection(Mappings.SelectDto)
-                                                    .BuildAsync();
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(allEntities.Count, response.RecordsTotal);
