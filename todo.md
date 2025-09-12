@@ -5,6 +5,7 @@
 ## 🔥 High priority / Upcoming
 
   - [ ] Method to return just data instead whole response object
+  - [ ] Add support for building query (and accessing it) but without executing it
   - [ ] Select/MultiSelect generic (instead of just string) support
   - [ ] CI/CD
   - [ ] Add global configuration support (e.g. modifying Default instance of FilterParsingOptions, RequestParser...)
