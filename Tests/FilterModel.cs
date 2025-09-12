@@ -2,21 +2,24 @@
 using DataTables.ServerSideProcessing.Data.Models;
 
 namespace Tests;
-public class BaseFilterModel
+
+public abstract class BaseFilterModel
 {
-    public required FilterCategory FilterCategory { get; init; }
+    public abstract FilterCategory FilterCategory { get; }
     public required string SearchValue { get; init; }
     public FilterParsingOptions Options { get; init; } = FilterParsingOptions.Default;
 }
 
 public class TextFilterModel : BaseFilterModel
 {
-    public required FilterOperations FilterType { get; init; }
-    public required TextColumn TextCategory { get; init; }
+    public override FilterCategory FilterCategory => FilterCategory.Text;
+    public FilterOperations FilterType { get; init; } = FilterOperations.Contains;
+    public TextColumn TextCategory { get; init; } = TextColumn.Base;
 }
 
 public class NumericFilterModel : BaseFilterModel
 {
-    public required FilterOperations FilterType { get; init; }
-    public required NumericColumn NumericCategory { get; init; }
+    public override FilterCategory FilterCategory => FilterCategory.Numeric;
+    public FilterOperations FilterType { get; init; } = FilterOperations.Equals;
+    public NumericColumn NumericCategory { get; init; } = NumericColumn.Decimal;
 }
