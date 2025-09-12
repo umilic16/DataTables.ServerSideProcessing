@@ -11,12 +11,12 @@ namespace DataTables.ServerSideProcessing.EFCore;
 
 internal static class RequestParser
 {
-    internal static Request ParseRequest(IFormCollection requestFormData, bool parseSearch, bool parseSort, bool parseFilters, FilterParsingOptions options)
+    internal static Request ParseRequest(IFormCollection requestFormData, bool parseSearch, bool parseSort, bool parseFilters, FilterParsingOptions options, int? skip = null, int? pageSize = null)
         => new()
         {
             Search = parseSearch ? requestFormData["search[value]"].ToString() : null,
-            Skip = requestFormData["start"].ToInt(),
-            PageSize = requestFormData["length"].ToInt(),
+            Skip = skip ?? (int.TryParse(requestFormData["start"], out int start) ? start : 0),
+            PageSize = pageSize ?? (int.TryParse(requestFormData["length"], out int length) ? length : -1),
             SortOrder = parseSort ? ParseSortOrder(requestFormData) : [],
             Filters = parseFilters ? ParseFilters(requestFormData, options) : []
         };

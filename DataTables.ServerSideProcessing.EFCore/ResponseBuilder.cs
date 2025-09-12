@@ -199,4 +199,61 @@ public sealed class ResponseBuilder<TEntity, TResult>
 
         return response;
     }
+
+    /// <summary>
+    /// Processes the DataTables request and executes the configured query pipeline asynchronously,
+    /// applying projection, filtering, sorting, and paging as specified.
+    /// </summary>
+    /// <param name="skip"> The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="ct">A cancellation token to cancel the operation.</param>
+    /// <returns>
+    /// A <see cref="List{TResult}"/> containing the requested data after applying filters, sorting, and paging.
+    /// </returns>
+    public async Task<List<TResult>> GetDataAsync(int? skip, int? pageSize = null, CancellationToken ct = default)
+    {
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
+
+        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+
+        // no need to check if global filter / column filter / sorting should be handled or not here,
+        // as RequestParser will return empty arrays / strings if they shouldn't be applied
+        // and QueryBuilder extension methods will return the original query in that case
+        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
+                                 .HandleColumnFilters(request.Filters);
+
+        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
+
+        return request.PageSize != -1
+            ? await FinalQuery.Skip(request.Skip).Take(request.PageSize).ToListAsync(ct)
+            : await FinalQuery.ToListAsync(ct);
+    }
+
+    /// <summary>
+    /// Processes the DataTables request and executes the configured query pipeline,
+    /// applying projection, filtering, sorting, and paging as specified.
+    /// </summary>
+    /// <param name="skip"> The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <returns>
+    /// A <see cref="List{TResult}"/> containing the requested data after applying filters, sorting, and paging.
+    /// </returns>
+    public List<TResult> GetData(int? skip, int? pageSize = null)
+    {
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default, skip, pageSize);
+
+        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+
+        // no need to check if global filter / column filter / sorting should be handled or not here,
+        // as RequestParser will return empty arrays / strings if they shouldn't be applied
+        // and QueryBuilder extension methods will return the original query in that case
+        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
+                                 .HandleColumnFilters(request.Filters);
+
+        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
+
+        return request.PageSize != -1
+            ? FinalQuery.Skip(request.Skip).Take(request.PageSize).ToList()
+            : FinalQuery.ToList();
+    }
 }

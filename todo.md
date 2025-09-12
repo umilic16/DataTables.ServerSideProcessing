@@ -4,7 +4,6 @@
 
 ## 🔥 High priority / Upcoming
 
-  - [ ] Method to return just data instead whole response object
   - [ ] Add support for building query (and accessing it) but without executing it
   - [ ] Select/MultiSelect generic (instead of just string) support
   - [ ] CI/CD
@@ -22,6 +21,7 @@
 
 ## 🧹 Done
 
+  - [x] Method to return just data instead of whole response object
   - [x] Add a way of accessing built query (from different stages)
   - [x] Refactor ResponseBuilder to Fluent API
   - [x] Refactor models, enums
