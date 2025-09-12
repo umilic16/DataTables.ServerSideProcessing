@@ -13,7 +13,7 @@ internal static class NumericExpressionBuilder
         // Get the underlying type if it's nullable (e.g., int from int?)
         Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
-        if (underlyingType.IsNumericType()) throw new InvalidOperationException($"Property '{propertyName}' must be of type 'int' but is of type '{propertyType.Name}'.");
+        if (!underlyingType.IsNumericType()) throw new InvalidOperationException($"Property '{propertyName}' must be of type 'int' but is of type '{propertyType.Name}'.");
 
         ConstantExpression constantValue = Expression.Constant(searchValue, underlyingType);
         Expression comparison = filterType switch
