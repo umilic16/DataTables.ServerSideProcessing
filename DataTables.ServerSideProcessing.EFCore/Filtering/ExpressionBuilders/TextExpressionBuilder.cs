@@ -31,7 +31,7 @@ internal static class TextExpressionBuilder
                                                          nameof(DbFunctionsExtensions.Like), Type.EmptyTypes,
                                                          Expression.Constant(EF.Functions), memberAccess,
                                                          Expression.Constant($"%{searchValue}")),
-            _ => throw new NotImplementedException($"Filter operation '{filterType}' is not implemented for text filtering."),
+            _ => throw new InvalidOperationException($"Filter operation '{filterType}' is not valid for text filtering."),
         };
 
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);

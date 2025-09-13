@@ -25,7 +25,7 @@ internal static class NumericExpressionBuilder
             FilterOperations.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
             FilterOperations.LessThan => Expression.LessThan(memberAccess, constantValue),
             FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
-            _ => throw new NotImplementedException($"Filter operation '{filterType}' is not implemented for numeric filtering.")
+            _ => throw new InvalidOperationException($"Filter operation '{filterType}' is not valid for numeric filtering.")
         };
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }

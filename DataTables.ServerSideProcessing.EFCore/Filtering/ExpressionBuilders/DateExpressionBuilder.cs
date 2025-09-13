@@ -26,7 +26,7 @@ internal static class DateExpressionBuilder
             FilterOperations.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, constantValue),
             FilterOperations.LessThan => Expression.LessThan(memberAccess, constantValue),
             FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, constantValue),
-            _ => throw new NotImplementedException($"Filter operation '{filterType}' is not implemented for date filtering.")
+            _ => throw new InvalidOperationException($"Filter operation '{filterType}' is not valid for date filtering.")
         };
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
