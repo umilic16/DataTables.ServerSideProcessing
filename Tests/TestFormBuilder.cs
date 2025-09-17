@@ -53,6 +53,10 @@ public class TestFormBuilder
                 _data[$"{filter.Options.Prefix}[{property}][{filter.Options.FilterTypeKey}]"] = ((int)textModel.FilterType).ToString();
                 _data[$"{filter.Options.Prefix}[{property}][{filter.Options.ValueCategoryKey}]"] = ((int)textModel.TextCategory!).ToString();
             }
+            else if (filter is DateFilterModel dateModel)
+            {
+                _data[$"{filter.Options.Prefix}[{property}][{filter.Options.FilterTypeKey}]"] = ((int)dateModel.FilterType).ToString();
+            }
 
             string valueKey = $"{filter.Options.Prefix}[{property}]";
             _data[valueKey] = filter.SearchValue;

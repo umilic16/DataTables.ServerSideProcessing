@@ -23,3 +23,9 @@ public class NumericFilterModel : BaseFilterModel
     public FilterOperations FilterType { get; init; } = FilterOperations.Equals;
     public NumericColumn NumericCategory { get; init; } = NumericColumn.Decimal;
 }
+
+public class DateFilterModel : BaseFilterModel
+{
+    public override FilterCategory FilterCategory => FilterCategory.Date;
+    public FilterOperations FilterType { get; init; } = FilterOperations.Equals;
+}
