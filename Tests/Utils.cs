@@ -1,5 +1,4 @@
-﻿using System.Linq.Dynamic.Core;
-using DataTables.ServerSideProcessing.Data.Enums;
+﻿using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
 
 namespace Tests;
