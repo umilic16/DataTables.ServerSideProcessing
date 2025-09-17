@@ -11,19 +11,19 @@ namespace DataTables.ServerSideProcessing.EFCore;
 /// Supports synchronous and asynchronous execution with features such as global search, column filters,
 /// sorting, pagination, and mapping entities to the specified result type.
 /// </summary>
-/// <typeparam name="TEntity">The type of the entity in the query.</typeparam>
+/// <typeparam name="TSource">The type of the entity in the query.</typeparam>
 /// <typeparam name="TResult">The type to project the entity into.</typeparam>
-public sealed class ResponseBuilder<TEntity, TResult>
-    where TEntity : class
+public sealed class ResponseBuilder<TSource, TResult>
+    where TSource : class
     where TResult : class
 {
     private readonly IFormCollection _form;
-    private readonly IQueryable<TEntity> _query;
+    private readonly IQueryable<TSource> _query;
+    private readonly Expression<Func<TSource, TResult>>? _projection;
     private bool _applySorting = true;
     private bool _applyColumnFilters = true;
     private string[]? _globalFilterProperties;
     private bool ApplyGlobalFilter => _globalFilterProperties is { Length: > 0 };
-    private Expression<Func<TEntity, TResult>>? _projection;
 
     /// <summary>
     /// Gets the query with projection applied, but before any filtering or sorting.
@@ -40,7 +40,7 @@ public sealed class ResponseBuilder<TEntity, TResult>
     /// </summary>
     public IQueryable<TResult>? FinalQuery { get; private set; }
 
-    private ResponseBuilder(IQueryable<TEntity> query, IFormCollection form)
+    internal ResponseBuilder(IQueryable<TSource> query, IFormCollection form)
     {
         ArgumentNullException.ThrowIfNull(form);
         ArgumentNullException.ThrowIfNull(query);
@@ -52,49 +52,24 @@ public sealed class ResponseBuilder<TEntity, TResult>
         _query = query;
     }
 
-    /// <summary>
-    /// Creates a new <see cref="ResponseBuilder{TEntity, TResult}"/> instance with a form collection and entity query.
-    /// </summary>
-    /// <param name="query">The queryable source of entities.</param>
-    /// <param name="form">The form collection containing DataTables request parameters.</param>
-    /// <returns>A new instance of <see cref="ResponseBuilder{TEntity, TResult}"/>.</returns>
-    public static ResponseBuilder<TEntity, TResult> From(IQueryable<TEntity> query, IFormCollection form)
-        => new(query, form);
-
-    /// <summary>
-    /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TResult"/>.
-    /// </summary>
-    /// <param name="projection">An expression that maps entities to the result type.</param>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TResult> WithProjection(Expression<Func<TEntity, TResult>> projection)
+    internal ResponseBuilder(IQueryable<TSource> query, IFormCollection form, Expression<Func<TSource, TResult>> projection)
     {
+        ArgumentNullException.ThrowIfNull(form);
+        ArgumentNullException.ThrowIfNull(query);
+
+        if (form.Count == 0)
+            throw new ArgumentException("Request form cannot be empty.", nameof(form));
+
+        _form = form;
+        _query = query;
         _projection = projection;
-        return this;
-    }
-
-    /// <summary>
-    /// Specifies a projection from <typeparamref name="TEntity"/> to <typeparamref name="TResult"/>.
-    /// </summary>
-    /// <typeparam name="TResultNew">The type to project the entity into.</typeparam>
-    /// <param name="projection">An expression that maps entities to the result type.</param>
-    /// <returns>
-    /// A new <see cref="ResponseBuilder{TEntity, TResultNew}"/> instance configured with the specified projection,
-    /// enabling fluent configuration with the new result type.
-    /// </returns>
-    public ResponseBuilder<TEntity, TResultNew> WithProjection<TResultNew>(Expression<Func<TEntity, TResultNew>> projection)
-        where TResultNew : class
-    {
-        return new ResponseBuilder<TEntity, TResultNew>(_query, _form)
-        {
-            _projection = projection
-        };
     }
 
     /// <summary>
     /// Disables applying sorting to the query.
     /// </summary>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TResult> WithoutSorting()
+    /// <returns>The current <see cref="ResponseBuilder{TSource, TResult}"/> instance for fluent configuration.</returns>
+    public ResponseBuilder<TSource, TResult> WithoutSorting()
     {
         _applySorting = false;
         return this;
@@ -103,8 +78,8 @@ public sealed class ResponseBuilder<TEntity, TResult>
     /// <summary>
     /// Disables applying column filters to the query.
     /// </summary>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TResult> WithoutColumnFilters()
+    /// <returns>The current <see cref="ResponseBuilder{TSource, TResult}"/> instance for fluent configuration.</returns>
+    public ResponseBuilder<TSource, TResult> WithoutColumnFilters()
     {
         _applyColumnFilters = false;
         return this;
@@ -114,8 +89,8 @@ public sealed class ResponseBuilder<TEntity, TResult>
     /// Enables global filtering on the specified properties using the DataTables "search" input.
     /// </summary>
     /// <param name="properties">The names of the properties to include in global search.</param>
-    /// <returns>The current <see cref="ResponseBuilder{TEntity, TResult}"/> instance for fluent configuration.</returns>
-    public ResponseBuilder<TEntity, TResult> WithGlobalFilter(params string[] properties)
+    /// <returns>The current <see cref="ResponseBuilder{TSource, TResult}"/> instance for fluent configuration.</returns>
+    public ResponseBuilder<TSource, TResult> WithGlobalFilter(params string[] properties)
     {
         _globalFilterProperties = properties;
         return this;
