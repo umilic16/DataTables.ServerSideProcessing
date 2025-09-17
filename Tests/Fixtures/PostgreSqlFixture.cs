@@ -3,6 +3,7 @@ using Testcontainers.PostgreSql;
 using Tests.Data;
 
 namespace Tests.Fixtures;
+
 public class PostgreSqlFixture : IAsyncLifetime, ITestDbFixture
 {
     private readonly PostgreSqlContainer _container = new PostgreSqlBuilder().Build();

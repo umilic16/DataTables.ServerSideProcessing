@@ -3,6 +3,7 @@ using Testcontainers.MsSql;
 using Tests.Data;
 
 namespace Tests.Fixtures;
+
 public class MsSqlFixture : IAsyncLifetime, ITestDbFixture
 {
     private readonly MsSqlContainer _container = new MsSqlBuilder().Build();

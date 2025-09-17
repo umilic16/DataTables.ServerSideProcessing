@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Tests.Data;
+
 public class TestDbContext(DbContextOptions<TestDbContext> opts) : DbContext(opts)
 {
     public DbSet<TestEntity> TestEntities { get; set; }

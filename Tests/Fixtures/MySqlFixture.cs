@@ -3,6 +3,7 @@ using Testcontainers.MySql;
 using Tests.Data;
 
 namespace Tests.Fixtures;
+
 public class MySqlFixture : IAsyncLifetime, ITestDbFixture
 {
     private readonly MySqlContainer _container = new MySqlBuilder().Build();
