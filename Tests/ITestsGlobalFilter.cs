@@ -9,7 +9,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
 {
     TFixture Fixture { get; }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_NumericColumns()
     {
         // Arrange
@@ -37,7 +37,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_NumericColumns_WithProjection()
     {
         // Arrange
@@ -66,7 +66,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_DateColumns()
     {
         // Arrange
@@ -94,7 +94,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_DateColumns_WithProjection()
     {
         // Arrange
@@ -124,7 +124,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_EnumColumns()
     {
         // Arrange
@@ -150,7 +150,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_EnumColumns_WithProjection()
     {
         // Arrange
@@ -177,7 +177,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_BoolColumns()
     {
         // Arrange
@@ -203,7 +203,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_BoolColumns_WithProjection()
     {
         // Arrange
@@ -230,7 +230,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_StringColumns()
     {
         // Arrange
@@ -256,7 +256,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact]
+    [Fact, Trait("Category", "GlobalFilter")]
     public async Task GlobalFilter_On_StringColumns_WithProjection()
     {
         // Arrange
