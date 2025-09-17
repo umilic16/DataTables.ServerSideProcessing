@@ -1079,7 +1079,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
     }
 
     [Theory, Trait("Category", "ColumnFilter")]
-    [MemberData(nameof(ValidIntCases))]
+    [MemberData(nameof(ValidStringCases))]
     public async Task Filter_ValidString(string searchValue, FilterOperations operation)
     {
         // Arrange
