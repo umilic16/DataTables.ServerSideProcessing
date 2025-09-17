@@ -47,8 +47,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -95,8 +94,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -143,8 +141,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -191,8 +188,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -239,8 +235,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -287,8 +282,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -335,8 +329,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -383,8 +376,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -431,8 +423,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -479,8 +470,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -527,8 +517,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -575,8 +564,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -623,8 +611,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert
@@ -671,8 +658,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         using var contextNew = Fixture.CreateContext();
 
         // Act
-        var response = await contextNew.TestEntities.ForDataTable(form)
-                                                    .WithProjection(Mappings.SelectDto)
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                     .BuildAsync(TestContext.Current.CancellationToken);
 
         // Assert

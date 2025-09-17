@@ -55,8 +55,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
 
         using var contextNew = Fixture.CreateContext();
         // Act
-        var result = await contextNew.TestEntities.ForDataTable(form)
-                                                  .WithProjection(Mappings.SelectDto)
+        var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.IntVal), nameof(TestDto.NullInt), nameof(TestDto.DecVal), nameof(TestDto.NullDec))
                                                   .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
@@ -113,8 +112,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
 
         using var contextNew = Fixture.CreateContext();
         // Act
-        var result = await contextNew.TestEntities.ForDataTable(form)
-                                                  .WithProjection(Mappings.SelectDto)
+        var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.DtVal), nameof(TestDto.NullDt), nameof(TestDto.DoVal), nameof(TestDto.NullDo))
                                                   .BuildAsync(TestContext.Current.CancellationToken);
 
@@ -168,8 +166,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
 
         using var contextNew = Fixture.CreateContext();
         // Act
-        var result = await contextNew.TestEntities.ForDataTable(form)
-                                                  .WithProjection(Mappings.SelectDto)
+        var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.EnumVal), nameof(TestDto.NullableEnum))
                                                   .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
@@ -222,8 +219,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
 
         using var contextNew = Fixture.CreateContext();
         // Act
-        var result = await contextNew.TestEntities.ForDataTable(form)
-                                                  .WithProjection(Mappings.SelectDto)
+        var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.BoolVal), nameof(TestDto.NullableBool))
                                                   .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
@@ -276,8 +272,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
 
         using var contextNew = Fixture.CreateContext();
         // Act
-        var result = await contextNew.TestEntities.ForDataTable(form)
-                                                  .WithProjection(Mappings.SelectDto)
+        var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                   .WithGlobalFilter(nameof(TestDto.StrVal), nameof(TestDto.NullStr))
                                                   .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
