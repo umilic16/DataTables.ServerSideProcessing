@@ -1,4 +1,5 @@
-﻿using DataTables.ServerSideProcessing.Data.Enums;
+﻿using System.Globalization;
+using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
 using DataTables.ServerSideProcessing.EFCore;
 using Microsoft.AspNetCore.Http;
@@ -17,9 +18,19 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         return Utils.GetValidIntCases();
     }
 
-    public static List<TheoryDataRow<string, FilterOperations>> ValidIntCasesWithProjection()
+    public static List<TheoryDataRow<string, FilterOperations, string>> ValidDecCases()
     {
-        return Utils.GetValidIntCases();
+        return Utils.GetValidDecCases();
+    }
+
+    public static List<TheoryDataRow<string, FilterOperations, string>> ValidDateCases()
+    {
+        return Utils.GetValidDateCases();
+    }
+
+    public static List<TheoryDataRow<string, FilterOperations>> ValidStringCases()
+    {
+        return Utils.GetValidStringCases();
     }
 
     public static List<TheoryDataRow<string, FilterOperations, FilterCategory, NumericColumn?>> InvalidFilterOperationsCombinations()
@@ -104,7 +115,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidIntCases(string searchValue, FilterOperations operation)
+    public async Task Filter_ValidInt(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -157,7 +168,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidIntWithProjectionCases(string searchValue, FilterOperations operation)
+    public async Task Filter_ValidInt_WithProjection(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -210,7 +221,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidNullableIntCases(string searchValue, FilterOperations operation)
+    public async Task Filter_ValidNullableInt(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -263,7 +274,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidNullableIntWithProjectionCases(string searchValue, FilterOperations operation)
+    public async Task Filter_ValidNullableInt_WithProjection(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -302,8 +313,899 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         IFormCollection form = TestFormBuilder.Create()
                                               .AddColumn(nameof(TestDto.NullInt), new NumericFilterModel { SearchValue = searchValue, NumericCategory = NumericColumn.Int, FilterType = operation })
                                               .Build();
+        using TestDbContext contextNew = Fixture.CreateContext();
+        // Act
+        Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                .WithoutSorting()
+                                                                .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
 
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDecCases))]
+    public async Task Filter_ValidDecimal(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    decimal parsedValFrom = decimal.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DecimalVal >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    decimal parsedValTo = decimal.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DecimalVal <= parsedValTo);
+                }
+            }
+            else
+            {
+                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.DecimalVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.DecimalVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DecimalVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DecimalVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.DecimalVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DecimalVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.DecimalVal), new NumericFilterModel { SearchValue = searchValue, NumericCategory = NumericColumn.Decimal, FilterType = operation })
+                                                  .Build();
 
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDecCases))]
+    public async Task Filter_ValidDecimal_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    decimal parsedValFrom = decimal.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DecVal >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    decimal parsedValTo = decimal.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DecVal <= parsedValTo);
+                }
+            }
+            else
+            {
+                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.DecVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.DecVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DecVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DecVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.DecVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DecVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.DecVal), new NumericFilterModel { SearchValue = searchValue, NumericCategory = NumericColumn.Decimal, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDecCases))]
+    public async Task Filter_ValidNullableDecimal(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    decimal parsedValFrom = decimal.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullableDecimal >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    decimal parsedValTo = decimal.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullableDecimal <= parsedValTo);
+                }
+            }
+            else
+            {
+                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullableDecimal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDecimal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDecimal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDecimal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullableDecimal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDecimal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.NullableDecimal), new NumericFilterModel { SearchValue = searchValue, NumericCategory = NumericColumn.Decimal, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDecCases))]
+    public async Task Filter_ValidNullableDecimal_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    decimal parsedValFrom = decimal.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullDec >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    decimal parsedValTo = decimal.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullDec <= parsedValTo);
+                }
+            }
+            else
+            {
+                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullDec == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullDec != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDec > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDec >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullDec < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDec <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.NullDec), new NumericFilterModel { SearchValue = searchValue, NumericCategory = NumericColumn.Decimal, FilterType = operation })
+                                                  .Build();
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidDateTime(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DateTimeVal >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DateTimeVal <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.DateTimeVal), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidDateTime_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DtVal >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DtVal <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.DtVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.DtVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.DtVal), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidNullableDateTime(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullableDateTime >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullableDateTime <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTime >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTime < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTime <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.NullableDateTime), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidNullableDateTime_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullDt >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullDt <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullDt == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDt >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullDt < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDt <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.NullDt), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidDateOnly(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DateOnlyVal >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DateOnlyVal <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.DateOnlyVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.DateOnlyVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DateOnlyVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateOnlyVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.DateOnlyVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateOnlyVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.DateOnlyVal), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidDateOnly_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DoVal >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.DoVal <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.DoVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.DoVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DoVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DoVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.DoVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DoVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.DoVal), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidNullableDateOnly(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullableDateOnly >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullableDateOnly <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullableDateOnly == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateOnly != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateOnly > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateOnly >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateOnly < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateOnly <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.NullableDateOnly), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidNullableDateOnly_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullDo >= parsedValFrom);
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
+                    baseQuery = baseQuery.Where(x => x.NullDo <= parsedValTo);
+                }
+            }
+            else
+            {
+                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullDo == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullDo != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDo > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDo >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullDo < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDo <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.NullDo), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidIntCases))]
+    public async Task Filter_ValidString(string searchValue, FilterOperations operation)
+    {
+        // Arrange
+        using TestDbContext context = Fixture.CreateContext();
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+        List<TestEntity> entities;
+        baseQuery = operation switch
+        {
+            FilterOperations.Equals => baseQuery.Where(x => x.StringVal == searchValue),
+            FilterOperations.NotEqual => baseQuery.Where(x => x.StringVal != searchValue),
+            FilterOperations.Contains => baseQuery.Where(x => x.StringVal.Contains(searchValue)),
+            FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StringVal.Contains(searchValue)),
+            FilterOperations.StartsWith => baseQuery.Where(x => x.StringVal.StartsWith(searchValue)),
+            FilterOperations.EndsWith => baseQuery.Where(x => x.StringVal.EndsWith(searchValue)),
+            _ => throw new InvalidOperationException($"{operation} not supported")
+        };
+        entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+        IFormCollection form = TestFormBuilder.Create()
+                                              .AddColumn(nameof(TestEntity.StringVal), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
+                                              .Build();
+
+        using TestDbContext contextNew = Fixture.CreateContext();
+        // Act
+        Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                   .WithoutSorting()
+                                                                   .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidStringCases))]
+    public async Task Filter_ValidString_WithProjection(string searchValue, FilterOperations operation)
+    {
+        // Arrange
+        using TestDbContext context = Fixture.CreateContext();
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        List<TestDto> entities;
+        baseQuery = operation switch
+        {
+            FilterOperations.Equals => baseQuery.Where(x => x.StrVal == searchValue),
+            FilterOperations.NotEqual => baseQuery.Where(x => x.StrVal != searchValue),
+            FilterOperations.Contains => baseQuery.Where(x => x.StrVal.Contains(searchValue)),
+            FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StrVal.Contains(searchValue)),
+            FilterOperations.StartsWith => baseQuery.Where(x => x.StrVal.StartsWith(searchValue)),
+            FilterOperations.EndsWith => baseQuery.Where(x => x.StrVal.EndsWith(searchValue)),
+            _ => throw new InvalidOperationException($"{operation} not supported")
+        };
+        entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+        IFormCollection form = TestFormBuilder.Create()
+                                              .AddColumn(nameof(TestDto.StrVal), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
+                                              .Build();
+
+        using TestDbContext contextNew = Fixture.CreateContext();
+        // Act
+        Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                .WithoutSorting()
+                                                                .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidStringCases))]
+    public async Task Filter_ValidNullableString(string searchValue, FilterOperations operation)
+    {
+        // Arrange
+        using TestDbContext context = Fixture.CreateContext();
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+        List<TestEntity> entities;
+        baseQuery = operation switch
+        {
+            FilterOperations.Equals => baseQuery.Where(x => x.NullableString != null && x.NullableString == searchValue),
+            FilterOperations.NotEqual => baseQuery.Where(x => x.NullableString != null && x.NullableString != searchValue),
+            FilterOperations.Contains => baseQuery.Where(x => x.NullableString != null && x.NullableString.Contains(searchValue)),
+            FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullableString != null && !x.NullableString.Contains(searchValue)),
+            FilterOperations.StartsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.StartsWith(searchValue)),
+            FilterOperations.EndsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.EndsWith(searchValue)),
+            _ => throw new InvalidOperationException($"{operation} not supported")
+        };
+        entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+        IFormCollection form = TestFormBuilder.Create()
+                                              .AddColumn(nameof(TestEntity.NullableString), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
+                                              .Build();
+
+        using TestDbContext contextNew = Fixture.CreateContext();
+        // Act
+        Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                   .WithoutSorting()
+                                                                   .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidStringCases))]
+    public async Task Filter_ValidNullableString_WithProjection(string searchValue, FilterOperations operation)
+    {
+        // Arrange
+        using TestDbContext context = Fixture.CreateContext();
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        List<TestDto> entities;
+        baseQuery = operation switch
+        {
+            FilterOperations.Equals => baseQuery.Where(x => x.NullStr != null && x.NullStr == searchValue),
+            FilterOperations.NotEqual => baseQuery.Where(x => x.NullStr != null && x.NullStr != searchValue),
+            FilterOperations.Contains => baseQuery.Where(x => x.NullStr != null && x.NullStr.Contains(searchValue)),
+            FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullStr != null && !x.NullStr.Contains(searchValue)),
+            FilterOperations.StartsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.StartsWith(searchValue)),
+            FilterOperations.EndsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.EndsWith(searchValue)),
+            _ => throw new InvalidOperationException($"{operation} not supported")
+        };
+        entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+        IFormCollection form = TestFormBuilder.Create()
+                                              .AddColumn(nameof(TestDto.NullStr), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
+                                              .Build();
 
         using TestDbContext contextNew = Fixture.CreateContext();
         // Act
