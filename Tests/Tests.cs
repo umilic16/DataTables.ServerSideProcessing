@@ -3,13 +3,25 @@
 namespace Tests;
 
 public class PostgreSqlTests(PostgreSqlFixture fixture)
-    : TestsBase<PostgreSqlFixture>(fixture), IClassFixture<PostgreSqlFixture>;
+    : ITestsSorting<PostgreSqlFixture>, ITestsColumnFilters<PostgreSqlFixture>, ITestsGlobalFilter<PostgreSqlFixture>, IClassFixture<PostgreSqlFixture>
+{
+    public PostgreSqlFixture Fixture => fixture;
+}
 
 public class PomeloTests(PomeloFixture fixture)
-    : TestsBase<PomeloFixture>(fixture), IClassFixture<PomeloFixture>;
+    : ITestsSorting<PomeloFixture>, ITestsColumnFilters<PomeloFixture>, ITestsGlobalFilter<PomeloFixture>, IClassFixture<PomeloFixture>
+{
+    public PomeloFixture Fixture => fixture;
+}
 
 public class MySqlTests(MySqlFixture fixture)
-    : TestsBase<MySqlFixture>(fixture), IClassFixture<MySqlFixture>;
+    : ITestsSorting<MySqlFixture>, ITestsColumnFilters<MySqlFixture>, ITestsGlobalFilter<MySqlFixture>, IClassFixture<MySqlFixture>
+{
+    public MySqlFixture Fixture => fixture;
+}
 
 public class MsSqlTests(MsSqlFixture fixture)
-    : TestsBase<MsSqlFixture>(fixture), IClassFixture<MsSqlFixture>;
+    : ITestsSorting<MsSqlFixture>, ITestsColumnFilters<MsSqlFixture>, ITestsGlobalFilter<MsSqlFixture>, IClassFixture<MsSqlFixture>
+{
+    public MsSqlFixture Fixture => fixture;
+}

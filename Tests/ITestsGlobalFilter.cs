@@ -5,9 +5,11 @@ using Tests.Fixtures;
 
 namespace Tests;
 
-public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixture
+public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
 {
-    [Fact, Trait("Category", "GlobalFilter")]
+    TFixture Fixture { get; }
+
+    [Fact]
     public async Task GlobalFilter_On_NumericColumns()
     {
         // Arrange
@@ -35,7 +37,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_NumericColumns_WithProjection()
     {
         // Arrange
@@ -64,7 +66,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_DateColumns()
     {
         // Arrange
@@ -92,7 +94,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_DateColumns_WithProjection()
     {
         // Arrange
@@ -122,7 +124,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_EnumColumns()
     {
         // Arrange
@@ -148,7 +150,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_EnumColumns_WithProjection()
     {
         // Arrange
@@ -175,7 +177,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_BoolColumns()
     {
         // Arrange
@@ -201,7 +203,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_BoolColumns_WithProjection()
     {
         // Arrange
@@ -228,7 +230,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_StringColumns()
     {
         // Arrange
@@ -254,7 +256,7 @@ public abstract partial class TestsBase<TFixture> where TFixture : ITestDbFixtur
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
     }
 
-    [Fact, Trait("Category", "GlobalFilter")]
+    [Fact]
     public async Task GlobalFilter_On_StringColumns_WithProjection()
     {
         // Arrange

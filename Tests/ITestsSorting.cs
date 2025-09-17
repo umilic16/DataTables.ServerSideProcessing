@@ -5,11 +5,11 @@ using Tests.Fixtures;
 
 namespace Tests;
 
-public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixture : ITestDbFixture
+public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
 {
-    protected readonly TFixture Fixture = fixture;
+    TFixture Fixture { get; }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_IntVal_Ascending()
     {
         // Arrange
@@ -31,7 +31,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.IntVal), response.Data.Select(x => x.IntVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_IntVal_WithProjection_Descending()
     {
         // Arrange
@@ -56,7 +56,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.IntVal), response.Data.Select(x => x.IntVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableInt_Ascending()
     {
         // Arrange
@@ -78,7 +78,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableInt), response.Data.Select(x => x.NullableInt));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullInt_WithProjection_Descending()
     {
         // Arrange
@@ -103,7 +103,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullInt), response.Data.Select(x => x.NullInt));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_DecimalVal_Ascending()
     {
         // Arrange
@@ -125,7 +125,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.DecimalVal), response.Data.Select(x => x.DecimalVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_DecVal_WithProjection_Descending()
     {
         // Arrange
@@ -150,7 +150,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.DecVal), response.Data.Select(x => x.DecVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableDecimal_Ascending()
     {
         // Arrange
@@ -172,7 +172,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableDecimal), response.Data.Select(x => x.NullableDecimal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullDec_WithProjection_Descending()
     {
         // Arrange
@@ -197,7 +197,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullDec), response.Data.Select(x => x.NullDec));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_DateTimeVal_Ascending()
     {
         // Arrange
@@ -219,7 +219,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.DateTimeVal), response.Data.Select(x => x.DateTimeVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_DtVal_WithProjection_Descending()
     {
         // Arrange
@@ -244,7 +244,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.DtVal), response.Data.Select(x => x.DtVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableDateTime_Ascending()
     {
         // Arrange
@@ -266,7 +266,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableDateTime), response.Data.Select(x => x.NullableDateTime));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullDt_WithProjection_Descending()
     {
         // Arrange
@@ -291,7 +291,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullDt), response.Data.Select(x => x.NullDt));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_DateOnlyVal_Ascending()
     {
         // Arrange
@@ -313,7 +313,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.DateOnlyVal), response.Data.Select(x => x.DateOnlyVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_DoVal_WithProjection_Descending()
     {
         // Arrange
@@ -338,7 +338,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.DoVal), response.Data.Select(x => x.DoVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableDateOnly_Ascending()
     {
         // Arrange
@@ -360,7 +360,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableDateOnly), response.Data.Select(x => x.NullableDateOnly));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullDo_WithProjection_Descending()
     {
         // Arrange
@@ -385,7 +385,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullDo), response.Data.Select(x => x.NullDo));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_EnumVal_Ascending()
     {
         // Arrange
@@ -407,7 +407,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.EnumVal), response.Data.Select(x => x.EnumVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_EnumVal_WithProjection_Descending()
     {
         // Arrange
@@ -432,7 +432,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.EnumVal), response.Data.Select(x => x.EnumVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableEnumAscending()
     {
         // Arrange
@@ -454,7 +454,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableEnum), response.Data.Select(x => x.NullableEnum));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableEnum_WithProjection_Descending()
     {
         // Arrange
@@ -479,7 +479,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableEnum), response.Data.Select(x => x.NullableEnum));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_BoolVal_Ascending()
     {
         // Arrange
@@ -501,7 +501,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.BoolVal), response.Data.Select(x => x.BoolVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_BoolVal_WithProjection_Descending()
     {
         // Arrange
@@ -526,7 +526,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.BoolVal), response.Data.Select(x => x.BoolVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableBool_Ascending()
     {
         // Arrange
@@ -548,7 +548,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableBool), response.Data.Select(x => x.NullableBool));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableBool_WithProjection_Descending()
     {
         // Arrange
@@ -573,7 +573,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableBool), response.Data.Select(x => x.NullableBool));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_StringVal_Ascending()
     {
         // Arrange
@@ -595,7 +595,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.StringVal), response.Data.Select(x => x.StringVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_StrVal_WithProjection_Descending()
     {
         // Arrange
@@ -620,7 +620,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.StrVal), response.Data.Select(x => x.StrVal));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullableString_Ascending()
     {
         // Arrange
@@ -642,7 +642,7 @@ public abstract partial class TestsBase<TFixture>(TFixture fixture) where TFixtu
         Assert.Equal(allEntities.Select(x => x.NullableString), response.Data.Select(x => x.NullableString));
     }
 
-    [Fact, Trait("Category", "Sorting")]
+    [Fact]
     public async Task Sort_NullStr_WithProjection_Descending()
     {
         // Arrange

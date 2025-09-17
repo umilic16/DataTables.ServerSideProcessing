@@ -5,6 +5,7 @@
 ## 🔥 High priority / Upcoming
 
   - [ ] Add support for building query (and accessing it) but without executing it
+  - [ ] DateTimeOffset support
   - [ ] Select/MultiSelect generic (instead of just string) support
   - [ ] CI/CD
   - [ ] Add global configuration support (e.g. modifying Default instance of FilterParsingOptions, RequestParser...)
@@ -13,6 +14,8 @@
 ## 💡 Low priority / Ideas
 
   - [ ] Better way of accessing property names (e.g. by some data annotation building with source generator or some method)
+  - [ ] Maybe some data annotation on properties which should be included in global filtering
+  - [ ] Custom exceptions
   - [ ] Add examples, improve documentation
   - [ ] Js helper methods
   - [ ] Add components?
