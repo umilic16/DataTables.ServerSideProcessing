@@ -15,8 +15,8 @@ internal static class DateExpressionBuilder
             throw new InvalidOperationException($"Property '{propertyName}' is not a DateTime/DateOnly type.");
 
         ConstantExpression constantValue = underlyingType == typeof(DateTime)
-            ? Expression.Constant(searchValue.ToDateTime(TimeOnly.MinValue))
-            : Expression.Constant(searchValue);
+            ? Expression.Constant(searchValue.ToDateTime(TimeOnly.MinValue), propertyType)
+            : Expression.Constant(searchValue, propertyType);
 
         Expression comparison = filterType switch
         {
