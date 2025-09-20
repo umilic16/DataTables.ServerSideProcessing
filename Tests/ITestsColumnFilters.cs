@@ -138,17 +138,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         }
         else
         {
-            int parsedVal = int.Parse(searchValue);
-            baseQuery = operation switch
+            if (!string.IsNullOrEmpty(searchValue))
             {
-                FilterOperations.Equals => baseQuery.Where(x => x.IntVal == parsedVal),
-                FilterOperations.NotEqual => baseQuery.Where(x => x.IntVal != parsedVal),
-                FilterOperations.GreaterThan => baseQuery.Where(x => x.IntVal > parsedVal),
-                FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.IntVal >= parsedVal),
-                FilterOperations.LessThan => baseQuery.Where(x => x.IntVal < parsedVal),
-                FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.IntVal <= parsedVal),
-                _ => throw new InvalidOperationException($"{operation} not supported")
-            };
+                int parsedVal = int.Parse(searchValue);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.IntVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.IntVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.IntVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.IntVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.IntVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.IntVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
         }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
@@ -191,17 +194,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         }
         else
         {
-            int parsedVal = int.Parse(searchValue);
-            baseQuery = operation switch
+            if (!string.IsNullOrEmpty(searchValue))
             {
-                FilterOperations.Equals => baseQuery.Where(x => x.IntVal == parsedVal),
-                FilterOperations.NotEqual => baseQuery.Where(x => x.IntVal != parsedVal),
-                FilterOperations.GreaterThan => baseQuery.Where(x => x.IntVal > parsedVal),
-                FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.IntVal >= parsedVal),
-                FilterOperations.LessThan => baseQuery.Where(x => x.IntVal < parsedVal),
-                FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.IntVal <= parsedVal),
-                _ => throw new InvalidOperationException($"{operation} not supported")
-            };
+                int parsedVal = int.Parse(searchValue);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.IntVal == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.IntVal != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.IntVal > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.IntVal >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.IntVal < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.IntVal <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
         }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
@@ -244,17 +250,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         }
         else
         {
-            int parsedVal = int.Parse(searchValue);
-            baseQuery = operation switch
+            if (!string.IsNullOrEmpty(searchValue))
             {
-                FilterOperations.Equals => baseQuery.Where(x => x.NullableInt == parsedVal),
-                FilterOperations.NotEqual => baseQuery.Where(x => x.NullableInt != parsedVal),
-                FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableInt > parsedVal),
-                FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableInt >= parsedVal),
-                FilterOperations.LessThan => baseQuery.Where(x => x.NullableInt < parsedVal),
-                FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableInt <= parsedVal),
-                _ => throw new InvalidOperationException($"{operation} not supported")
-            };
+                int parsedVal = int.Parse(searchValue);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullableInt == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullableInt != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableInt > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableInt >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullableInt < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableInt <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
         }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
@@ -297,17 +306,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         }
         else
         {
-            int parsedVal = int.Parse(searchValue);
-            baseQuery = operation switch
+            if (!string.IsNullOrEmpty(searchValue))
             {
-                FilterOperations.Equals => baseQuery.Where(x => x.NullInt == parsedVal),
-                FilterOperations.NotEqual => baseQuery.Where(x => x.NullInt != parsedVal),
-                FilterOperations.GreaterThan => baseQuery.Where(x => x.NullInt > parsedVal),
-                FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullInt >= parsedVal),
-                FilterOperations.LessThan => baseQuery.Where(x => x.NullInt < parsedVal),
-                FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullInt <= parsedVal),
-                _ => throw new InvalidOperationException($"{operation} not supported")
-            };
+                int parsedVal = int.Parse(searchValue);
+                baseQuery = operation switch
+                {
+                    FilterOperations.Equals => baseQuery.Where(x => x.NullInt == parsedVal),
+                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullInt != parsedVal),
+                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullInt > parsedVal),
+                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullInt >= parsedVal),
+                    FilterOperations.LessThan => baseQuery.Where(x => x.NullInt < parsedVal),
+                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullInt <= parsedVal),
+                    _ => throw new InvalidOperationException($"{operation} not supported")
+                };
+            }
         }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
@@ -354,17 +366,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.DecimalVal == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.DecimalVal != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DecimalVal > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DecimalVal >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.DecimalVal < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DecimalVal <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DecimalVal == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DecimalVal != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DecimalVal > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DecimalVal >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DecimalVal < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DecimalVal <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -417,17 +432,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.DecVal == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.DecVal != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DecVal > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DecVal >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.DecVal < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DecVal <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DecVal == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DecVal != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DecVal > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DecVal >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DecVal < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DecVal <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -480,17 +498,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.NullableDecimal == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDecimal != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDecimal > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDecimal >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.NullableDecimal < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDecimal <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDecimal == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDecimal != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDecimal > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDecimal >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullableDecimal < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDecimal <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -543,17 +564,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.NullDec == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullDec != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDec > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDec >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.NullDec < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDec <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    decimal parsedVal = decimal.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDec == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDec != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDec > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDec >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullDec < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDec <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -605,17 +629,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeVal >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeVal < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeVal <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeVal >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeVal < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeVal <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -668,17 +695,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.DtVal == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtVal >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.DtVal < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtVal <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DtVal == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtVal >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DtVal < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtVal <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -731,17 +761,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTime >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTime < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTime <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTime >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTime < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTime <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -794,17 +827,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.NullDt == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDt >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.NullDt < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDt <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDt == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDt >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullDt < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDt <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -856,17 +892,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.DateOnlyVal == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.DateOnlyVal != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DateOnlyVal > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateOnlyVal >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.DateOnlyVal < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateOnlyVal <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DateOnlyVal == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateOnlyVal != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateOnlyVal > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateOnlyVal >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DateOnlyVal < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateOnlyVal <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -919,17 +958,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.DoVal == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.DoVal != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.DoVal > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DoVal >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.DoVal < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DoVal <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DoVal == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DoVal != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DoVal > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DoVal >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DoVal < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DoVal <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -982,17 +1024,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.NullableDateOnly == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateOnly != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateOnly > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateOnly >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateOnly < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateOnly <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateOnly == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateOnly != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateOnly > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateOnly >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateOnly < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateOnly <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -1045,17 +1090,20 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             }
             else
             {
-                DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
-                baseQuery = operation switch
+                if (!string.IsNullOrEmpty(searchValue))
                 {
-                    FilterOperations.Equals => baseQuery.Where(x => x.NullDo == parsedVal),
-                    FilterOperations.NotEqual => baseQuery.Where(x => x.NullDo != parsedVal),
-                    FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDo > parsedVal),
-                    FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDo >= parsedVal),
-                    FilterOperations.LessThan => baseQuery.Where(x => x.NullDo < parsedVal),
-                    FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDo <= parsedVal),
-                    _ => throw new InvalidOperationException($"{operation} not supported")
-                };
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDo == parsedVal),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDo != parsedVal),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDo > parsedVal),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDo >= parsedVal),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullDo < parsedVal),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDo <= parsedVal),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
             }
             entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
             IFormCollection form = TestFormBuilder.Create()
@@ -1087,16 +1135,19 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
         List<TestEntity> entities;
-        baseQuery = operation switch
+        if (!string.IsNullOrEmpty(searchValue))
         {
-            FilterOperations.Equals => baseQuery.Where(x => x.StringVal == searchValue),
-            FilterOperations.NotEqual => baseQuery.Where(x => x.StringVal != searchValue),
-            FilterOperations.Contains => baseQuery.Where(x => x.StringVal.Contains(searchValue)),
-            FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StringVal.Contains(searchValue)),
-            FilterOperations.StartsWith => baseQuery.Where(x => x.StringVal.StartsWith(searchValue)),
-            FilterOperations.EndsWith => baseQuery.Where(x => x.StringVal.EndsWith(searchValue)),
-            _ => throw new InvalidOperationException($"{operation} not supported")
-        };
+            baseQuery = operation switch
+            {
+                FilterOperations.Equals => baseQuery.Where(x => x.StringVal == searchValue),
+                FilterOperations.NotEqual => baseQuery.Where(x => x.StringVal != searchValue),
+                FilterOperations.Contains => baseQuery.Where(x => x.StringVal.Contains(searchValue)),
+                FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StringVal.Contains(searchValue)),
+                FilterOperations.StartsWith => baseQuery.Where(x => x.StringVal.StartsWith(searchValue)),
+                FilterOperations.EndsWith => baseQuery.Where(x => x.StringVal.EndsWith(searchValue)),
+                _ => throw new InvalidOperationException($"{operation} not supported")
+            };
+        }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
                                               .AddColumn(nameof(TestEntity.StringVal), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
@@ -1122,16 +1173,19 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
         List<TestDto> entities;
-        baseQuery = operation switch
+        if (!string.IsNullOrEmpty(searchValue))
         {
-            FilterOperations.Equals => baseQuery.Where(x => x.StrVal == searchValue),
-            FilterOperations.NotEqual => baseQuery.Where(x => x.StrVal != searchValue),
-            FilterOperations.Contains => baseQuery.Where(x => x.StrVal.Contains(searchValue)),
-            FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StrVal.Contains(searchValue)),
-            FilterOperations.StartsWith => baseQuery.Where(x => x.StrVal.StartsWith(searchValue)),
-            FilterOperations.EndsWith => baseQuery.Where(x => x.StrVal.EndsWith(searchValue)),
-            _ => throw new InvalidOperationException($"{operation} not supported")
-        };
+            baseQuery = operation switch
+            {
+                FilterOperations.Equals => baseQuery.Where(x => x.StrVal == searchValue),
+                FilterOperations.NotEqual => baseQuery.Where(x => x.StrVal != searchValue),
+                FilterOperations.Contains => baseQuery.Where(x => x.StrVal.Contains(searchValue)),
+                FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StrVal.Contains(searchValue)),
+                FilterOperations.StartsWith => baseQuery.Where(x => x.StrVal.StartsWith(searchValue)),
+                FilterOperations.EndsWith => baseQuery.Where(x => x.StrVal.EndsWith(searchValue)),
+                _ => throw new InvalidOperationException($"{operation} not supported")
+            };
+        }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
                                               .AddColumn(nameof(TestDto.StrVal), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
@@ -1157,16 +1211,19 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
         List<TestEntity> entities;
-        baseQuery = operation switch
+        if (!string.IsNullOrEmpty(searchValue))
         {
-            FilterOperations.Equals => baseQuery.Where(x => x.NullableString != null && x.NullableString == searchValue),
-            FilterOperations.NotEqual => baseQuery.Where(x => x.NullableString != null && x.NullableString != searchValue),
-            FilterOperations.Contains => baseQuery.Where(x => x.NullableString != null && x.NullableString.Contains(searchValue)),
-            FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullableString != null && !x.NullableString.Contains(searchValue)),
-            FilterOperations.StartsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.StartsWith(searchValue)),
-            FilterOperations.EndsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.EndsWith(searchValue)),
-            _ => throw new InvalidOperationException($"{operation} not supported")
-        };
+            baseQuery = operation switch
+            {
+                FilterOperations.Equals => baseQuery.Where(x => x.NullableString != null && x.NullableString == searchValue),
+                FilterOperations.NotEqual => baseQuery.Where(x => x.NullableString != null && x.NullableString != searchValue),
+                FilterOperations.Contains => baseQuery.Where(x => x.NullableString != null && x.NullableString.Contains(searchValue)),
+                FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullableString != null && !x.NullableString.Contains(searchValue)),
+                FilterOperations.StartsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.StartsWith(searchValue)),
+                FilterOperations.EndsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.EndsWith(searchValue)),
+                _ => throw new InvalidOperationException($"{operation} not supported")
+            };
+        }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
                                               .AddColumn(nameof(TestEntity.NullableString), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
@@ -1192,16 +1249,19 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
         List<TestDto> entities;
-        baseQuery = operation switch
+        if (!string.IsNullOrEmpty(searchValue))
         {
-            FilterOperations.Equals => baseQuery.Where(x => x.NullStr != null && x.NullStr == searchValue),
-            FilterOperations.NotEqual => baseQuery.Where(x => x.NullStr != null && x.NullStr != searchValue),
-            FilterOperations.Contains => baseQuery.Where(x => x.NullStr != null && x.NullStr.Contains(searchValue)),
-            FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullStr != null && !x.NullStr.Contains(searchValue)),
-            FilterOperations.StartsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.StartsWith(searchValue)),
-            FilterOperations.EndsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.EndsWith(searchValue)),
-            _ => throw new InvalidOperationException($"{operation} not supported")
-        };
+            baseQuery = operation switch
+            {
+                FilterOperations.Equals => baseQuery.Where(x => x.NullStr != null && x.NullStr == searchValue),
+                FilterOperations.NotEqual => baseQuery.Where(x => x.NullStr != null && x.NullStr != searchValue),
+                FilterOperations.Contains => baseQuery.Where(x => x.NullStr != null && x.NullStr.Contains(searchValue)),
+                FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullStr != null && !x.NullStr.Contains(searchValue)),
+                FilterOperations.StartsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.StartsWith(searchValue)),
+                FilterOperations.EndsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.EndsWith(searchValue)),
+                _ => throw new InvalidOperationException($"{operation} not supported")
+            };
+        }
         entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         IFormCollection form = TestFormBuilder.Create()
                                               .AddColumn(nameof(TestDto.NullStr), new TextFilterModel { SearchValue = searchValue, FilterType = operation })
