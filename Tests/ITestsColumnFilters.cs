@@ -1143,8 +1143,9 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 FilterOperations.NotEqual => baseQuery.Where(x => x.StringVal != searchValue),
                 FilterOperations.Contains => baseQuery.Where(x => x.StringVal.Contains(searchValue)),
                 FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StringVal.Contains(searchValue)),
-                FilterOperations.StartsWith => baseQuery.Where(x => x.StringVal.StartsWith(searchValue)),
-                FilterOperations.EndsWith => baseQuery.Where(x => x.StringVal.EndsWith(searchValue)),
+                // have to use Like cause of MySql provider...
+                FilterOperations.StartsWith => baseQuery.Where(x => EF.Functions.Like(x.StringVal, $"{searchValue}%")),
+                FilterOperations.EndsWith => baseQuery.Where(x => EF.Functions.Like(x.StringVal, $"%{searchValue}")),
                 _ => throw new InvalidOperationException($"{operation} not supported")
             };
         }
@@ -1181,8 +1182,9 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 FilterOperations.NotEqual => baseQuery.Where(x => x.StrVal != searchValue),
                 FilterOperations.Contains => baseQuery.Where(x => x.StrVal.Contains(searchValue)),
                 FilterOperations.DoesNotContain => baseQuery.Where(x => !x.StrVal.Contains(searchValue)),
-                FilterOperations.StartsWith => baseQuery.Where(x => x.StrVal.StartsWith(searchValue)),
-                FilterOperations.EndsWith => baseQuery.Where(x => x.StrVal.EndsWith(searchValue)),
+                // have to use Like cause of MySql provider...
+                FilterOperations.StartsWith => baseQuery.Where(x => EF.Functions.Like(x.StrVal, $"{searchValue}%")),
+                FilterOperations.EndsWith => baseQuery.Where(x => EF.Functions.Like(x.StrVal, $"%{searchValue}")),
                 _ => throw new InvalidOperationException($"{operation} not supported")
             };
         }
@@ -1219,8 +1221,9 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 FilterOperations.NotEqual => baseQuery.Where(x => x.NullableString == null || x.NullableString != searchValue),
                 FilterOperations.Contains => baseQuery.Where(x => x.NullableString != null && x.NullableString.Contains(searchValue)),
                 FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullableString == null || !x.NullableString.Contains(searchValue)),
-                FilterOperations.StartsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.StartsWith(searchValue)),
-                FilterOperations.EndsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.EndsWith(searchValue)),
+                // have to use Like cause of MySql provider...
+                FilterOperations.StartsWith => baseQuery.Where(x => x.NullableString != null && EF.Functions.Like(x.NullableString, $"{searchValue}%")),
+                FilterOperations.EndsWith => baseQuery.Where(x => x.NullableString != null && EF.Functions.Like(x.NullableString, $"%{searchValue}")),
                 _ => throw new InvalidOperationException($"{operation} not supported")
             };
         }
@@ -1257,8 +1260,9 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 FilterOperations.NotEqual => baseQuery.Where(x => x.NullStr == null || x.NullStr != searchValue),
                 FilterOperations.Contains => baseQuery.Where(x => x.NullStr != null && x.NullStr.Contains(searchValue)),
                 FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullStr == null || !x.NullStr.Contains(searchValue)),
-                FilterOperations.StartsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.StartsWith(searchValue)),
-                FilterOperations.EndsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.EndsWith(searchValue)),
+                // have to use Like cause of MySql provider...
+                FilterOperations.StartsWith => baseQuery.Where(x => x.NullStr != null && EF.Functions.Like(x.NullStr, $"{searchValue}%")),
+                FilterOperations.EndsWith => baseQuery.Where(x => x.NullStr != null && EF.Functions.Like(x.NullStr, $"%{searchValue}")),
                 _ => throw new InvalidOperationException($"{operation} not supported")
             };
         }
