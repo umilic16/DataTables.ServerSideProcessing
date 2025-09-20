@@ -185,9 +185,9 @@ public sealed class ResponseBuilder<TSource, TResult>
     /// <returns>
     /// A <see cref="List{TResult}"/> containing the requested data after applying filters, sorting, and paging.
     /// </returns>
-    public async Task<List<TResult>> GetDataAsync(int? skip, int? pageSize = null, CancellationToken ct = default)
+    public async Task<List<TResult>> GetDataAsync(int? skip = null, int? pageSize = null, CancellationToken ct = default)
     {
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default, skip, pageSize);
 
         BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
@@ -213,7 +213,7 @@ public sealed class ResponseBuilder<TSource, TResult>
     /// <returns>
     /// A <see cref="List{TResult}"/> containing the requested data after applying filters, sorting, and paging.
     /// </returns>
-    public List<TResult> GetData(int? skip, int? pageSize = null)
+    public List<TResult> GetData(int? skip = null, int? pageSize = null)
     {
         Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default, skip, pageSize);
 
