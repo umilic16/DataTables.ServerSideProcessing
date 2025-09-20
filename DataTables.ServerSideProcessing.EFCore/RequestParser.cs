@@ -109,7 +109,7 @@ internal static class RequestParser
                 if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
                     continue;
 
-                AddDateFilter(searchValue, propertyName, filterType, filters, options.BetweenSeparator);
+                AddDateFilter(searchValue, propertyName, filterType, filters, options);
             }
             else if (filterCategory == FilterCategory.SingleSelect)
             {
@@ -188,11 +188,11 @@ internal static class RequestParser
         string propertyName,
         FilterOperations filterType,
         List<FilterModel> filters,
-        string betweenSeparator)
+        FilterParsingOptions options)
     {
         if (filterType != FilterOperations.Between)
         {
-            if (!DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateOnly parsedValue))
+            if (!DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, options.DateTimeStyles, out DateOnly parsedValue))
                 return;
 
             filters.Add(new DateFilter
@@ -204,11 +204,11 @@ internal static class RequestParser
         }
         else
         {
-            var searchValues = searchValue.Split(betweenSeparator);
+            var searchValues = searchValue.Split(options.BetweenSeparator);
             for (int i = 0; i < 2; i++)
             {
                 if (string.IsNullOrEmpty(searchValues[i])
-                    || (!DateOnly.TryParse(searchValues[i], CultureInfo.CurrentCulture, DateTimeStyles.None, out DateOnly parsedValue)))
+                    || (!DateOnly.TryParse(searchValues[i], CultureInfo.CurrentCulture, options.DateTimeStyles, out DateOnly parsedValue)))
                     continue;
 
                 filters.Add(new DateFilter

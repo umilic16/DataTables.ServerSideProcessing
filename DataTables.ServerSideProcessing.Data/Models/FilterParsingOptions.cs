@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace DataTables.ServerSideProcessing.Data.Models;
 
 /// <summary>
@@ -39,4 +41,9 @@ public sealed class FilterParsingOptions
     /// Separator used for multi-select filter values. Default is ",".
     /// </summary>
     public string MultiSelectSeparator { get; init; } = ",";
+
+    /// <summary>
+    /// Datetime styles to use when parsing date values. Default is DateTimeStyles.None.
+    /// </summary>
+    public DateTimeStyles DateTimeStyles { get; init; } = DateTimeStyles.None;
 }
