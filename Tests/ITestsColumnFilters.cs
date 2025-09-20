@@ -1216,9 +1216,9 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             baseQuery = operation switch
             {
                 FilterOperations.Equals => baseQuery.Where(x => x.NullableString != null && x.NullableString == searchValue),
-                FilterOperations.NotEqual => baseQuery.Where(x => x.NullableString != null && x.NullableString != searchValue),
+                FilterOperations.NotEqual => baseQuery.Where(x => x.NullableString == null || x.NullableString != searchValue),
                 FilterOperations.Contains => baseQuery.Where(x => x.NullableString != null && x.NullableString.Contains(searchValue)),
-                FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullableString != null && !x.NullableString.Contains(searchValue)),
+                FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullableString == null || !x.NullableString.Contains(searchValue)),
                 FilterOperations.StartsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.StartsWith(searchValue)),
                 FilterOperations.EndsWith => baseQuery.Where(x => x.NullableString != null && x.NullableString.EndsWith(searchValue)),
                 _ => throw new InvalidOperationException($"{operation} not supported")
@@ -1254,9 +1254,9 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             baseQuery = operation switch
             {
                 FilterOperations.Equals => baseQuery.Where(x => x.NullStr != null && x.NullStr == searchValue),
-                FilterOperations.NotEqual => baseQuery.Where(x => x.NullStr != null && x.NullStr != searchValue),
+                FilterOperations.NotEqual => baseQuery.Where(x => x.NullStr == null || x.NullStr != searchValue),
                 FilterOperations.Contains => baseQuery.Where(x => x.NullStr != null && x.NullStr.Contains(searchValue)),
-                FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullStr != null && !x.NullStr.Contains(searchValue)),
+                FilterOperations.DoesNotContain => baseQuery.Where(x => x.NullStr == null || !x.NullStr.Contains(searchValue)),
                 FilterOperations.StartsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.StartsWith(searchValue)),
                 FilterOperations.EndsWith => baseQuery.Where(x => x.NullStr != null && x.NullStr.EndsWith(searchValue)),
                 _ => throw new InvalidOperationException($"{operation} not supported")
