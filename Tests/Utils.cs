@@ -1,4 +1,5 @@
-﻿using DataTables.ServerSideProcessing.Data.Enums;
+﻿using System.Globalization;
+using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.Data.Models;
 
 namespace Tests;
@@ -80,14 +81,18 @@ internal static class Utils
         string[] cultures = ["en-US", "sr"];
 
         var now = DateTime.Now;
-        var nowMinus3Years = now.AddYears(-3);
-        var nowPlus3Years = now.AddYears(3);
+        var srNow = now.ToString(new CultureInfo("sr"));
+        var enNow = now.ToString(new CultureInfo("en-US"));
+        var nm3ySr = now.AddYears(-3).ToString(new CultureInfo("sr"));
+        var nm3yEn = now.AddYears(-3).ToString(new CultureInfo("en-US"));
+        var np3ySr = now.AddYears(3).ToString(new CultureInfo("sr"));
+        var np3yEn = now.AddYears(3).ToString(new CultureInfo("en-US"));
 
-        string[] dtSrValues = ["22.01.2021", "12.07.2027", "13.09.2025", $"{now:dd.MM.yyyy}"];
-        string[] dtSrBetweenValues = [$"{sep}12.07.2027", $"22.01.2021{sep}", $"13.09.2025{sep}12.07.2027", $"{nowMinus3Years:dd.MM.yyyy}{sep}{nowPlus3Years:dd.MM.yyyy}"];
+        string[] dtSrValues = ["22.01.2021", "12.07.2027", "13.09.2025", srNow];
+        string[] dtSrBetweenValues = [$"{sep}12.07.2027", $"22.01.2021{sep}", $"13.09.2025{sep}12.07.2027", $"{nm3ySr}{sep}{np3ySr}"];
 
-        string[] dtEnValues = ["01/22/2021", "07/12/2027", "09/13/2025", $"{now:MM/dd/yyyy}"];
-        string[] dtEnBetweenValues = [$"{sep}07/12/2027", $"01/22/2021{sep}", $"09/13/2025{sep}07/12/2027", $"{nowMinus3Years:MM/dd/yyyy}{sep}{nowPlus3Years:MM/dd/yyyy}"];
+        string[] dtEnValues = ["01/22/2021", "07/12/2027", "09/13/2025", enNow];
+        string[] dtEnBetweenValues = [$"{sep}07/12/2027", $"01/22/2021{sep}", $"09/13/2025{sep}07/12/2027", $"{nm3yEn}{sep}{np3yEn}"];
 
         var numOpsWoBetween = s_numOpsWoBetween[..^1];
         // Date
