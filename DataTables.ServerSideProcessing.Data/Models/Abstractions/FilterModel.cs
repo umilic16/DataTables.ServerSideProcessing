@@ -1,10 +1,10 @@
 namespace DataTables.ServerSideProcessing.Data.Models.Abstractions;
 
 /// <summary>
-/// Base class for all DataTable filter models.
+/// Base record for all DataTable filter models.
 /// Contains the property name to filter on and the search value.
 /// </summary>
-public abstract class FilterModel
+public abstract record FilterModel
 {
     private protected FilterModel() { }
 
@@ -15,12 +15,12 @@ public abstract class FilterModel
 }
 
 /// <summary>
-/// Generic base class for all DataTable filter models.
+/// Generic base record for all DataTable filter models.
 /// Contains the property name to filter on and the search value.
 /// Inherits from <see cref="FilterModel"/>.
 /// </summary>
 /// <typeparam name="T">Type of the value used in the filter (e.g., string, int, DateOnly).</typeparam>
-public abstract class FilterModel<T> : FilterModel
+public abstract record FilterModel<T> : FilterModel
 {
     private protected FilterModel() { }
 

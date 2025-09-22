@@ -9,4 +9,4 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// Used to provide metadata for rendering and processing column filters, including
 /// the type of value the column holds (e.g., base, account number, int, decimal).
 /// </summary>
-public sealed class NumericFilterComponent : FilterComponentModel<NumericColumn>;
+public sealed record NumericFilterComponent : FilterComponentModel<NumericColumn>;

@@ -4,7 +4,7 @@ namespace DataTables.ServerSideProcessing.Data.Models;
 /// <summary>
 /// Represents sorting definition for a DataTable column.
 /// </summary>
-public sealed class SortModel
+public sealed record SortModel
 {
     /// <summary>
     /// Property name to sort by.

@@ -7,7 +7,7 @@ namespace DataTables.ServerSideProcessing.Data.Models.Filters;
 /// Filter model for text-based columns.
 /// Inherits from <see cref="FilterModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
-public sealed class TextFilter : FilterModel<string>
+public sealed record TextFilter : FilterModel<string>
 {
     /// <summary>
     /// Type of the column (e.g., Base, AccNumber).

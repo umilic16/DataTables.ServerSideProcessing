@@ -4,7 +4,7 @@
 /// Represents a generic response model for DataTables server-side processing.
 /// </summary>
 /// <typeparam name="T">The type of data contained in the response.</typeparam>
-public sealed class Response<T>
+public sealed record Response<T>
 {
     /// <summary>
     /// Data to be returned to the DataTable.

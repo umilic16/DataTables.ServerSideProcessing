@@ -6,7 +6,7 @@ namespace DataTables.ServerSideProcessing.Data.Models;
 /// Represents a request for server-side processing of a DataTable.
 /// Contains search, pagination, sorting, and filtering definition.
 /// </summary>
-public sealed class Request
+public sealed record Request
 {
     /// <summary>
     /// The global search term to filter all columns.

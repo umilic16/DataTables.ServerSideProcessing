@@ -3,13 +3,13 @@ using DataTables.ServerSideProcessing.Data.Enums;
 namespace DataTables.ServerSideProcessing.Data.Models.Abstractions;
 
 /// <summary>
-/// Serves as the abstract base class for all filter component models, encapsulating shared properties
+/// Serves as the abstract base record for all filter component models, encapsulating shared properties
 /// required for defining filter behavior and metadata. This includes the table and column names to which
 /// the filter applies, as well as the type of filter to be rendered and processed. The metadata provided
-/// by this class supports dynamic rendering of filter UI elements on the frontend, such as input fields
+/// by this record supports dynamic rendering of filter UI elements on the frontend, such as input fields
 /// and filter type selectors, tailored to the characteristics of the data column.
 /// </summary>
-public abstract class FilterComponentModel
+public abstract record FilterComponentModel
 {
     private protected FilterComponentModel() { }
 
@@ -32,7 +32,7 @@ public abstract class FilterComponentModel
 }
 
 /// <summary>
-/// Generic abstract base class for filter component models, extending <see cref="FilterComponentModel"/>
+/// Generic abstract base record for filter component models, extending <see cref="FilterComponentModel"/>
 /// by introducing a strongly-typed value type for the column being filtered. The generic type parameter <typeparamref name="T"/>
 /// must be an <see cref="Enum"/>, representing the specific data type or semantic meaning of the column value
 /// (e.g., base, account number, integer, decimal). This enables more precise control over filter input rendering,
@@ -41,7 +41,7 @@ public abstract class FilterComponentModel
 /// <typeparam name="T">
 /// An enumeration that specifies the type or semantic category of the column value.
 /// </typeparam>
-public abstract class FilterComponentModel<T> : FilterComponentModel where T : Enum
+public abstract record FilterComponentModel<T> : FilterComponentModel where T : Enum
 {
     private protected FilterComponentModel() { }
 

@@ -8,7 +8,7 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// and the value is the display label shown to the user.
 /// Inherits from <see cref="FilterComponentModel{T}"/>.
 /// </summary>
-public class SelectFilterComponent<V, T> : FilterComponentModel where V : notnull
+public record SelectFilterComponent<V, T> : FilterComponentModel where V : notnull
 {
     /// <summary>
     /// Dictionary of available values that can be selected for filtering.
@@ -22,4 +22,4 @@ public class SelectFilterComponent<V, T> : FilterComponentModel where V : notnul
 /// Provides a list of available values for selection.
 /// Inherits from <see cref="SelectFilterComponent{V,T}"/>.
 /// </summary>
-public sealed class SelectFilterComponent : SelectFilterComponent<string, string>;
+public sealed record SelectFilterComponent : SelectFilterComponent<string, string>;

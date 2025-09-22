@@ -9,7 +9,7 @@ namespace DataTables.ServerSideProcessing.Data.Models.Filters;
 /// Inherits from <see cref="FilterModel{T}"/> where <typeparamref name="T"/> implements <see cref="INumber{T}"/>.
 /// </summary>
 /// <typeparam name="T">The numeric type of the column (e.g., int, decimal) that implements <see cref="INumber{T}"/>.</typeparam>
-public sealed class NumberFilter<T> : FilterModel<T> where T : INumber<T>
+public sealed record NumberFilter<T> : FilterModel<T> where T : INumber<T>
 {
     /// <summary>
     /// Type of the numeric column (e.g., Int, Decimal).
