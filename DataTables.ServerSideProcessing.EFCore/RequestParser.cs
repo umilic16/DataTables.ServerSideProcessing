@@ -63,7 +63,7 @@ internal static class RequestParser
             string filterCategoryKey = $"{options.Prefix}[{propertyName}][{options.FilterCategoryKey}]";
             string valueCategoryKey = $"{options.Prefix}[{propertyName}][{options.ValueCategoryKey}]";
             string valueKey = $"{options.Prefix}[{propertyName}]";
-            var searchValue = requestFormData[valueKey].ToString();
+            string searchValue = requestFormData[valueKey].ToString();
             if (string.IsNullOrEmpty(searchValue))
                 continue;
 
@@ -121,7 +121,7 @@ internal static class RequestParser
             }
             else if (filterCategory == FilterCategory.MultiSelect)
             {
-                var searchValues = searchValue.Split(options.MultiSelectSeparator, StringSplitOptions.RemoveEmptyEntries);
+                string[] searchValues = searchValue.Split(options.MultiSelectSeparator, StringSplitOptions.RemoveEmptyEntries);
                 if (searchValues.Length == 0)
                     continue;
 
@@ -154,7 +154,7 @@ internal static class RequestParser
     {
         if (filterType != FilterOperations.Between)
         {
-            if (!T.TryParse(searchValue, CultureInfo.CurrentCulture, out var parsedValue))
+            if (!T.TryParse(searchValue, CultureInfo.CurrentCulture, out T? parsedValue))
                 return;
 
             filters.Add(new NumberFilter<T>
@@ -166,11 +166,11 @@ internal static class RequestParser
         }
         else
         {
-            var searchValues = searchValue.Split(betweenSeparator);
+            string[] searchValues = searchValue.Split(betweenSeparator);
             for (int i = 0; i < 2; i++)
             {
                 if (string.IsNullOrEmpty(searchValues[i])
-                    || !T.TryParse(searchValues[i], CultureInfo.CurrentCulture, out var parsedValue))
+                    || !T.TryParse(searchValues[i], CultureInfo.CurrentCulture, out T? parsedValue))
                     continue;
 
                 filters.Add(new NumberFilter<T>
@@ -204,7 +204,7 @@ internal static class RequestParser
         }
         else
         {
-            var searchValues = searchValue.Split(options.BetweenSeparator);
+            string[] searchValues = searchValue.Split(options.BetweenSeparator);
             for (int i = 0; i < 2; i++)
             {
                 if (string.IsNullOrEmpty(searchValues[i])
