@@ -1,7 +1,6 @@
 ## 🛠 In Progress
 
   - [ ] Add tests (select, multiselect etc.)
-  - [ ] Fix filtering dates when the property that is filtered on is datetime
 
 ## 🔥 High priority / Upcoming
 
@@ -26,6 +25,7 @@
 
 ## 🧹 Done
 
+  - [x] Fix filtering dates when the property that is filtered on is datetime
   - [x] DateTimeOffset support
   - [x] Switch data models to records
   - [x] Method to return just data instead of whole response object
