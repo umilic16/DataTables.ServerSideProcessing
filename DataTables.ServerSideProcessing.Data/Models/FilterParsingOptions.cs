@@ -1,11 +1,9 @@
-using System.Globalization;
-
 namespace DataTables.ServerSideProcessing.Data.Models;
 
 /// <summary>
 /// Represents configuration options for parsing filters from request data.
 /// </summary>
-public sealed class FilterParsingOptions
+public sealed record FilterParsingOptions
 {
     /// <summary>
     /// Default instance with all default values.
@@ -41,9 +39,4 @@ public sealed class FilterParsingOptions
     /// Separator used for multi-select filter values. Default is ",".
     /// </summary>
     public string MultiSelectSeparator { get; init; } = ",";
-
-    /// <summary>
-    /// Datetime styles to use when parsing date values. Default is DateTimeStyles.None.
-    /// </summary>
-    public DateTimeStyles DateTimeStyles { get; init; } = DateTimeStyles.None;
 }

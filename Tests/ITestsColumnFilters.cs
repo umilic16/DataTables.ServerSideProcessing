@@ -12,6 +12,9 @@ namespace Tests;
 public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 {
     TFixture Fixture { get; }
+    bool IsPostgres { get; }
+    DateTimeStyles DateTimeStyles => IsPostgres ? DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;
+    FilterParsingOptions FilterParsingOptions => FilterParsingOptions.Default;
 
     public static List<TheoryDataRow<string, FilterOperations>> ValidIntCases()
     {
@@ -95,7 +98,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => contextNew.TestEntities.ForDataTable(builtForm)
                                                                                          .WithoutSorting()
-                                                                                         .BuildAsync(TestContext.Current.CancellationToken));
+                                                                                         .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken));
     }
 
     [Theory, Trait("Category", "ColumnFilter")]
@@ -110,7 +113,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Assert
         await Assert.ThrowsAsync<ArgumentException>(() => contextNew.TestEntities.ForDataTable(form)
                                                                                  .WithoutSorting()
-                                                                                 .BuildAsync(TestContext.Current.CancellationToken));
+                                                                                 .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken));
     }
 
     [Theory, Trait("Category", "ColumnFilter")]
@@ -162,7 +165,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                    .WithoutSorting()
-                                                                   .BuildAsync(TestContext.Current.CancellationToken);
+                                                                   .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -218,7 +221,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                 .WithoutSorting()
-                                                                .BuildAsync(TestContext.Current.CancellationToken);
+                                                                .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -274,7 +277,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                    .WithoutSorting()
-                                                                   .BuildAsync(TestContext.Current.CancellationToken);
+                                                                   .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -329,7 +332,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                 .WithoutSorting()
-                                                                .BuildAsync(TestContext.Current.CancellationToken);
+                                                                .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -390,7 +393,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                        .WithoutSorting()
-                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -456,7 +459,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                     .WithoutSorting()
-                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -522,7 +525,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                        .WithoutSorting()
-                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -587,7 +590,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                     .WithoutSorting()
-                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -618,12 +621,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.DateTimeVal >= parsedValFrom);
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.DateTimeVal <= parsedValTo);
                 }
             }
@@ -631,7 +634,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = operation switch
                     {
                         FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal == parsedVal),
@@ -650,10 +653,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                                                   .Build();
 
             using TestDbContext contextNew = Fixture.CreateContext();
+
+
             // Act
             Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                        .WithoutSorting()
-                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -684,12 +689,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.DtVal >= parsedValFrom);
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.DtVal <= parsedValTo);
                 }
             }
@@ -697,7 +702,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = operation switch
                     {
                         FilterOperations.Equals => baseQuery.Where(x => x.DtVal == parsedVal),
@@ -719,7 +724,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                     .WithoutSorting()
-                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -750,12 +755,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.NullableDateTime >= parsedValFrom);
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.NullableDateTime <= parsedValTo);
                 }
             }
@@ -763,7 +768,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = operation switch
                     {
                         FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime == parsedVal),
@@ -785,7 +790,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                        .WithoutSorting()
-                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -816,12 +821,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture);
+                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.NullDt >= parsedValFrom);
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture);
+                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = baseQuery.Where(x => x.NullDt <= parsedValTo);
                 }
             }
@@ -829,7 +834,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture);
+                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
                     baseQuery = operation switch
                     {
                         FilterOperations.Equals => baseQuery.Where(x => x.NullDt == parsedVal),
@@ -850,7 +855,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                     .WithoutSorting()
-                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -916,7 +921,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                        .WithoutSorting()
-                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -982,7 +987,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                     .WithoutSorting()
-                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -1048,7 +1053,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                        .WithoutSorting()
-                                                                       .BuildAsync(TestContext.Current.CancellationToken);
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -1114,7 +1119,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             // Act
             Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                     .WithoutSorting()
-                                                                    .BuildAsync(TestContext.Current.CancellationToken);
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
             // Assert
             Assert.Equal(recordsTotal, result.RecordsTotal);
             Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -1158,7 +1163,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                    .WithoutSorting()
-                                                                   .BuildAsync(TestContext.Current.CancellationToken);
+                                                                   .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -1197,7 +1202,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                 .WithoutSorting()
-                                                                .BuildAsync(TestContext.Current.CancellationToken);
+                                                                .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -1236,7 +1241,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
                                                                    .WithoutSorting()
-                                                                   .BuildAsync(TestContext.Current.CancellationToken);
+                                                                   .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
@@ -1275,7 +1280,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         // Act
         Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
                                                                 .WithoutSorting()
-                                                                .BuildAsync(TestContext.Current.CancellationToken);
+                                                                .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
