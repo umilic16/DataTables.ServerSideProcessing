@@ -1,7 +1,6 @@
 ## 🛠 In Progress
 
   - [ ] Add tests (select, multiselect etc.)
-  - [ ] Switch to records
   - [ ] Fix filtering dates when the property that is filtered on is datetime
 
 ## 🔥 High priority / Upcoming
@@ -28,6 +27,7 @@
 
 ## 🧹 Done
 
+  - [x] Switch data models to records
   - [x] Method to return just data instead of whole response object
   - [x] Add a way of accessing built query (from different stages)
   - [x] Refactor ResponseBuilder to Fluent API
