@@ -96,22 +96,28 @@ public sealed class ResponseBuilder<TSource, TResult>
         return this;
     }
 
+    /// <inheritdoc cref="BuildAsync(FilterParsingOptions?, CancellationToken)"/>
+    public Task<Response<TResult>> BuildAsync(CancellationToken ct = default)
+        => BuildAsync(null, ct);
+
     /// <summary>
     /// Processes the DataTables request and executes the configured query pipeline asynchronously,
     /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
     /// <param name="ct">A cancellation token to cancel the operation.</param>
+    /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
     /// <returns>
     /// A <see cref="Response{TResult}"/> containing the data and metadata required by DataTables.
     /// </returns>
-    public async Task<Response<TResult>> BuildAsync(CancellationToken ct = default)
+    public async Task<Response<TResult>> BuildAsync(FilterParsingOptions? options = null, CancellationToken ct = default)
     {
         int totalCount = await _query.CountAsync(ct);
         if (totalCount == 0) return new Response<TResult>() { Draw = _form["draw"] };
 
         var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
+        options ??= FilterParsingOptions.Default;
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options);
 
         BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
@@ -140,17 +146,19 @@ public sealed class ResponseBuilder<TSource, TResult>
     /// Processes the DataTables request and executes the configured query pipeline,
     /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
+    /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
     /// <returns>
     /// A <see cref="Response{TResult}"/> containing the data and metadata required by DataTables.
     /// </returns>
-    public Response<TResult> Build()
+    public Response<TResult> Build(FilterParsingOptions? options = null)
     {
         int totalCount = _query.Count();
         if (totalCount == 0) return new Response<TResult>() { Draw = _form["draw"] };
 
         var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default);
+        options ??= FilterParsingOptions.Default;
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options);
 
         BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
@@ -175,19 +183,33 @@ public sealed class ResponseBuilder<TSource, TResult>
         return response;
     }
 
+    /// <inheritdoc cref="GetDataAsync(int?, int?, FilterParsingOptions?, CancellationToken)"/>
+    public Task<List<TResult>> GetDataAsync(CancellationToken ct = default)
+        => GetDataAsync(null, null, null, ct);
+
+    /// <inheritdoc cref="GetDataAsync(int?, int?, FilterParsingOptions?, CancellationToken)"/>
+    public Task<List<TResult>> GetDataAsync(FilterParsingOptions? options = null, CancellationToken ct = default)
+        => GetDataAsync(null, null, options, ct);
+
+    /// <inheritdoc cref="GetDataAsync(int?, int?, FilterParsingOptions?, CancellationToken)"/>
+    public Task<List<TResult>> GetDataAsync(int? skip = null, int? pageSize = null, CancellationToken ct = default)
+        => GetDataAsync(skip, pageSize, null, ct);
+
     /// <summary>
     /// Processes the DataTables request and executes the configured query pipeline asynchronously,
     /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
     /// <param name="skip"> The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
     /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
     /// <param name="ct">A cancellation token to cancel the operation.</param>
     /// <returns>
     /// A <see cref="List{TResult}"/> containing the requested data after applying filters, sorting, and paging.
     /// </returns>
-    public async Task<List<TResult>> GetDataAsync(int? skip = null, int? pageSize = null, CancellationToken ct = default)
+    public async Task<List<TResult>> GetDataAsync(int? skip = null, int? pageSize = null, FilterParsingOptions? options = null, CancellationToken ct = default)
     {
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default, skip, pageSize);
+        options ??= FilterParsingOptions.Default;
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
 
         BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
@@ -204,18 +226,24 @@ public sealed class ResponseBuilder<TSource, TResult>
             : await FinalQuery.ToListAsync(ct);
     }
 
+    /// <inheritdoc cref="GetData(int?, int?, FilterParsingOptions?)"/>
+    public List<TResult> GetData(FilterParsingOptions? options = null)
+        => GetData(null, null, options);
+
     /// <summary>
     /// Processes the DataTables request and executes the configured query pipeline,
     /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
     /// <param name="skip"> The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
     /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
     /// <returns>
     /// A <see cref="List{TResult}"/> containing the requested data after applying filters, sorting, and paging.
     /// </returns>
-    public List<TResult> GetData(int? skip = null, int? pageSize = null)
+    public List<TResult> GetData(int? skip = null, int? pageSize = null, FilterParsingOptions? options = null)
     {
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, FilterParsingOptions.Default, skip, pageSize);
+        options ??= FilterParsingOptions.Default;
+        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
 
         BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
