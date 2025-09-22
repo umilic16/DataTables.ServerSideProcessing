@@ -29,12 +29,10 @@ internal static class Utils
             foreach (FilterOperations op in numOpsWoBetween)
             {
                 rows.Add((val, op));
-                rows.Add((val, op));
             }
         }
         foreach (var val in intBetweenValues)
         {
-            rows.Add((val, FilterOperations.Between));
             rows.Add((val, FilterOperations.Between));
         }
         return rows;
@@ -63,13 +61,11 @@ internal static class Utils
                 foreach (FilterOperations op in numOpsWoBetween)
                 {
                     rows.Add((val, op, culture));
-                    rows.Add((val, op, culture));
                 }
             }
             var betweenValues = culture == "sr" ? decSrBetweenValues : decEnBetweenValues;
             foreach (var val in betweenValues)
             {
-                rows.Add((val, FilterOperations.Between, culture));
                 rows.Add((val, FilterOperations.Between, culture));
             }
         }
@@ -103,17 +99,11 @@ internal static class Utils
                 foreach (FilterOperations op in numOpsWoBetween)
                 {
                     rows.Add((val, op, culture));
-                    rows.Add((val, op, culture));
-                    rows.Add((val, op, culture));
-                    rows.Add((val, op, culture));
                 }
             }
             var betweenValues = culture == "sr" ? dtSrBetweenValues : dtEnBetweenValues;
             foreach (var val in betweenValues)
             {
-                rows.Add((val, FilterOperations.Between, culture));
-                rows.Add((val, FilterOperations.Between, culture));
-                rows.Add((val, FilterOperations.Between, culture));
                 rows.Add((val, FilterOperations.Between, culture));
             }
         }
@@ -130,7 +120,6 @@ internal static class Utils
         {
             foreach (FilterOperations op in s_textOps)
             {
-                rows.Add((val, op));
                 rows.Add((val, op));
             }
         }
