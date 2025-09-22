@@ -16,6 +16,8 @@ public static class Mappings
             NullDt = entity.NullableDateTime,
             DoVal = entity.DateOnlyVal,
             NullDo = entity.NullableDateOnly,
+            DtoVal = entity.DateTimeOffsetVal,
+            NullDto = entity.NullableDateTimeOffset,
             EnumVal = entity.EnumVal,
             NullableEnum = entity.NullableEnum,
             BoolVal = entity.BoolVal,

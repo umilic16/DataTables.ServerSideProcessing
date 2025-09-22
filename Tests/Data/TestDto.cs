@@ -11,6 +11,8 @@ public class TestDto
     public DateTime? NullDt { get; set; }
     public DateOnly DoVal { get; set; }
     public DateOnly? NullDo { get; set; }
+    public DateTimeOffset DtoVal { get; set; }
+    public DateTimeOffset? NullDto { get; set; }
     public Something EnumVal { get; set; }
     public Something? NullableEnum { get; set; }
     public bool BoolVal { get; set; }

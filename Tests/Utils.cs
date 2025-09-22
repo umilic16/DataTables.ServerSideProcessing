@@ -83,11 +83,15 @@ internal static class Utils
         var sep = FilterParsingOptions.Default.BetweenSeparator;
         string[] cultures = ["en-US", "sr"];
 
-        string[] dtSrValues = ["22.01.2021", "12.07.2027", "13.09.2025", "09.12.2024"];
-        string[] dtSrBetweenValues = [$"{sep}12.07.2027", $"22.01.2021{sep}", $"13.09.2025{sep}12.07.2027", $"09.12.2024{sep}12.07.2027"];
+        var now = DateTime.Now;
+        var nowMinus3Years = now.AddYears(-3);
+        var nowPlus3Years = now.AddYears(3);
 
-        string[] dtEnValues = ["01/22/2021", "07/12/2027", "09/13/2025", "12/09/2024"];
-        string[] dtEnBetweenValues = [$"{sep}07/12/2027", $"01/22/2021{sep}", $"09/13/2025{sep}07/12/2027", $"12/09/2024{sep}07/12/2027"];
+        string[] dtSrValues = ["22.01.2021", "12.07.2027", "13.09.2025", $"{now:dd.MM.yyyy}"];
+        string[] dtSrBetweenValues = [$"{sep}12.07.2027", $"22.01.2021{sep}", $"13.09.2025{sep}12.07.2027", $"{nowMinus3Years:dd.MM.yyyy}{sep}{nowPlus3Years:dd.MM.yyyy}"];
+
+        string[] dtEnValues = ["01/22/2021", "07/12/2027", "09/13/2025", $"{now:MM/dd/yyyy}"];
+        string[] dtEnBetweenValues = [$"{sep}07/12/2027", $"01/22/2021{sep}", $"09/13/2025{sep}07/12/2027", $"{nowMinus3Years:MM/dd/yyyy}{sep}{nowPlus3Years:MM/dd/yyyy}"];
 
         var numOpsWoBetween = s_numOpsWoBetween[..^1];
         // Date

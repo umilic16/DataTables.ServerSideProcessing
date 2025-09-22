@@ -27,7 +27,9 @@ public static class DbHelpers
                 BoolVal = true,
                 NullableBool = null,
                 StringVal = "test",
-                NullableString = null
+                NullableString = null,
+                DateTimeOffsetVal = new DateTimeOffset(now),
+                NullableDateTimeOffset = new DateTimeOffset(now)
             },
             new TestEntity
             {
@@ -44,7 +46,9 @@ public static class DbHelpers
                 BoolVal = true,
                 NullableBool = false,
                 StringVal = "test 123",
-                NullableString = "test 456"
+                NullableString = "test 456",
+                DateTimeOffsetVal = new DateTimeOffset(now.AddYears(5)),
+                NullableDateTimeOffset = new DateTimeOffset(now.AddDays(-3))
             },
             new TestEntity
             {
@@ -61,7 +65,9 @@ public static class DbHelpers
                 BoolVal = true,
                 NullableBool = false,
                 StringVal = "test 123",
-                NullableString = """`1234567890-=[]\;',./~!@#$%^&*()_+{}|:"<>?"""
+                NullableString = """`1234567890-=[]\;',./~!@#$%^&*()_+{}|:"<>?""",
+                DateTimeOffsetVal = new DateTimeOffset(now),
+                NullableDateTimeOffset = new DateTimeOffset(now)
             },
             new TestEntity
             {
@@ -78,7 +84,9 @@ public static class DbHelpers
                 BoolVal = true,
                 NullableBool = null,
                 StringVal = "qwertyuiopasdfghjklzxcvbnm",
-                NullableString = null
+                NullableString = null,
+                DateTimeOffsetVal = new DateTimeOffset(now),
+                NullableDateTimeOffset = new DateTimeOffset(now.AddYears(4))
             },
             new TestEntity
             {
@@ -95,7 +103,9 @@ public static class DbHelpers
                 BoolVal = true,
                 NullableBool = false,
                 StringVal = "test    test     test \r\ntest \ttest\rtest\t\ntest123",
-                NullableString = "something"
+                NullableString = "something",
+                DateTimeOffsetVal = new DateTimeOffset(now.AddHours(4)),
+                NullableDateTimeOffset = new DateTimeOffset(now.AddHours(3))
             },
             new TestEntity
             {
@@ -112,7 +122,9 @@ public static class DbHelpers
                 BoolVal = true,
                 NullableBool = null,
                 StringVal = "Alice",
-                NullableString = null
+                NullableString = null,
+                DateTimeOffsetVal = new DateTimeOffset(now.AddMinutes(1234)),
+                NullableDateTimeOffset = new DateTimeOffset(now.AddMinutes(-1234))
             },
             new TestEntity
             {
@@ -129,7 +141,9 @@ public static class DbHelpers
                 BoolVal = false,
                 NullableBool = true,
                 StringVal = "Bob",
-                NullableString = "Beta"
+                NullableString = "Beta",
+                DateTimeOffsetVal = new DateTimeOffset(now.AddYears(10)),
+                NullableDateTimeOffset = new DateTimeOffset(now.AddYears(-3))
             },
             new TestEntity
             {
@@ -146,7 +160,9 @@ public static class DbHelpers
                 BoolVal = true,
                 NullableBool = false,
                 StringVal = "Charlie",
-                NullableString = "Gamma"
+                NullableString = "Gamma",
+                DateTimeOffsetVal = new DateTimeOffset(now.AddSeconds(123456)),
+                NullableDateTimeOffset = new DateTimeOffset(now.AddSeconds(-123456))
             }
         );
         context.SaveChanges();

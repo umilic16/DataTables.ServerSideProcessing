@@ -13,7 +13,6 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 {
     TFixture Fixture { get; }
     bool IsPostgres { get; }
-    DateTimeStyles DateTimeStyles => IsPostgres ? DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal : DateTimeStyles.None;
     FilterParsingOptions FilterParsingOptions => FilterParsingOptions.Default;
 
     public static List<TheoryDataRow<string, FilterOperations>> ValidIntCases()
@@ -50,6 +49,8 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
             rows.Add((nameof(TestEntity.NullableDateTime), op, FilterCategory.Date, null));
             rows.Add((nameof(TestEntity.DateOnlyVal), op, FilterCategory.Date, null));
             rows.Add((nameof(TestEntity.NullableDateOnly), op, FilterCategory.Date, null));
+            rows.Add((nameof(TestEntity.DateTimeOffsetVal), op, FilterCategory.Date, null));
+            rows.Add((nameof(TestEntity.NullableDateTimeOffset), op, FilterCategory.Date, null));
         }
 
         FilterOperations[] numericOnlyOperations = Utils.s_numOps[2..]; // exclude Equals and NotEqual
@@ -621,28 +622,28 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.DateTimeVal >= parsedValFrom);
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DateTimeVal >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.DateTimeVal <= parsedValTo);
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DateTimeVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
                 }
             }
             else
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal == parsedVal),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal != parsedVal),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal > parsedVal),
-                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeVal >= parsedVal),
-                        FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeVal < parsedVal),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeVal <= parsedVal),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -689,28 +690,28 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.DtVal >= parsedValFrom);
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DtVal >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.DtVal <= parsedValTo);
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DtVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
                 }
             }
             else
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DtVal == parsedVal),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal != parsedVal),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal > parsedVal),
-                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtVal >= parsedVal),
-                        FilterOperations.LessThan => baseQuery.Where(x => x.DtVal < parsedVal),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtVal <= parsedVal),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -755,28 +756,28 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.NullableDateTime >= parsedValFrom);
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullableDateTime >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.NullableDateTime <= parsedValTo);
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullableDateTime <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
                 }
             }
             else
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime == parsedVal),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime != parsedVal),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime > parsedVal),
-                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTime >= parsedVal),
-                        FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTime < parsedVal),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTime <= parsedVal),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTime <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTime > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTime <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -821,28 +822,28 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
                 if (!string.IsNullOrEmpty(values[0]))
                 {
-                    DateTime parsedValFrom = DateTime.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.NullDt >= parsedValFrom);
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullDt >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
                 if (!string.IsNullOrEmpty(values[1]))
                 {
-                    DateTime parsedValTo = DateTime.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles);
-                    baseQuery = baseQuery.Where(x => x.NullDt <= parsedValTo);
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullDt <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
                 }
             }
             else
             {
                 if (!string.IsNullOrEmpty(searchValue))
                 {
-                    DateTime parsedVal = DateTime.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles);
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullDt == parsedVal),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt != parsedVal),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt > parsedVal),
-                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDt >= parsedVal),
-                        FilterOperations.LessThan => baseQuery.Where(x => x.NullDt < parsedVal),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDt <= parsedVal),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDt <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDt > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDt <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -1285,6 +1286,271 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
         Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidDateTimeOffset(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DateTimeOffsetVal >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DateTimeOffsetVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeOffsetVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeOffsetVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeOffsetVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeOffsetVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeOffsetVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeOffsetVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeOffsetVal < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeOffsetVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.DateTimeOffsetVal), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+
+
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidDateTimeOffset_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DtoVal >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.DtoVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.DtoVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtoVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtoVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtoVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtoVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtoVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.DtoVal < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtoVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.DtoVal), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidNullableDateTimeOffset(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestEntity> baseQuery = context.TestEntities.AsQueryable();
+            List<TestEntity> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullableDateTimeOffset >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullableDateTimeOffset <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTimeOffset >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTimeOffset <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTimeOffset < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTimeOffset > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTimeOffset > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTimeOffset >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTimeOffset < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTimeOffset <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestEntity.NullableDateTimeOffset), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestEntity> result = await contextNew.TestEntities.ForDataTable(form)
+                                                                       .WithoutSorting()
+                                                                       .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
+    }
+
+    [Theory, Trait("Category", "ColumnFilter")]
+    [MemberData(nameof(ValidDateCases))]
+    public async Task Filter_ValidNullableDateTimeOffset_WithProjection(string searchValue, FilterOperations operation, string culture)
+    {
+        // Arrange
+        var oldCulture = CultureInfo.CurrentCulture;
+        var newCulture = new CultureInfo(culture);
+        CultureInfo.CurrentCulture = newCulture;
+        try
+        {
+            using TestDbContext context = Fixture.CreateContext();
+            int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+            IQueryable<TestDto> baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+            List<TestDto> entities;
+            if (operation == FilterOperations.Between)
+            {
+                string[] values = searchValue.Split(FilterParsingOptions.Default.BetweenSeparator);
+                if (!string.IsNullOrEmpty(values[0]))
+                {
+                    DateOnly parsedValFrom = DateOnly.Parse(values[0], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullDto >= parsedValFrom.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
+                }
+                if (!string.IsNullOrEmpty(values[1]))
+                {
+                    DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = baseQuery.Where(x => x.NullDto <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(searchValue))
+                {
+                    DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None);
+                    baseQuery = operation switch
+                    {
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDto >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDto <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDto < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDto > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDto > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDto >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThan => baseQuery.Where(x => x.NullDto < parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDto <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        _ => throw new InvalidOperationException($"{operation} not supported")
+                    };
+                }
+            }
+            entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+            IFormCollection form = TestFormBuilder.Create()
+                                                  .AddColumn(nameof(TestDto.NullDto), new DateFilterModel { SearchValue = searchValue, FilterType = operation })
+                                                  .Build();
+            using TestDbContext contextNew = Fixture.CreateContext();
+            // Act
+            Response<TestDto> result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                                    .WithoutSorting()
+                                                                    .BuildAsync(FilterParsingOptions, TestContext.Current.CancellationToken);
+            // Assert
+            Assert.Equal(recordsTotal, result.RecordsTotal);
+            Assert.Equal(entities.Count, result.RecordsFiltered);
+            Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = oldCulture;
+        }
     }
 }
 

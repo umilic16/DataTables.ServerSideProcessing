@@ -11,6 +11,8 @@ public class TestEntity
     public DateTime? NullableDateTime { get; set; }
     public DateOnly DateOnlyVal { get; set; }
     public DateOnly? NullableDateOnly { get; set; }
+    public DateTimeOffset DateTimeOffsetVal { get; set; }
+    public DateTimeOffset? NullableDateTimeOffset { get; set; }
     public Something EnumVal { get; set; }
     public Something? NullableEnum { get; set; }
     public bool BoolVal { get; set; }

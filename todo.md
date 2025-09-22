@@ -6,7 +6,6 @@
 ## 🔥 High priority / Upcoming
 
   - [ ] Fix global filter for enum types
-  - [ ] DateTimeOffset support
   - [ ] Add support for building query (and accessing it) but without executing it
   - [ ] Select/MultiSelect generic (instead of just string) support
   - [ ] CI/CD
@@ -27,6 +26,7 @@
 
 ## 🧹 Done
 
+  - [x] DateTimeOffset support
   - [x] Switch data models to records
   - [x] Method to return just data instead of whole response object
   - [x] Add a way of accessing built query (from different stages)
