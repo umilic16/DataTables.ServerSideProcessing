@@ -238,7 +238,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         var searchValue = "test";
         var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Where(x => x.StringVal.Contains(searchValue)
-                                                       || (x.NullableString == null ? string.Empty : x.NullableString.ToString())!.Contains(searchValue))
+                                                       || (x.NullableString ?? string.Empty)!.Contains(searchValue))
                                            .ToList();
 
         var form = TestFormBuilder.Create()
@@ -265,7 +265,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Select(Mappings.SelectDto)
                                            .Where(x => x.StrVal.Contains(searchValue)
-                                                       || (x.NullStr == null ? string.Empty : x.NullStr.ToString())!.Contains(searchValue))
+                                                       || (x.NullStr ?? string.Empty)!.Contains(searchValue))
                                            .ToList();
 
         var form = TestFormBuilder.Create()
