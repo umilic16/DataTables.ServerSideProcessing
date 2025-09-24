@@ -8,9 +8,9 @@ internal static class SelectExpressionBuilder
     {
         (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyName);
 
-        Expression memberAsString = propertyType == typeof(string) ?
-            memberAccess : // e.Property for string properties
-            Expression.Call(memberAccess, typeof(object).GetMethod(nameof(ToString))!); // e.Property.ToString() for non-string properties
+        Expression memberAsString = propertyType == typeof(string)
+            ? memberAccess // e.Property for string properties
+            : Expression.Call(memberAccess, typeof(object).GetMethod(nameof(ToString))!); // e.Property.ToString() for non-string properties
 
         ConstantExpression constantValue = Expression.Constant(searchValue);
         Expression comparison = Expression.Equal(memberAsString, constantValue);
