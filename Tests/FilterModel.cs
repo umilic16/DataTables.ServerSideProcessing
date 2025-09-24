@@ -29,3 +29,13 @@ public class DateFilterModel : BaseFilterModel
     public override FilterCategory FilterCategory => FilterCategory.Date;
     public FilterOperations FilterType { get; init; } = FilterOperations.Equals;
 }
+
+public class SingleSelectFilterModel : BaseFilterModel
+{
+    public override FilterCategory FilterCategory => FilterCategory.SingleSelect;
+}
+
+public class MultiSelectFilterModel : BaseFilterModel
+{
+    public override FilterCategory FilterCategory => FilterCategory.MultiSelect;
+}

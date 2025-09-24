@@ -1,10 +1,9 @@
 ## 🛠 In Progress
 
-  - [ ] Add tests (select, multiselect etc.)
 
 ## 🔥 High priority / Upcoming
 
-  - [ ] Fix global filter for enum types
+  - [ ] Fix global filter and select filter for enum/date types
   - [ ] Add support for building query (and accessing it) but without executing it
   - [ ] Select/MultiSelect generic (instead of just string) support
   - [ ] CI/CD
@@ -25,6 +24,7 @@
 
 ## 🧹 Done
 
+  - [x] Add tests
   - [x] Fix filtering dates when the property that is filtered on is datetime
   - [x] DateTimeOffset support
   - [x] Switch data models to records
