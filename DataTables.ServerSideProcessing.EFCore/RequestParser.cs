@@ -53,7 +53,7 @@ internal static class RequestParser
         List<FilterModel> filters = [];
         foreach (string key in requestFormData.Keys)
         {
-            if (!key.StartsWith($"{options.Prefix}[") || !key.EndsWith($"{options.FilterTypeKey}]"))
+            if (!key.StartsWith($"{options.Prefix}[") || !key.EndsWith($"{options.FilterCategoryKey}]"))
                 continue;
 
             int start = key.IndexOf('[') + 1;
