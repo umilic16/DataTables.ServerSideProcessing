@@ -16,7 +16,7 @@ internal static class MultiSelectExpressionBuilder
 
         ConstantExpression constantList = Expression.Constant(searchValues);
         // searchValues.Contains(e.Property.ToString())
-        Expression containsCall = Expression.Call(constantList, MethodInfoCache.s_enumerableContains, memberAsString);
+        Expression containsCall = Expression.Call(MethodInfoCache.s_enumerableContains, constantList, memberAsString);
 
         // property is reference type or nullable value type, eliminate nulls before checking Contains
         if (!propertyType.IsValueType || Nullable.GetUnderlyingType(propertyType) is not null)
