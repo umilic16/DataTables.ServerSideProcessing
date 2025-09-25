@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
@@ -10,11 +11,11 @@ internal static class MultiSelectExpressionBuilder
 
         Expression memberAsString = propertyType == typeof(string)
             ? memberAccess // e.Property for string properties
-            : Expression.Call(memberAccess, typeof(object).GetMethod(nameof(ToString))!); // e.Property.ToString() for non-string properties
+            : Expression.Call(memberAccess, MethodInfoCache.s_toString); // e.Property.ToString() for non-string properties
 
         ConstantExpression constantList = Expression.Constant(searchValues);
         // searchValues.Contains(e.Property.ToString())
-        Expression containsCall = Expression.Call(constantList, typeof(List<string>).GetMethod(nameof(List<string>.Contains), [typeof(string)])!, memberAsString);
+        Expression containsCall = Expression.Call(constantList, MethodInfoCache.s_enumerableContains, memberAsString);
 
         // property is reference type or nullable value type, eliminate nulls before checking Contains
         if (!propertyType.IsValueType || Nullable.GetUnderlyingType(propertyType) is not null)

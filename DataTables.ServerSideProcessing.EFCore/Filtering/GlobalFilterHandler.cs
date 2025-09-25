@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
+using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 
@@ -31,12 +32,12 @@ internal static class GlobalFilterHandler
                 // Convert non-strings to string using ToString, adding null check
                 Expression nullCheck = Expression.Equal(propertyAccess, Expression.Constant(null, propertyType));
                 Expression defaultValue = Expression.Constant(string.Empty);
-                Expression toStringCall = Expression.Call(propertyAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!);
+                Expression toStringCall = Expression.Call(propertyAccess, MethodInfoCache.s_toString);
                 propertyAsString = Expression.Condition(nullCheck, defaultValue, toStringCall);
             }
             else
             {
-                propertyAsString = Expression.Call(propertyAccess, propertyType.GetMethod("ToString", Type.EmptyTypes)!);
+                propertyAsString = Expression.Call(propertyAccess, MethodInfoCache.s_toString);
             }
 
             MethodInfo containsMethod = typeof(string).GetMethod("Contains", [typeof(string)])!;

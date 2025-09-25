@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
@@ -10,7 +11,7 @@ internal static class SelectExpressionBuilder
 
         Expression memberAsString = propertyType == typeof(string)
             ? memberAccess // e.Property for string properties
-            : Expression.Call(memberAccess, typeof(object).GetMethod(nameof(ToString))!); // e.Property.ToString() for non-string properties
+            : Expression.Call(memberAccess, MethodInfoCache.s_toString); // e.Property.ToString() for non-string properties
 
         ConstantExpression constantValue = Expression.Constant(searchValue);
         Expression comparison = Expression.Equal(memberAsString, constantValue);

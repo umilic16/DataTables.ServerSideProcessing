@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using DataTables.ServerSideProcessing.Data.Enums;
+using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
@@ -21,8 +22,8 @@ internal static class TextExpressionBuilder
         {
             FilterOperations.Equals => Expression.Equal(memberAccess, constantValue),
             FilterOperations.NotEqual => Expression.NotEqual(memberAccess, constantValue),
-            FilterOperations.Contains => Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue),
-            FilterOperations.DoesNotContain => Expression.Not(Expression.Call(memberAccess, typeof(string).GetMethod("Contains", [typeof(string)])!, constantValue)),
+            FilterOperations.Contains => Expression.Call(memberAccess, MethodInfoCache.s_stringContains, constantValue),
+            FilterOperations.DoesNotContain => Expression.Not(Expression.Call(memberAccess, MethodInfoCache.s_stringContains, constantValue)),
             FilterOperations.StartsWith => Expression.Call(typeof(DbFunctionsExtensions),
                                                            nameof(DbFunctionsExtensions.Like), Type.EmptyTypes,
                                                            Expression.Constant(EF.Functions), memberAccess,

@@ -1,9 +1,10 @@
 ## 🛠 In Progress
 
+  - [ ] Fix global filter and select filter for enum/date types
+  - [ ] Cache whole properties instead just names, so reflection is not used multiple times
 
 ## 🔥 High priority / Upcoming
 
-  - [ ] Fix global filter and select filter for enum/date types
   - [ ] Add support for building query (and accessing it) but without executing it
   - [ ] Select/MultiSelect generic (instead of just string) support
   - [ ] CI/CD
@@ -24,6 +25,7 @@
 
 ## 🧹 Done
 
+  - [x] Cache methods that are being retrieved via reflection
   - [x] Add tests
   - [x] Fix filtering dates when the property that is filtered on is datetime
   - [x] DateTimeOffset support
