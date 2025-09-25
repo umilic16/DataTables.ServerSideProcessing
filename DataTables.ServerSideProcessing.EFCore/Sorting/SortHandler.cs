@@ -15,8 +15,7 @@ internal static class SortHandler
         bool isFirstFlag = true;
         foreach (SortModel sortModel in sortOrder)
         {
-            if (!PropertyInfoCache<T>.PropertyExists(sortModel.PropertyName))
-                throw new InvalidOperationException($"Property '{sortModel.PropertyName}' not found on type '{typeof(T).Name}'.");
+            PropertyInfoCache<T>.EnsurePropertyExists(sortModel.PropertyName);
 
             if (isFirstFlag)
             {

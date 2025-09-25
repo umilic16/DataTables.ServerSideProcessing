@@ -16,8 +16,7 @@ internal static class ColumnFilterHandler
 
         foreach (FilterModel filterModel in filters)
         {
-            if (!PropertyInfoCache<T>.TryGetProperty(filterModel.PropertyName, out PropertyInfo? propertyInfo))
-                throw new InvalidOperationException($"Property '{filterModel.PropertyName}' not found on type '{typeof(T).Name}'.");
+            PropertyInfo propertyInfo = PropertyInfoCache<T>.GetProperty(filterModel.PropertyName);
 
             Expression<Func<T, bool>>? predicate = filterModel switch
             {

@@ -11,12 +11,12 @@ internal static class PropertyInfoCache<T> where T : class
         typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                  .ToDictionary(p => p.Name, p => p, StringComparer.InvariantCultureIgnoreCase));
 
-    public static bool TryGetProperty(string propertyName, [NotNullWhen(true)] out PropertyInfo? propertyInfo)
+    internal static bool TryGetProperty(string propertyName, [NotNullWhen(true)] out PropertyInfo? propertyInfo)
     {
         return s_propertyMap.TryGetValue(propertyName, out propertyInfo);
     }
 
-    public static PropertyInfo GetProperty(string propertyName)
+    internal static PropertyInfo GetProperty(string propertyName)
     {
         if (!TryGetProperty(propertyName, out PropertyInfo? propertyInfo))
             throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
@@ -24,8 +24,15 @@ internal static class PropertyInfoCache<T> where T : class
         return propertyInfo;
     }
 
-    public static bool PropertyExists(string propertyName)
+    internal static bool PropertyExists(string propertyName)
     {
         return s_propertyMap.ContainsKey(propertyName);
     }
+
+    internal static void EnsurePropertyExists(string propertyName)
+    {
+        if (!PropertyExists(propertyName))
+            throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'."); ;
+    }
+
 }

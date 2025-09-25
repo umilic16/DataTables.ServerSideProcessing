@@ -16,8 +16,7 @@ internal static class GlobalFilterHandler
 
         foreach (string property in properties)
         {
-            PropertyInfo? propertyInfo = typeof(T).GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
-                ?? throw new InvalidOperationException($"Property '{property}' not found on type '{typeof(T).Name}'.");
+            PropertyInfo propertyInfo = PropertyInfoCache<T>.GetProperty(property);
 
             Type propertyType = propertyInfo.PropertyType;
 
