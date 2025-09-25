@@ -32,7 +32,6 @@ internal static class PropertyInfoCache<T> where T : class
     internal static void EnsurePropertyExists(string propertyName)
     {
         if (!PropertyExists(propertyName))
-            throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'."); ;
+            throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
     }
-
 }
