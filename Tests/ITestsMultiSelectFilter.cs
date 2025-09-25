@@ -22,7 +22,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_IntVal(string searchValue)
+    public async Task MultiSelect_IntVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -47,7 +47,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_IntVal_WithProjection(string searchValue)
+    public async Task MultiSelect_IntVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -75,7 +75,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableInt(string searchValue)
+    public async Task MultiSelect_NullableInt(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -100,7 +100,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullInt_WithProjection(string searchValue)
+    public async Task MultiSelect_NullInt_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -128,7 +128,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_DecimalVal(string searchValue)
+    public async Task MultiSelect_DecimalVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -153,7 +153,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_DecVal_WithProjection(string searchValue)
+    public async Task MultiSelect_DecVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -181,7 +181,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableDecimal(string searchValue)
+    public async Task MultiSelect_NullableDecimal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -206,7 +206,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullDec_WithProjection(string searchValue)
+    public async Task MultiSelect_NullDec_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -234,7 +234,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_DateTimeVal(string searchValue)
+    public async Task MultiSelect_DateTimeVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -259,7 +259,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_DtVal_WithProjection(string searchValue)
+    public async Task MultiSelect_DtVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -287,7 +287,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableDateTime(string searchValue)
+    public async Task MultiSelect_NullableDateTime(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -312,7 +312,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullDt_WithProjection(string searchValue)
+    public async Task MultiSelect_NullDt_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -340,7 +340,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_DateOnlyVal(string searchValue)
+    public async Task MultiSelect_DateOnlyVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -365,7 +365,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_DoVal_WithProjection(string searchValue)
+    public async Task MultiSelect_DoVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -393,7 +393,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableDateOnly(string searchValue)
+    public async Task MultiSelect_NullableDateOnly(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -418,7 +418,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullDo_WithProjection(string searchValue)
+    public async Task MultiSelect_NullDo_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -446,7 +446,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_EnumVal(string searchValue)
+    public async Task MultiSelect_EnumVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -471,7 +471,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_EnumVal_WithProjection(string searchValue)
+    public async Task MultiSelect_EnumVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -499,7 +499,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableEnum(string searchValue)
+    public async Task MultiSelect_NullableEnum(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -524,7 +524,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableEnum_WithProjection(string searchValue)
+    public async Task MultiSelect_NullableEnum_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -552,7 +552,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_BoolVal(string searchValue)
+    public async Task MultiSelect_BoolVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -577,7 +577,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_BoolVal_WithProjection(string searchValue)
+    public async Task MultiSelect_BoolVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -605,7 +605,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableBool(string searchValue)
+    public async Task MultiSelect_NullableBool(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -630,7 +630,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableBool_WithProjection(string searchValue)
+    public async Task MultiSelect_NullableBool_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -658,7 +658,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_StringVal(string searchValue)
+    public async Task MultiSelect_StringVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -683,7 +683,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_StrVal_WithProjection(string searchValue)
+    public async Task MultiSelect_StrVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -711,7 +711,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullableString(string searchValue)
+    public async Task MultiSelect_NullableString(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -736,7 +736,7 @@ public interface ITestsMultiSelectFilter<TFixture> where TFixture : ITestDbFixtu
 
     [Theory, Trait("Category", "MultiSelect")]
     [MemberData(nameof(TestData))]
-    public async Task Select_NullStr_WithProjection(string searchValue)
+    public async Task MultiSelect_NullStr_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
