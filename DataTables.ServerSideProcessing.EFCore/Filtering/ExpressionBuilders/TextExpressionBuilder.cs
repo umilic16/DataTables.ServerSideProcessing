@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using DataTables.ServerSideProcessing.Data.Enums;
 using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 using Microsoft.EntityFrameworkCore;
@@ -7,17 +8,14 @@ namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
 internal static class TextExpressionBuilder
 {
-    internal static Expression<Func<T, bool>> Build<T>(string propertyName, FilterOperations filterType, string searchValue) where T : class
+    internal static Expression<Func<T, bool>> Build<T>(PropertyInfo propertyInfo, FilterOperations filterType, string searchValue) where T : class
     {
-        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyName);
-        // Get the underlying type if it's nullable (e.g., int from int?)
+        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyInfo);
+        // Get the underlying type if it's nullable (e.g., string from string?)
         Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+        if (underlyingType != typeof(string)) throw new InvalidOperationException($"Property '{propertyInfo.Name}' is not a string type.");
 
-        if (underlyingType != typeof(string)) throw new InvalidOperationException($"Property '{propertyName}' is not a string type.");
-
-        object convertedValue = Convert.ChangeType(searchValue, underlyingType);
-        // Create a constant expression using the converted value BUT typed as the *original* property type (including Nullable<>)
-        ConstantExpression constantValue = Expression.Constant(convertedValue, propertyType);
+        ConstantExpression constantValue = Expression.Constant(searchValue);
         Expression comparison = filterType switch
         {
             FilterOperations.Equals => Expression.Equal(memberAccess, constantValue),

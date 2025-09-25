@@ -1,21 +1,23 @@
 ﻿using System.Linq.Expressions;
 using System.Numerics;
+using System.Reflection;
 using DataTables.ServerSideProcessing.Data.Enums;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
 internal static class NumericExpressionBuilder
 {
-    internal static Expression<Func<T, bool>> Build<T, S>(string propertyName, FilterOperations filterType, S searchValue)
+    internal static Expression<Func<T, bool>> Build<T, S>(PropertyInfo propertyInfo, FilterOperations filterType, S searchValue)
         where T : class where S : INumber<S>
     {
-        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyName);
+        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyInfo);
         // Get the underlying type if it's nullable (e.g., int from int?)
         Type underlyingType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
 
-        if (!underlyingType.IsNumericType()) throw new InvalidOperationException($"Property '{propertyName}' must be of type 'int' but is of type '{propertyType.Name}'.");
+        if (!underlyingType.IsNumericType())
+            throw new InvalidOperationException($"Property '{propertyInfo.Name}' must be of type 'int' but is of type '{propertyType.Name}'.");
 
-        // Create a constant expression using the converted value BUT typed as the *original* property type (including Nullable<>)
+        // Create a constant expression using the converted value BUT typed as the original property type
         ConstantExpression constantValue = Expression.Constant(searchValue, propertyType);
         Expression comparison = filterType switch
         {

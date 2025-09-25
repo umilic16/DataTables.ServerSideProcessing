@@ -1,13 +1,14 @@
 using System.Linq.Expressions;
+using System.Reflection;
 using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
 internal static class MultiSelectExpressionBuilder
 {
-    internal static Expression<Func<T, bool>> BuildMultiSelect<T>(string propertyName, string[] searchValues) where T : class
+    internal static Expression<Func<T, bool>> BuildMultiSelect<T>(PropertyInfo propertyInfo, string[] searchValues) where T : class
     {
-        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyName);
+        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyInfo);
 
         Expression memberAsString = propertyType == typeof(string)
             ? memberAccess // e.Property for string properties

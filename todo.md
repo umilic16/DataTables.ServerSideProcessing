@@ -1,7 +1,6 @@
 ## 🛠 In Progress
 
   - [ ] Fix global filter and select filter for enum/date types
-  - [ ] Cache whole properties instead just names, so reflection is not used multiple times
 
 ## 🔥 High priority / Upcoming
 
@@ -25,6 +24,7 @@
 
 ## 🧹 Done
 
+  - [x] Cache whole properties instead just names
   - [x] Cache methods that are being retrieved via reflection
   - [x] Add tests
   - [x] Fix filtering dates when the property that is filtered on is datetime

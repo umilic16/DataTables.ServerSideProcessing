@@ -1,7 +1,9 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using DataTables.ServerSideProcessing.Data.Models.Abstractions;
 using DataTables.ServerSideProcessing.Data.Models.Filters;
 using DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
+using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering;
 
@@ -14,17 +16,17 @@ internal static class ColumnFilterHandler
 
         foreach (FilterModel filterModel in filters)
         {
-            if (!ReflectionCache<T>.s_properties.TryGetValue(filterModel.PropertyName, out string? propName))
-                throw new InvalidOperationException($"Property '{propName}' not found on type '{typeof(T).Name}'.");
+            if (!PropertyInfoCache<T>.TryGetProperty(filterModel.PropertyName, out PropertyInfo? propertyInfo))
+                throw new InvalidOperationException($"Property '{filterModel.PropertyName}' not found on type '{typeof(T).Name}'.");
 
             Expression<Func<T, bool>>? predicate = filterModel switch
             {
-                TextFilter tf => TextExpressionBuilder.Build<T>(propName, tf.FilterType, tf.SearchValue),
-                NumberFilter<int> nif => NumericExpressionBuilder.Build<T, int>(propName, nif.FilterType, nif.SearchValue),
-                NumberFilter<decimal> ndf => NumericExpressionBuilder.Build<T, decimal>(propName, ndf.FilterType, ndf.SearchValue),
-                DateFilter df => DateExpressionBuilder.Build<T>(propName, df.FilterType, df.SearchValue),
-                SingleSelectFilter ssf => SelectExpressionBuilder.BuildSingleSelect<T>(propName, ssf.SearchValue),
-                MultiSelectFilter msf => MultiSelectExpressionBuilder.BuildMultiSelect<T>(propName, msf.SearchValue),
+                TextFilter tf => TextExpressionBuilder.Build<T>(propertyInfo, tf.FilterType, tf.SearchValue),
+                NumberFilter<int> nif => NumericExpressionBuilder.Build<T, int>(propertyInfo, nif.FilterType, nif.SearchValue),
+                NumberFilter<decimal> ndf => NumericExpressionBuilder.Build<T, decimal>(propertyInfo, ndf.FilterType, ndf.SearchValue),
+                DateFilter df => DateExpressionBuilder.Build<T>(propertyInfo, df.FilterType, df.SearchValue),
+                SingleSelectFilter ssf => SelectExpressionBuilder.BuildSingleSelect<T>(propertyInfo, ssf.SearchValue),
+                MultiSelectFilter msf => MultiSelectExpressionBuilder.BuildMultiSelect<T>(propertyInfo, msf.SearchValue),
                 _ => null
             };
 

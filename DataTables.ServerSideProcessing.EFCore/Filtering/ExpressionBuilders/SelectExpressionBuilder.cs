@@ -1,13 +1,14 @@
 ﻿using System.Linq.Expressions;
+using System.Reflection;
 using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
 internal static class SelectExpressionBuilder
 {
-    internal static Expression<Func<T, bool>> BuildSingleSelect<T>(string propertyName, string searchValue) where T : class
+    internal static Expression<Func<T, bool>> BuildSingleSelect<T>(PropertyInfo propertyInfo, string searchValue) where T : class
     {
-        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyName);
+        (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyInfo);
 
         Expression memberAsString = propertyType == typeof(string)
             ? memberAccess // e.Property for string properties
