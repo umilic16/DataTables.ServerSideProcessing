@@ -1,4 +1,5 @@
-﻿using DataTables.ServerSideProcessing.EFCore;
+﻿using System.Globalization;
+using DataTables.ServerSideProcessing.EFCore;
 using Microsoft.EntityFrameworkCore;
 using Tests.Data;
 using Tests.Fixtures;
@@ -18,7 +19,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.IntVal.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (int.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.IntVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.IntVal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -44,9 +50,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.IntVal.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (int.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.IntVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.IntVal), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -73,7 +82,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.NullableInt != null && e.NullableInt.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (int.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableInt != null && e.NullableInt == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.NullableInt), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -99,9 +113,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.NullInt != null && e.NullInt.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (int.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullInt != null && e.NullInt == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.NullInt), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -128,7 +145,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.DecimalVal.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (decimal.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DecimalVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.DecimalVal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -154,9 +176,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.DecVal.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (decimal.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DecVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.DecVal), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -183,7 +208,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.NullableDecimal != null && e.NullableDecimal.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (decimal.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableDecimal != null && e.NullableDecimal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.NullableDecimal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -209,9 +239,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.NullDec != null && e.NullDec.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (decimal.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullDec != null && e.NullDec == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.NullDec), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -231,14 +264,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_DateTimeVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.DateTimeVal.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (DateTime.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DateTimeVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.DateTimeVal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -257,16 +296,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_DtVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.DtVal.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (DateTime.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DtVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.DtVal), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -286,14 +329,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_NullableDateTime(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.NullableDateTime != null && e.NullableDateTime.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (DateTime.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableDateTime != null && e.NullableDateTime == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.NullableDateTime), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -312,16 +361,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_NullDt_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.NullDt != null && e.NullDt.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (DateTime.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullDt != null && e.NullDt == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.NullDt), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -341,14 +394,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_DateOnlyVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.DateOnlyVal.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DateOnlyVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.DateOnlyVal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -367,16 +426,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_DoVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.DoVal.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DoVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.DoVal), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -396,14 +459,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_NullableDateOnly(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.NullableDateOnly != null && e.NullableDateOnly.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableDateOnly != null && e.NullableDateOnly == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.NullableDateOnly), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -422,16 +491,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
 
     [Theory, Trait("Category", "SingleSelect")]
     [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
     public async Task Select_NullDo_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.NullDo != null && e.NullDo.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullDo != null && e.NullDo == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.NullDo), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -450,15 +523,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData(nameof(Something.Alpha))]
+    [InlineData("1")]
+    [InlineData("5")]
     public async Task Select_EnumVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.EnumVal.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (Enum.TryParse<Something>(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.EnumVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.EnumVal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -476,17 +554,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData(nameof(Something.Alpha))]
+    [InlineData("1")]
+    [InlineData("5")]
     public async Task Select_EnumVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.EnumVal.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (Enum.TryParse<Something>(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.EnumVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.EnumVal), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -505,15 +586,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData(nameof(Something.Alpha))]
+    [InlineData("1")]
+    [InlineData("5")]
     public async Task Select_NullableEnum(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.NullableEnum != null && e.NullableEnum.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (Enum.TryParse<Something>(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableEnum != null && e.NullableEnum == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.NullableEnum), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -531,17 +617,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData(nameof(Something.Alpha))]
+    [InlineData("1")]
+    [InlineData("5")]
     public async Task Select_NullableEnum_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                           .Where(e => e.NullableEnum != null && e.NullableEnum.ToString() == searchValue)
-                                           .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (Enum.TryParse<Something>(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableEnum != null && e.NullableEnum == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.NullableEnum), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -560,15 +649,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("1")]
+    [InlineData("0")]
+    [InlineData("true")]
     public async Task Select_BoolVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.BoolVal.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (bool.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.BoolVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.BoolVal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -586,17 +680,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("1")]
+    [InlineData("0")]
+    [InlineData("true")]
     public async Task Select_BoolVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.BoolVal.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (bool.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.BoolVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.BoolVal), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -615,15 +712,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("1")]
+    [InlineData("0")]
+    [InlineData("true")]
     public async Task Select_NullableBool(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.NullableBool != null && e.NullableBool.ToString() == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (bool.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableBool != null && e.NullableBool == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.NullableBool), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -641,17 +743,20 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     }
 
     [Theory, Trait("Category", "SingleSelect")]
-    [InlineData("123")]
-    [InlineData("999")]
-    [InlineData("test")]
+    [InlineData("1")]
+    [InlineData("0")]
+    [InlineData("true")]
     public async Task Select_NullableBool_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.NullableBool != null && e.NullableBool.ToString() == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (bool.TryParse(searchValue, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableBool != null && e.NullableBool == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.NullableBool), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -678,7 +783,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.StringVal == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (!string.IsNullOrEmpty(searchValue))
+        {
+            baseQuery = baseQuery.Where(e => e.StringVal == searchValue);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.StringVal), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -704,9 +814,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.StrVal == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (!string.IsNullOrEmpty(searchValue))
+        {
+            baseQuery = baseQuery.Where(e => e.StrVal == searchValue);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.StrVal), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -733,7 +846,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Where(e => e.NullableString != null && e.NullableString == searchValue).ToList();
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (!string.IsNullOrEmpty(searchValue))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableString != null && e.NullableString == searchValue);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestEntity.NullableString), new SingleSelectFilterModel { SearchValue = searchValue })
                                   .Build();
@@ -759,9 +877,12 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         // Arrange
         using var context = Fixture.CreateContext();
         int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
-        var entities = context.TestEntities.Select(Mappings.SelectDto)
-                                              .Where(e => e.NullStr != null && e.NullStr == searchValue)
-                                              .ToList();
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (!string.IsNullOrEmpty(searchValue))
+        {
+            baseQuery = baseQuery.Where(e => e.NullStr != null && e.NullStr == searchValue);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
 
         var form = TestFormBuilder.Create()
                                   .AddColumn(nameof(TestDto.NullStr), new SingleSelectFilterModel { SearchValue = searchValue })
@@ -777,6 +898,136 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
         Assert.Equal(recordsTotal, response.RecordsTotal);
         Assert.Equal(entities.Count, response.RecordsFiltered);
         Assert.Equal(entities.Select(x => x.NullStr), response.Data.Select(x => x.NullStr));
+    }
+
+    [Theory, Trait("Category", "SingleSelect")]
+    [InlineData("123")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
+    public async Task Select_DateTimeOffsetVal(string searchValue)
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (DateTimeOffset.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DateTimeOffsetVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+        var form = TestFormBuilder.Create()
+                                  .AddColumn(nameof(TestEntity.DateTimeOffsetVal), new SingleSelectFilterModel { SearchValue = searchValue })
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+
+        // Act
+        var response = await contextNew.TestEntities.ForDataTable(form)
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(recordsTotal, response.RecordsTotal);
+        Assert.Equal(entities.Count, response.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.DateTimeOffsetVal), response.Data.Select(x => x.DateTimeOffsetVal));
+    }
+
+    [Theory, Trait("Category", "SingleSelect")]
+    [InlineData("123")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
+    public async Task Select_DtoVal_WithProjection(string searchValue)
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (DateTimeOffset.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.DtoVal == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+
+        var form = TestFormBuilder.Create()
+                                  .AddColumn(nameof(TestDto.DtoVal), new SingleSelectFilterModel { SearchValue = searchValue })
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+
+        // Act
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(recordsTotal, response.RecordsTotal);
+        Assert.Equal(entities.Count, response.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.DtoVal), response.Data.Select(x => x.DtoVal));
+    }
+
+    [Theory, Trait("Category", "SingleSelect")]
+    [InlineData("123")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
+    public async Task Select_NullableDateTimeOffset(string searchValue)
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var baseQuery = context.TestEntities.AsQueryable();
+        if (DateTimeOffset.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullableDateTimeOffset != null && e.NullableDateTimeOffset == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+        var form = TestFormBuilder.Create()
+                                  .AddColumn(nameof(TestEntity.NullableDateTimeOffset), new SingleSelectFilterModel { SearchValue = searchValue })
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+
+        // Act
+        var response = await contextNew.TestEntities.ForDataTable(form)
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(recordsTotal, response.RecordsTotal);
+        Assert.Equal(entities.Count, response.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.NullableDateTimeOffset), response.Data.Select(x => x.NullableDateTimeOffset));
+    }
+
+    [Theory, Trait("Category", "SingleSelect")]
+    [InlineData("123")]
+    [InlineData("22.01.2025")]
+    [InlineData("28.09.2031")]
+    public async Task Select_NullDto_WithProjection(string searchValue)
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        CultureInfo.CurrentCulture = new CultureInfo("sr");
+        int recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var baseQuery = context.TestEntities.Select(Mappings.SelectDto);
+        if (DateTimeOffset.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.AdjustToUniversal, out var parsedSearch))
+        {
+            baseQuery = baseQuery.Where(e => e.NullDto != null && e.NullDto == parsedSearch);
+        }
+        var entities = await baseQuery.ToListAsync(TestContext.Current.CancellationToken);
+
+        var form = TestFormBuilder.Create()
+                                  .AddColumn(nameof(TestDto.NullDto), new SingleSelectFilterModel { SearchValue = searchValue })
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+
+        // Act
+        var response = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                    .BuildAsync(TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.Equal(recordsTotal, response.RecordsTotal);
+        Assert.Equal(entities.Count, response.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.NullDto), response.Data.Select(x => x.NullDto));
     }
 }
 

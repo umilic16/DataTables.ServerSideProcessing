@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
-using DataTables.ServerSideProcessing.EFCore.ReflectionCache;
 
 namespace DataTables.ServerSideProcessing.EFCore.Filtering.ExpressionBuilders;
 
@@ -10,21 +9,33 @@ internal static class SelectExpressionBuilder
     {
         (ParameterExpression parameter, MemberExpression memberAccess, Type propertyType) = Shared.GetPropertyExpressionParts<T>(propertyInfo);
 
-        Expression memberAsString = propertyType == typeof(string)
-            ? memberAccess // e.Property for string properties
-            : Expression.Call(memberAccess, MethodInfoCache.s_toString); // e.Property.ToString() for non-string properties
+        Type targetType = Nullable.GetUnderlyingType(propertyType) ?? propertyType;
+        bool isNullable = Nullable.GetUnderlyingType(propertyType) is not null;
 
-        ConstantExpression constantValue = Expression.Constant(searchValue);
-        Expression comparison = Expression.Equal(memberAsString, constantValue);
-
-        // property is reference type or nullable value type, check for null before comparing
-        if (!propertyType.IsValueType || Nullable.GetUnderlyingType(propertyType) is not null)
+        if (!Shared.TryConvertStringToType(searchValue, targetType, out object? typed))
         {
-            Expression notNull = Expression.NotEqual(memberAccess, Expression.Constant(null, propertyType));
-            // e.Property != null && e.Property.ToString() == searchValue
-            comparison = Expression.AndAlso(notNull, comparison);
+            // conversion failed -> return true to skip this filter
+            ConstantExpression trueConst = Expression.Constant(true);
+            return Expression.Lambda<Func<T, bool>>(trueConst, parameter);
         }
 
-        return Expression.Lambda<Func<T, bool>>(comparison, parameter);
+        Expression predicate;
+        ConstantExpression constant = Expression.Constant(typed, targetType);
+
+        if (isNullable)
+        {
+            // e.Property != null && e.Property.Value == typed
+            BinaryExpression notNull = Expression.NotEqual(memberAccess, Expression.Constant(null, propertyType));
+            MemberExpression valueAccess = Expression.Property(memberAccess, "Value"); // underlying value
+            BinaryExpression equals = Expression.Equal(valueAccess, constant);
+            predicate = Expression.AndAlso(notNull, equals);
+        }
+        else
+        {
+            // e.Property == typed
+            predicate = Expression.Equal(memberAccess, constant);
+        }
+
+        return Expression.Lambda<Func<T, bool>>(predicate, parameter);
     }
 }
