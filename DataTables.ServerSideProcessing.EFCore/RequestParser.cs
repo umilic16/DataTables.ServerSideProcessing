@@ -192,7 +192,7 @@ internal static class RequestParser
     {
         if (filterType != FilterOperations.Between)
         {
-            if (!DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, DateTimeStyles.None, out DateOnly parsedValue))
+            if (!DateOnly.TryParse(searchValue, CultureInfo.CurrentCulture, out DateOnly parsedValue))
                 return;
 
             filters.Add(new DateFilter
@@ -208,7 +208,7 @@ internal static class RequestParser
             for (int i = 0; i < 2; i++)
             {
                 if (string.IsNullOrEmpty(searchValues[i])
-                    || (!DateOnly.TryParse(searchValues[i], CultureInfo.CurrentCulture, DateTimeStyles.None, out DateOnly parsedValue)))
+                    || (!DateOnly.TryParse(searchValues[i], CultureInfo.CurrentCulture, out DateOnly parsedValue)))
                     continue;
 
                 filters.Add(new DateFilter
