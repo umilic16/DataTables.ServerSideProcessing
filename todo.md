@@ -1,6 +1,6 @@
 ## 🛠 In Progress
 
-  - [ ] Fix global filter and select filter for enum/date types
+  - [ ] Fix global filter 
 
 ## 🔥 High priority / Upcoming
 
@@ -24,6 +24,7 @@
 
 ## 🧹 Done
 
+  - [x] Fix select/multiselect filtering for enums, date types
   - [x] Cache whole properties instead just names
   - [x] Cache methods that are being retrieved via reflection
   - [x] Add tests
