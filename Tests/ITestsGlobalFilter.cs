@@ -67,15 +67,39 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateColumns()
+    public async Task GlobalFilter_On_DateTimeColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
         var searchValue = DateTime.Now.AddYears(5).Date.ToString();
         var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Where(x => x.DateTimeVal.ToString().Contains(searchValue)
-                                                       || (x.NullableDateTime == null ? string.Empty : x.NullableDateTime.ToString())!.Contains(searchValue)
-                                                       || x.DateOnlyVal.ToString().Contains(searchValue)
+                                                       || (x.NullableDateTime == null ? string.Empty : x.NullableDateTime.ToString())!.Contains(searchValue))
+                                           .ToList();
+
+        var form = TestFormBuilder.Create()
+                                  .WithGlobalSearch(searchValue)
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+        // Act
+        var result = await contextNew.TestEntities.ForDataTable(form)
+                                                  .WithGlobalFilter(nameof(TestEntity.DateTimeVal), nameof(TestEntity.NullableDateTime))
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
+
+    [Fact, Trait("Category", "GlobalFilter")]
+    public async Task GlobalFilter_On_DateOnlyColumns()
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        var searchValue = DateTime.Now.AddYears(5).Date.ToString();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var entities = context.TestEntities.Where(x => x.DateOnlyVal.ToString().Contains(searchValue)
                                                        || (x.NullableDateOnly == null ? string.Empty : x.NullableDateOnly.ToString())!.Contains(searchValue))
                                            .ToList();
 
@@ -86,7 +110,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         using var contextNew = Fixture.CreateContext();
         // Act
         var result = await contextNew.TestEntities.ForDataTable(form)
-                                                  .WithGlobalFilter(nameof(TestEntity.DateTimeVal), nameof(TestEntity.NullableDateTime), nameof(TestEntity.DateOnlyVal), nameof(TestEntity.NullableDateOnly))
+                                                  .WithGlobalFilter(nameof(TestEntity.DateOnlyVal), nameof(TestEntity.NullableDateOnly))
                                                   .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
@@ -95,7 +119,33 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateColumns_WithProjection()
+    public async Task GlobalFilter_On_DateTimeOffsetColumns()
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        var searchValue = DateTime.Now.AddYears(5).Date.ToString();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var entities = context.TestEntities.Where(x => x.DateTimeOffsetVal.ToString().Contains(searchValue)
+                                                       || (x.NullableDateTimeOffset == null ? string.Empty : x.NullableDateTimeOffset.ToString())!.Contains(searchValue))
+                                           .ToList();
+
+        var form = TestFormBuilder.Create()
+                                  .WithGlobalSearch(searchValue)
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+        // Act
+        var result = await contextNew.TestEntities.ForDataTable(form)
+                                                  .WithGlobalFilter(nameof(TestEntity.DateTimeOffsetVal), nameof(TestEntity.NullableDateTimeOffset))
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
+
+    [Fact, Trait("Category", "GlobalFilter")]
+    public async Task GlobalFilter_On_DateTimeColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -103,8 +153,33 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
         var entities = context.TestEntities.Select(Mappings.SelectDto)
                                            .Where(x => x.DtVal.ToString().Contains(searchValue)
-                                                       || (x.NullDt == null ? string.Empty : x.NullDt.ToString())!.Contains(searchValue)
-                                                       || x.DoVal.ToString().Contains(searchValue)
+                                                       || (x.NullDt == null ? string.Empty : x.NullDt.ToString())!.Contains(searchValue))
+                                           .ToList();
+
+        var form = TestFormBuilder.Create()
+                                  .WithGlobalSearch(searchValue)
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+        // Act
+        var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                  .WithGlobalFilter(nameof(TestDto.DtVal), nameof(TestDto.NullDt))
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
+
+    [Fact, Trait("Category", "GlobalFilter")]
+    public async Task GlobalFilter_On_DateOnlyColumns_WithProjection()
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        var searchValue = DateTime.Now.AddYears(5).Date.ToString();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var entities = context.TestEntities.Select(Mappings.SelectDto)
+                                           .Where(x => x.DoVal.ToString().Contains(searchValue)
                                                        || (x.NullDo == null ? string.Empty : x.NullDo.ToString())!.Contains(searchValue))
                                            .ToList();
 
@@ -115,9 +190,35 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
         using var contextNew = Fixture.CreateContext();
         // Act
         var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
-                                                  .WithGlobalFilter(nameof(TestDto.DtVal), nameof(TestDto.NullDt), nameof(TestDto.DoVal), nameof(TestDto.NullDo))
+                                                  .WithGlobalFilter(nameof(TestDto.DoVal), nameof(TestDto.NullDo))
                                                   .BuildAsync(TestContext.Current.CancellationToken);
+        // Assert
+        Assert.Equal(recordsTotal, result.RecordsTotal);
+        Assert.Equal(entities.Count, result.RecordsFiltered);
+        Assert.Equal(entities.Select(x => x.Id), result.Data.Select(x => x.Id));
+    }
 
+    [Fact, Trait("Category", "GlobalFilter")]
+    public async Task GlobalFilter_On_DateTimeOffsetColumns_WithProjection()
+    {
+        // Arrange
+        using var context = Fixture.CreateContext();
+        var searchValue = DateTime.Now.AddYears(5).Date.ToString();
+        var recordsTotal = await context.TestEntities.CountAsync(TestContext.Current.CancellationToken);
+        var entities = context.TestEntities.Select(Mappings.SelectDto)
+                                           .Where(x => x.DtoVal.ToString().Contains(searchValue)
+                                                       || (x.NullDto == null ? string.Empty : x.NullDto.ToString())!.Contains(searchValue))
+                                           .ToList();
+
+        var form = TestFormBuilder.Create()
+                                  .WithGlobalSearch(searchValue)
+                                  .Build();
+
+        using var contextNew = Fixture.CreateContext();
+        // Act
+        var result = await contextNew.TestEntities.ForDataTable(form, Mappings.SelectDto)
+                                                  .WithGlobalFilter(nameof(TestDto.DtoVal), nameof(TestDto.NullDto))
+                                                  .BuildAsync(TestContext.Current.CancellationToken);
         // Assert
         Assert.Equal(recordsTotal, result.RecordsTotal);
         Assert.Equal(entities.Count, result.RecordsFiltered);
