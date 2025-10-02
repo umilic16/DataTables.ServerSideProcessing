@@ -1,6 +1,5 @@
 ## 🛠 In Progress
 
-  - [ ] Fix global filter 
 
 ## 🔥 High priority / Upcoming
 
@@ -10,6 +9,7 @@
 
 ## 💡 Low priority / Ideas
 
+  - [ ] Fix global filter (in .net 9 only DateOnly breaks on non mssql providers)
   - [ ] Better way of accessing property names (e.g. by some data annotation building with source generator or some method)
   - [ ] Maybe some data annotation on properties which should be included in global filtering
   - [ ] Support for caching
