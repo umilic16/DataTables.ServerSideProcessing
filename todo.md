@@ -5,7 +5,6 @@
 ## 🔥 High priority / Upcoming
 
   - [ ] Add support for building query (and accessing it) but without executing it
-  - [ ] Select/MultiSelect generic (instead of just string) support
   - [ ] CI/CD
   - [ ] Component model for whole header/table
 
