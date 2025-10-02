@@ -80,7 +80,7 @@ internal static class Utils
         var sep = FilterParsingOptions.Default.BetweenSeparator;
         string[] cultures = ["en-US", "sr"];
 
-        var now = DateTime.Now;
+        var now = DateOnly.FromDateTime(DateTime.Now);
         var srNow = now.ToString(new CultureInfo("sr"));
         var enNow = now.ToString(new CultureInfo("en-US"));
         var nm3ySr = now.AddYears(-3).ToString(new CultureInfo("sr"));
