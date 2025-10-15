@@ -9,7 +9,7 @@ internal static class PropertyInfoCache<T> where T : class
     // Cache of property name → PropertyInfo
     private static readonly ConcurrentDictionary<string, PropertyInfo> s_propertyMap = new(
         typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                 .ToDictionary(p => p.Name, p => p, StringComparer.InvariantCultureIgnoreCase));
+                 .ToDictionary(p => p.Name, p => p), StringComparer.InvariantCultureIgnoreCase);
 
     internal static bool TryGetProperty(string propertyName, [NotNullWhen(true)] out PropertyInfo? propertyInfo)
     {
