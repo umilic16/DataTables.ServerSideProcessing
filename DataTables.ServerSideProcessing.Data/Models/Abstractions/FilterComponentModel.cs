@@ -27,7 +27,7 @@ public abstract record FilterComponentModel
     /// Defines the category of the filter (e.g., text, numeric, date, etc.),
     /// which determines the type of UI control rendered and filtering behavior applied.
     /// </summary>
-    public required FilterCategory FilterCategory { get; init; }
+    public abstract FilterCategory FilterCategory { get; }
 
 }
 
@@ -49,5 +49,5 @@ public abstract record FilterComponentModel<T> : FilterComponentModel where T : 
     /// Specifies the value category of the column (e.g., base, account number, integer, decimal).
     /// This determines the rendering and validation logic for the filter input.
     /// </summary>
-    public required T ValueCategory { get; init; }
+    public T ValueCategory { get; init; } = default!;
 }

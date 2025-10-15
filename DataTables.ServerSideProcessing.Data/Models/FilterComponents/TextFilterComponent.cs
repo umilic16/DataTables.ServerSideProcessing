@@ -7,6 +7,10 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// Represents the configuration for filtering a specific textual column in a DataTable.
 /// Inherits from <see cref="FilterComponentModel{T}"/>
 /// Used to provide metadata for rendering and processing column filters, including
-/// the type of value the column holds (e.g., base, account number, int, decimal).
+/// the type of value the column holds (e.g., base, account number).
 /// </summary>
-public sealed record TextFilterComponent : FilterComponentModel<TextColumn>;
+public sealed record TextFilterComponent : FilterComponentModel<TextColumn>
+{
+    /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
+    public override FilterCategory FilterCategory => FilterCategory.Text;
+}

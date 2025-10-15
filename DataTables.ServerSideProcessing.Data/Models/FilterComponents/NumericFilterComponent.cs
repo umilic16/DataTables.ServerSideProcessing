@@ -4,9 +4,13 @@ using DataTables.ServerSideProcessing.Data.Models.Abstractions;
 namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 
 /// <summary>
-/// Represents the configuration for filtering a specific textual column in a DataTable.
+/// Represents the configuration for filtering a specific numeric column in a DataTable.
 /// Inherits from <see cref="FilterComponentModel{T}"/>
 /// Used to provide metadata for rendering and processing column filters, including
-/// the type of value the column holds (e.g., base, account number, int, decimal).
+/// the type of value the column holds (e.g., int, decimal).
 /// </summary>
-public sealed record NumericFilterComponent : FilterComponentModel<NumericColumn>;
+public sealed record NumericFilterComponent : FilterComponentModel<NumericColumn>
+{
+    /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
+    public override FilterCategory FilterCategory => FilterCategory.Numeric;
+}
