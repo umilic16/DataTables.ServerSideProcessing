@@ -23,15 +23,4 @@ internal static class PropertyInfoCache<T> where T : class
 
         return propertyInfo;
     }
-
-    internal static bool PropertyExists(string propertyName)
-    {
-        return s_propertyMap.ContainsKey(propertyName);
-    }
-
-    internal static void EnsurePropertyExists(string propertyName)
-    {
-        if (!PropertyExists(propertyName))
-            throw new InvalidOperationException($"Property '{propertyName}' not found on type '{typeof(T).Name}'.");
-    }
 }

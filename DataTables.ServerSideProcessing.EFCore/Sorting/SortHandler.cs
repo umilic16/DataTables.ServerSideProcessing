@@ -15,21 +15,21 @@ internal static class SortHandler
         bool isFirstFlag = true;
         foreach (SortModel sortModel in sortOrder)
         {
-            PropertyInfoCache<T>.EnsurePropertyExists(sortModel.PropertyName);
+            var propName = PropertyInfoCache<T>.GetProperty(sortModel.PropertyName).Name;
 
             if (isFirstFlag)
             {
                 query = sortModel.SortDirection == SortDirection.Ascending
-                    ? query.OrderBy(e => EF.Property<object>(e, sortModel.PropertyName))
-                    : query.OrderByDescending(e => EF.Property<object>(e, sortModel.PropertyName));
+                    ? query.OrderBy(e => EF.Property<object>(e, propName))
+                    : query.OrderByDescending(e => EF.Property<object>(e, propName));
 
                 isFirstFlag = false;
             }
             else
             {
                 query = sortModel.SortDirection == SortDirection.Ascending
-                    ? ((IOrderedQueryable<T>)query).ThenBy(e => EF.Property<object>(e, sortModel.PropertyName))
-                    : ((IOrderedQueryable<T>)query).ThenByDescending(e => EF.Property<object>(e, sortModel.PropertyName));
+                    ? ((IOrderedQueryable<T>)query).ThenBy(e => EF.Property<object>(e, propName))
+                    : ((IOrderedQueryable<T>)query).ThenByDescending(e => EF.Property<object>(e, propName));
             }
         }
         return query;
