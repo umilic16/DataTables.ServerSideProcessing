@@ -11,11 +11,6 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 public sealed record DateFilterComponent : FilterComponentModel
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="DateFilterComponent"/> class.
-    /// </summary>
-    public DateFilterComponent() { }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="DateFilterComponent"/> class with specified table and column names.
     /// </summary>
     public DateFilterComponent(string tableName, string columnName)
