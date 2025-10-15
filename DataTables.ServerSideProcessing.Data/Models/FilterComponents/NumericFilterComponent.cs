@@ -11,6 +11,17 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// </summary>
 public sealed record NumericFilterComponent : FilterComponentModel<NumericColumn>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NumericFilterComponent"/> class.
+    /// </summary>
+    public NumericFilterComponent() { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NumericFilterComponent"/> class with specified table and column names, and optionally the value category.
+    /// </summary>
+    public NumericFilterComponent(string tableName, string columnName, NumericColumn valueCategory = default)
+        : base(tableName, columnName, valueCategory) { }
+
     /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
     public override FilterCategory FilterCategory => FilterCategory.Numeric;
 }

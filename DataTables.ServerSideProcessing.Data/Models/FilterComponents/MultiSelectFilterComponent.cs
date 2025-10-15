@@ -12,6 +12,19 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 public record MultiSelectFilterComponent<V, T> : FilterComponentModel where V : notnull
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="MultiSelectFilterComponent{V,T}"/> class.
+    /// </summary>
+    public MultiSelectFilterComponent() { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultiSelectFilterComponent{V,T}"/> class with specified table, column names, and available values.
+    /// </summary>
+    public MultiSelectFilterComponent(string tableName, string columnName, Dictionary<V, T> availableValues) : base(tableName, columnName)
+    {
+        AvailableValues = availableValues;
+    }
+
+    /// <summary>
     /// Dictionary of available values that can be selected for filtering.
     /// The key (<typeparamref name="V"/>) represents the filter value, and the value (<typeparamref name="T"/>) is the display label.
     /// </summary>
@@ -26,4 +39,16 @@ public record MultiSelectFilterComponent<V, T> : FilterComponentModel where V : 
 /// Provides a list of available values for selection.
 /// Inherits from <see cref="MultiSelectFilterComponent{V,T}"/>.
 /// </summary>
-public sealed record MultiSelectFilterComponent : MultiSelectFilterComponent<string, string>;
+public sealed record MultiSelectFilterComponent : MultiSelectFilterComponent<string, string>
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultiSelectFilterComponent"/> class.
+    /// </summary>
+    public MultiSelectFilterComponent() { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MultiSelectFilterComponent"/> class with specified table, column names, and available values.
+    /// </summary>
+    public MultiSelectFilterComponent(string tableName, string columnName, Dictionary<string, string> availableValues)
+        : base(tableName, columnName, availableValues) { }
+}

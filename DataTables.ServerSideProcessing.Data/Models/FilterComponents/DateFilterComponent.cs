@@ -10,6 +10,17 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// </summary>
 public sealed record DateFilterComponent : FilterComponentModel
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DateFilterComponent"/> class.
+    /// </summary>
+    public DateFilterComponent() { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DateFilterComponent"/> class with specified table and column names.
+    /// </summary>
+    public DateFilterComponent(string tableName, string columnName)
+        : base(tableName, columnName) { }
+
     /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
     public override FilterCategory FilterCategory => FilterCategory.Date;
 }

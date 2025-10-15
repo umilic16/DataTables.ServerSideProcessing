@@ -11,6 +11,17 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// </summary>
 public sealed record TextFilterComponent : FilterComponentModel<TextColumn>
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextFilterComponent"/> class.
+    /// </summary>
+    public TextFilterComponent() { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextFilterComponent"/> class with specified table and column names, and optionally the value category.
+    /// </summary>
+    public TextFilterComponent(string tableName, string columnName, TextColumn valueCategory = default)
+        : base(tableName, columnName, valueCategory) { }
+
     /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
     public override FilterCategory FilterCategory => FilterCategory.Text;
 }
