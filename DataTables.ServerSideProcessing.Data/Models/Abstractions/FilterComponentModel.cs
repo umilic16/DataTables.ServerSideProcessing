@@ -1,5 +1,4 @@
 using DataTables.ServerSideProcessing.Data.Enums;
-using DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 
 namespace DataTables.ServerSideProcessing.Data.Models.Abstractions;
 
@@ -12,8 +11,6 @@ namespace DataTables.ServerSideProcessing.Data.Models.Abstractions;
 /// </summary>
 public abstract record FilterComponentModel
 {
-    private protected FilterComponentModel() { }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterComponentModel"/> class with specified table and column names.
     /// </summary>
@@ -26,12 +23,12 @@ public abstract record FilterComponentModel
     /// <summary>
     /// Name of the table to which the filter applies.
     /// </summary>
-    public required string TableName { get; init; }
+    public string TableName { get; init; }
 
     /// <summary>
     /// Name of the column to be filtered.
     /// </summary>
-    public required string ColumnName { get; init; }
+    public string ColumnName { get; init; }
 
     /// <summary>
     /// Defines the category of the filter (e.g., text, numeric, date, etc.),
@@ -53,8 +50,6 @@ public abstract record FilterComponentModel
 /// </typeparam>
 public abstract record FilterComponentModel<T> : FilterComponentModel where T : Enum
 {
-    private protected FilterComponentModel() { }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterComponentModel{T}"/> class with specified table and column names, and optionally the value category.
     /// </summary>
