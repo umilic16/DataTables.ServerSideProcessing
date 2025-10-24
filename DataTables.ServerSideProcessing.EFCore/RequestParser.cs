@@ -78,7 +78,7 @@ internal static class RequestParser
                     continue;
 
                 if (valueCategory == TextColumn.AccNumber)
-                    searchValue = searchValue.Replace("-", "");
+                    searchValue = searchValue.Replace("-", string.Empty);
 
                 filters.Add(new TextFilter
                 {
