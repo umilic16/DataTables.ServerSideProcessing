@@ -8,7 +8,13 @@ public sealed record FilterParsingOptions
     /// <summary>
     /// Default instance with all default values.
     /// </summary>
-    public static readonly FilterParsingOptions Default = new();
+    public static FilterParsingOptions Default { get; private set; } = new();
+
+    /// <summary>
+    /// Sets the default <see cref="FilterParsingOptions"/> instance.
+    /// </summary>
+    /// <param name="options">The <see cref="FilterParsingOptions"/> instance to set as default.</param>
+    public static void SetDefault(FilterParsingOptions options) => Default = options;
 
     /// <summary>
     /// Prefix used for filter parameters in the request data. Default is "filter".

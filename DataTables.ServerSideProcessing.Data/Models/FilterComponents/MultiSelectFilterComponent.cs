@@ -9,8 +9,8 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// and the value is the display label shown to the user.
 /// Inherits from <see cref="FilterComponentModel"/>.
 /// </summary>
-public record MultiSelectFilterComponent<V, T>(string tableName, string columnName, Dictionary<V, T> availableValues)
-    : FilterComponentModel(tableName, columnName) where V : notnull
+public record MultiSelectFilterComponent<V, T>(string columnName, Dictionary<V, T> availableValues)
+    : FilterComponentModel(columnName) where V : notnull
 {
     /// <summary>
     /// Dictionary of available values that can be selected for filtering.
@@ -27,5 +27,5 @@ public record MultiSelectFilterComponent<V, T>(string tableName, string columnNa
 /// Provides a list of available values for selection.
 /// Inherits from <see cref="MultiSelectFilterComponent{V,T}"/>.
 /// </summary>
-public sealed record MultiSelectFilterComponent(string tableName, string columnName, Dictionary<string, string> availableValues)
-    : MultiSelectFilterComponent<string, string>(tableName, columnName, availableValues);
+public sealed record MultiSelectFilterComponent(string columnName, Dictionary<string, string> availableValues)
+    : MultiSelectFilterComponent<string, string>(columnName, availableValues);

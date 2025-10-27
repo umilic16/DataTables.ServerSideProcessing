@@ -4,7 +4,7 @@ namespace DataTables.ServerSideProcessing.Data.Models.Abstractions;
 
 /// <summary>
 /// Serves as the abstract base record for all filter component models, encapsulating shared properties
-/// required for defining filter behavior and metadata. This includes the table and column names to which
+/// required for defining filter behavior and metadata. This includes the column names to which
 /// the filter applies, as well as the type of filter to be rendered and processed. The metadata provided
 /// by this record supports dynamic rendering of filter UI elements on the frontend, such as input fields
 /// and filter type selectors, tailored to the characteristics of the data column.
@@ -14,16 +14,10 @@ public abstract record FilterComponentModel
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterComponentModel"/> class with specified table and column names.
     /// </summary>
-    protected FilterComponentModel(string tableName, string columnName)
+    protected FilterComponentModel(string columnName)
     {
-        TableName = tableName;
         ColumnName = columnName;
     }
-
-    /// <summary>
-    /// Name of the table to which the filter applies.
-    /// </summary>
-    public string TableName { get; init; }
 
     /// <summary>
     /// Name of the column to be filtered.
@@ -53,8 +47,8 @@ public abstract record FilterComponentModel<T> : FilterComponentModel where T : 
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterComponentModel{T}"/> class with specified table and column names, and optionally the value category.
     /// </summary>
-    protected FilterComponentModel(string tableName, string columnName, T valueCategory = default!)
-        : base(tableName, columnName)
+    protected FilterComponentModel(string columnName, T valueCategory = default!)
+        : base(columnName)
     {
         ValueCategory = valueCategory;
     }

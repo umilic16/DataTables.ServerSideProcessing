@@ -9,8 +9,8 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 /// Used to provide metadata for rendering and processing column filters, including
 /// the type of value the column holds (e.g., base, account number).
 /// </summary>
-public sealed record TextFilterComponent(string tableName, string columnName, TextColumn valueCategory = default)
-    : FilterComponentModel<TextColumn>(tableName, columnName, valueCategory)
+public sealed record TextFilterComponent(string columnName, TextColumn valueCategory = default)
+    : FilterComponentModel<TextColumn>(columnName, valueCategory)
 {
     /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
     public override FilterCategory FilterCategory => FilterCategory.Text;

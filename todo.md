@@ -5,7 +5,6 @@
 
   - [ ] Add support for building query (and accessing it) but without executing it
   - [ ] CI/CD
-  - [ ] Component model for whole header/table
 
 ## 💡 Low priority / Ideas
 
@@ -23,6 +22,8 @@
 
 ## 🧹 Done
 
+  - [x] DI config of default options
+  - [x] Component model for whole header/table
   - [x] Fix select/multiselect filtering for enums, date types
   - [x] Cache whole properties instead just names
   - [x] Cache methods that are being retrieved via reflection

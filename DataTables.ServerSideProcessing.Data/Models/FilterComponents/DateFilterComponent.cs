@@ -13,8 +13,8 @@ public sealed record DateFilterComponent : FilterComponentModel
     /// <summary>
     /// Initializes a new instance of the <see cref="DateFilterComponent"/> class with specified table and column names.
     /// </summary>
-    public DateFilterComponent(string tableName, string columnName)
-        : base(tableName, columnName) { }
+    public DateFilterComponent(string columnName)
+        : base(columnName) { }
 
     /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
     public override FilterCategory FilterCategory => FilterCategory.Date;
