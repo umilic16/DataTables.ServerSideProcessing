@@ -9,7 +9,7 @@ namespace DataTables.ServerSideProcessing.Data.Models.Abstractions;
 /// by this record supports dynamic rendering of filter UI elements on the frontend, such as input fields
 /// and filter type selectors, tailored to the characteristics of the data column.
 /// </summary>
-public abstract record FilterComponentModel
+public abstract record FilterComponentModel : IFilterCell
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterComponentModel"/> class with specified table and column names.

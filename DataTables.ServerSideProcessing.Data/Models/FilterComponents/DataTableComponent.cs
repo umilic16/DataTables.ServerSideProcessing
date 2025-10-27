@@ -35,5 +35,5 @@ public sealed class DataTableComponent
     /// Gets the collection of filter components associated with this table,
     /// used to define and apply filter behavior to its data.
     /// </summary>
-    public required List<FilterComponentModel> FilterComponents { get; init; }
+    public required List<IFilterCell> FilterComponents { get; init; }
 }
