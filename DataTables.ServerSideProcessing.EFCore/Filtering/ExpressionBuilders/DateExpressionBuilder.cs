@@ -34,36 +34,36 @@ internal static class DateExpressionBuilder
         else
         {
             // For DateTime or DateTimeOffset, create values with time component set to start and end of the day
-            ConstantExpression start;
-            ConstantExpression end;
+            ConstantExpression dateTimeBase;
+            ConstantExpression dateTimeEnd;
             if (underlyingType == typeof(DateTimeOffset))
             {
-                start = Expression.Constant(new DateTimeOffset(searchValue.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero), propertyType);
-                end = Expression.Constant(new DateTimeOffset(searchValue.AddDays(1).ToDateTime(TimeOnly.MinValue), TimeSpan.Zero), propertyType);
+                dateTimeBase = Expression.Constant(new DateTimeOffset(searchValue.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero), propertyType);
+                dateTimeEnd = Expression.Constant(new DateTimeOffset(searchValue.ToDateTime(TimeOnly.MaxValue), TimeSpan.Zero), propertyType);
             }
             else
             {
                 // DateTime
-                start = Expression.Constant(searchValue.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), propertyType);
-                end = Expression.Constant(searchValue.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), propertyType);
+                dateTimeBase = Expression.Constant(searchValue.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), propertyType);
+                dateTimeEnd = Expression.Constant(searchValue.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc), propertyType);
             }
 
             comparison = filterType switch
             {
                 FilterOperations.Equals =>
                     Expression.AndAlso(
-                        Expression.GreaterThanOrEqual(memberAccess, start),
-                        Expression.LessThan(memberAccess, end)
+                        Expression.GreaterThanOrEqual(memberAccess, dateTimeBase),
+                        Expression.LessThan(memberAccess, dateTimeEnd)
                     ),
                 FilterOperations.NotEqual =>
                     Expression.OrElse(
-                        Expression.LessThan(memberAccess, start),
-                        Expression.GreaterThanOrEqual(memberAccess, end)
+                        Expression.LessThan(memberAccess, dateTimeBase),
+                        Expression.GreaterThanOrEqual(memberAccess, dateTimeEnd)
                     ),
-                FilterOperations.GreaterThan => Expression.GreaterThan(memberAccess, start),
-                FilterOperations.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, start),
-                FilterOperations.LessThan => Expression.LessThan(memberAccess, end),
-                FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, end),
+                FilterOperations.GreaterThan => Expression.GreaterThan(memberAccess, dateTimeBase),
+                FilterOperations.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, dateTimeBase),
+                FilterOperations.LessThan => Expression.LessThan(memberAccess, dateTimeBase),
+                FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, dateTimeBase),
                 _ => throw new InvalidOperationException($"Filter operation '{filterType}' is not valid for date filtering.")
             };
         }
