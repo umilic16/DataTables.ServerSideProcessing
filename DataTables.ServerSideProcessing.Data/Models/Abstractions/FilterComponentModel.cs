@@ -29,11 +29,28 @@ public abstract record FilterComponentModel : IFilterCell
     /// which determines the type of UI control rendered and filtering behavior applied.
     /// </summary>
     public abstract FilterCategory FilterCategory { get; }
-
 }
 
 /// <summary>
-/// Generic abstract base record for filter component models, extending <see cref="FilterComponentModel"/>
+/// This model extends <see cref="FilterComponentModel"/> by introducing the initial filter operation
+/// used when the filter is first initialized in the UI.
+/// </summary>
+public abstract record FilterComponentModelWithInitialOperation : FilterComponentModel
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FilterComponentModelWithInitialOperation"/> class with specified table and column names.
+    /// </summary>
+    protected FilterComponentModelWithInitialOperation(string columnName) : base(columnName) { }
+
+    /// <summary>
+    /// Gets the default filter operation that should be applied when the filter component
+    /// is first initialized.
+    /// </summary>
+    public abstract FilterOperations InitialFilterOperation { get; }
+}
+
+/// <summary>
+/// Generic abstract base record for filter component models, extending <see cref="FilterComponentModelWithInitialOperation"/>
 /// by introducing a strongly-typed value type for the column being filtered. The generic type parameter <typeparamref name="T"/>
 /// must be an <see cref="Enum"/>, representing the specific data type or semantic meaning of the column value
 /// (e.g., base, account number, integer, decimal). This enables more precise control over filter input rendering,
@@ -42,7 +59,7 @@ public abstract record FilterComponentModel : IFilterCell
 /// <typeparam name="T">
 /// An enumeration that specifies the type or semantic category of the column value.
 /// </typeparam>
-public abstract record FilterComponentModel<T> : FilterComponentModel where T : Enum
+public abstract record FilterComponentModel<T> : FilterComponentModelWithInitialOperation where T : Enum
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterComponentModel{T}"/> class with specified table and column names, and optionally the value category.

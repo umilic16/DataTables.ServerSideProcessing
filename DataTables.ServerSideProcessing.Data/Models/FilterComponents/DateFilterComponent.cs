@@ -5,17 +5,16 @@ namespace DataTables.ServerSideProcessing.Data.Models.FilterComponents;
 
 /// <summary>
 /// Represents the configuration for filtering a specific textual column in a DataTable.
-/// Inherits from <see cref="FilterComponentModel"/>
+/// Inherits from <see cref="FilterComponentModelWithInitialOperation"/>
 /// Used to provide metadata for rendering and processing column filters
 /// </summary>
-public sealed record DateFilterComponent : FilterComponentModel
+public sealed record DateFilterComponent(string columnName, FilterOperations initialFilterOperation = FilterOperations.Equals)
+    : FilterComponentModelWithInitialOperation(columnName)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DateFilterComponent"/> class with specified table and column names.
-    /// </summary>
-    public DateFilterComponent(string columnName)
-        : base(columnName) { }
 
     /// <inheritdoc cref="FilterComponentModel.FilterCategory"/>
     public override FilterCategory FilterCategory => FilterCategory.Date;
+
+    /// <inheritdoc cref="FilterComponentModelWithInitialOperation.InitialFilterOperation"/>
+    public override FilterOperations InitialFilterOperation { get; } = initialFilterOperation;
 }
