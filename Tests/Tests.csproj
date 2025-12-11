@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="MySql.EntityFrameworkCore" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />
+    <!--<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" />-->
     <PackageReference Include="Testcontainers.MsSql" />
     <PackageReference Include="Testcontainers.MySql" />
     <PackageReference Include="Testcontainers.PostgreSql" />

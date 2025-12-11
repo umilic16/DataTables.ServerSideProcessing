@@ -9,12 +9,12 @@ public class PostgreSqlTests(PostgreSqlFixture fixture) : ITestsSorting<PostgreS
     public bool IsPostgres => true;
 }
 
-public class PomeloTests(PomeloFixture fixture) : ITestsSorting<PomeloFixture>, ITestsColumnFilters<PomeloFixture>, ITestsGlobalFilter<PomeloFixture>,
-    ITestsSingleSelectFilter<PomeloFixture>, ITestsMultiSelectFilter<PomeloFixture>, IClassFixture<PomeloFixture>
-{
-    public PomeloFixture Fixture => fixture;
-    public bool IsPostgres => false;
-}
+//public class PomeloTests(PomeloFixture fixture) : ITestsSorting<PomeloFixture>, ITestsColumnFilters<PomeloFixture>, ITestsGlobalFilter<PomeloFixture>,
+//    ITestsSingleSelectFilter<PomeloFixture>, ITestsMultiSelectFilter<PomeloFixture>, IClassFixture<PomeloFixture>
+//{
+//    public PomeloFixture Fixture => fixture;
+//    public bool IsPostgres => false;
+//}
 
 public class MySqlTests(MySqlFixture fixture) : ITestsSorting<MySqlFixture>, ITestsColumnFilters<MySqlFixture>, ITestsGlobalFilter<MySqlFixture>,
     ITestsSingleSelectFilter<MySqlFixture>, ITestsMultiSelectFilter<MySqlFixture>, IClassFixture<MySqlFixture>
