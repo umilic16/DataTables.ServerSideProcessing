@@ -213,7 +213,7 @@ internal static class RequestParser
 
                 filters.Add(new DateFilter
                 {
-                    SearchValue = i == 0 ? parsedValue : parsedValue.AddDays(1), // Add 1 day to the end date to make it inclusive
+                    SearchValue = parsedValue,
                     PropertyName = propertyName,
                     FilterType = i == 0 ? FilterOperations.GreaterThanOrEqual : FilterOperations.LessThanOrEqual
                 });
