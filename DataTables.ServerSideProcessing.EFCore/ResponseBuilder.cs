@@ -114,7 +114,7 @@ public sealed class ResponseBuilder<TSource, TResult>
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
         _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
-                                 .HandleColumnFilters(_request.Filters);
+                                   .HandleColumnFilters(_request.Filters);
 
         int filteredCount = await _filteredQuery.CountAsync(ct);
 
@@ -155,7 +155,7 @@ public sealed class ResponseBuilder<TSource, TResult>
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
         _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
-                                 .HandleColumnFilters(_request.Filters);
+                                   .HandleColumnFilters(_request.Filters);
 
         int filteredCount = _filteredQuery.Count();
 
@@ -206,7 +206,7 @@ public sealed class ResponseBuilder<TSource, TResult>
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
         _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
-                                 .HandleColumnFilters(_request.Filters);
+                                   .HandleColumnFilters(_request.Filters);
 
         _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
 
@@ -240,7 +240,7 @@ public sealed class ResponseBuilder<TSource, TResult>
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
         _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
-                                 .HandleColumnFilters(_request.Filters);
+                                   .HandleColumnFilters(_request.Filters);
 
         _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
 
@@ -282,7 +282,7 @@ public sealed class ResponseBuilder<TSource, TResult>
             _request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
         }
         return _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
-                                        .HandleColumnFilters(_request.Filters);
+                                          .HandleColumnFilters(_request.Filters);
     }
 
     /// <summary>
@@ -305,7 +305,7 @@ public sealed class ResponseBuilder<TSource, TResult>
         }
 
         _filteredQuery ??= _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
-                                   .HandleColumnFilters(_request.Filters);
+                                     .HandleColumnFilters(_request.Filters);
 
         return _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
     }
