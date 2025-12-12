@@ -24,21 +24,10 @@ public sealed class ResponseBuilder<TSource, TResult>
     private bool _applyColumnFilters = true;
     private string[]? _globalFilterProperties;
     private bool ApplyGlobalFilter => _globalFilterProperties is { Length: > 0 };
-
-    /// <summary>
-    /// Gets the query with projection applied, but before any filtering or sorting.
-    /// </summary>
-    public IQueryable<TResult>? BaseQuery { get; private set; }
-
-    /// <summary>
-    /// Gets the query with projection, global filters, and column filters applied, but without sorting.
-    /// </summary>
-    public IQueryable<TResult>? FilteredQuery { get; private set; }
-
-    /// <summary>
-    /// Gets the final query with projection, filters and sorting applied.
-    /// </summary>
-    public IQueryable<TResult>? FinalQuery { get; private set; }
+    private Request? _request;
+    private IQueryable<TResult>? _baseQuery;
+    private IQueryable<TResult>? _filteredQuery;
+    private IQueryable<TResult>? _finalQuery;
 
     internal ResponseBuilder(IQueryable<TSource> query, IFormCollection form)
     {
@@ -117,27 +106,27 @@ public sealed class ResponseBuilder<TSource, TResult>
         var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
         options ??= FilterParsingOptions.Default;
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options);
+        _request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options);
 
-        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+        _baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                                 .HandleColumnFilters(request.Filters);
+        _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
+                                 .HandleColumnFilters(_request.Filters);
 
-        int filteredCount = await FilteredQuery.CountAsync(ct);
+        int filteredCount = await _filteredQuery.CountAsync(ct);
 
         if (filteredCount == 0) return response;
 
         response.RecordsFiltered = filteredCount;
 
-        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
+        _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
 
-        response.Data = request.PageSize != -1
-            ? await FinalQuery.Skip(request.Skip).Take(request.PageSize).ToListAsync(ct)
-            : await FinalQuery.ToListAsync(ct);
+        response.Data = _request.PageSize != -1
+            ? await _finalQuery.Skip(_request.Skip).Take(_request.PageSize).ToListAsync(ct)
+            : await _finalQuery.ToListAsync(ct);
 
         return response;
     }
@@ -158,27 +147,27 @@ public sealed class ResponseBuilder<TSource, TResult>
         var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
 
         options ??= FilterParsingOptions.Default;
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options);
+        _request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options);
 
-        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+        _baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                                 .HandleColumnFilters(request.Filters);
+        _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
+                                 .HandleColumnFilters(_request.Filters);
 
-        int filteredCount = FilteredQuery.Count();
+        int filteredCount = _filteredQuery.Count();
 
         if (filteredCount == 0) return response;
 
         response.RecordsFiltered = filteredCount;
 
-        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
+        _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
 
-        response.Data = request.PageSize != -1
-            ? FinalQuery.Skip(request.Skip).Take(request.PageSize).ToList()
-            : FinalQuery.ToList();
+        response.Data = _request.PageSize != -1
+            ? _finalQuery.Skip(_request.Skip).Take(_request.PageSize).ToList()
+            : _finalQuery.ToList();
 
         return response;
     }
@@ -199,7 +188,7 @@ public sealed class ResponseBuilder<TSource, TResult>
     /// Processes the DataTables request and executes the configured query pipeline asynchronously,
     /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
-    /// <param name="skip"> The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="skip">The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
     /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
     /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
     /// <param name="ct">A cancellation token to cancel the operation.</param>
@@ -209,21 +198,21 @@ public sealed class ResponseBuilder<TSource, TResult>
     public async Task<List<TResult>> GetDataAsync(int? skip = null, int? pageSize = null, FilterParsingOptions? options = null, CancellationToken ct = default)
     {
         options ??= FilterParsingOptions.Default;
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
+        _request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
 
-        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+        _baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                                 .HandleColumnFilters(request.Filters);
+        _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
+                                 .HandleColumnFilters(_request.Filters);
 
-        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
+        _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
 
-        return request.PageSize != -1
-            ? await FinalQuery.Skip(request.Skip).Take(request.PageSize).ToListAsync(ct)
-            : await FinalQuery.ToListAsync(ct);
+        return _request.PageSize != -1
+            ? await _finalQuery.Skip(_request.Skip).Take(_request.PageSize).ToListAsync(ct)
+            : await _finalQuery.ToListAsync(ct);
     }
 
     /// <inheritdoc cref="GetData(int?, int?, FilterParsingOptions?)"/>
@@ -234,7 +223,7 @@ public sealed class ResponseBuilder<TSource, TResult>
     /// Processes the DataTables request and executes the configured query pipeline,
     /// applying projection, filtering, sorting, and paging as specified.
     /// </summary>
-    /// <param name="skip"> The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="skip">The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
     /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
     /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
     /// <returns>
@@ -243,20 +232,89 @@ public sealed class ResponseBuilder<TSource, TResult>
     public List<TResult> GetData(int? skip = null, int? pageSize = null, FilterParsingOptions? options = null)
     {
         options ??= FilterParsingOptions.Default;
-        Request request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
+        _request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
 
-        BaseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+        _baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
 
         // no need to check if global filter / column filter / sorting should be handled or not here,
         // as RequestParser will return empty arrays / strings if they shouldn't be applied
         // and QueryBuilder extension methods will return the original query in that case
-        FilteredQuery = BaseQuery.HandleGlobalFilter(_globalFilterProperties, request.Search)
-                                 .HandleColumnFilters(request.Filters);
+        _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
+                                 .HandleColumnFilters(_request.Filters);
 
-        FinalQuery = FilteredQuery.HandleSorting(request.SortOrder);
+        _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
 
-        return request.PageSize != -1
-            ? FinalQuery.Skip(request.Skip).Take(request.PageSize).ToList()
-            : FinalQuery.ToList();
+        return _request.PageSize != -1
+            ? _finalQuery.Skip(_request.Skip).Take(_request.PageSize).ToList()
+            : _finalQuery.ToList();
+    }
+
+    /// <summary>
+    /// Gets the base query with the projection applied (if a projection was provided).
+    /// </summary>
+    /// <returns>
+    /// An <see cref="IQueryable{TResult}"/> representing the projected source sequence without filters or sorting.
+    /// </returns>
+    public IQueryable<TResult> GetBaseQuery()
+    {
+        if (_baseQuery is not null) return _baseQuery;
+        return _baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+    }
+
+    /// <inheritdoc cref="GetFilteredQuery(int?, int?, FilterParsingOptions?)"/>
+    public IQueryable<TResult> GetFilteredQuery(FilterParsingOptions? options = null)
+        => GetFilteredQuery(null, null, options);
+
+    /// <summary>
+    /// Gets the query with global and column filters applied (sorting is not applied). Calling this method will parse the request (if it's not already parsed).
+    /// </summary>
+    /// <param name="skip">The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
+    /// <returns>
+    /// An <see cref="IQueryable{TResult}"/> representing the projected and filtered sequence without sorting.
+    /// </returns>
+    public IQueryable<TResult> GetFilteredQuery(int? skip = null, int? pageSize = null, FilterParsingOptions? options = null)
+    {
+        if (_filteredQuery is not null) return _filteredQuery;
+
+        _baseQuery ??= _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+
+        if (_request is null)
+        {
+            options ??= FilterParsingOptions.Default;
+            _request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
+        }
+        return _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
+                                        .HandleColumnFilters(_request.Filters);
+    }
+
+    /// <inheritdoc cref="GetFilteredQuery(int?, int?, FilterParsingOptions?)"/>
+    public IQueryable<TResult> GetFinalQuery(FilterParsingOptions? options = null)
+        => GetFinalQuery(null, null, options);
+
+    /// <summary>
+    /// Gets the final query with filters and sorting applied. Calling this method will parse the request (if it's not already parsed).
+    /// </summary>
+    /// <param name="skip">The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="options">Options for parsing filters from the request. If <c>null</c>, default options are used.</param>
+    /// <returns>
+    /// An <see cref="IQueryable{TResult}"/> representing the projected, filtered, and sorted sequence.
+    /// </returns>
+    public IQueryable<TResult> GetFinalQuery(int? skip = null, int? pageSize = null, FilterParsingOptions? options = null)
+    {
+        if (_finalQuery is not null) return _finalQuery;
+        _baseQuery ??= _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
+        if (_request is null)
+        {
+            options ??= FilterParsingOptions.Default;
+            _request = RequestParser.ParseRequest(_form, ApplyGlobalFilter, _applySorting, _applyColumnFilters, options, skip, pageSize);
+        }
+
+        _filteredQuery ??= _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
+                                   .HandleColumnFilters(_request.Filters);
+
+        return _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
     }
 }
