@@ -317,4 +317,71 @@ public sealed class ResponseBuilder<TSource, TResult>
 
         return _finalQuery = _filteredQuery.HandleSorting(_request.SortOrder);
     }
+
+    /// <inheritdoc cref="BuildFromQueryAsync(IQueryable{TResult}, int?, int?, CancellationToken)"/>
+    public Task<Response<TResult>> BuildFromQueryAsync(IQueryable<TResult> query, CancellationToken ct = default)
+        => BuildFromQueryAsync(query, null, null, ct);
+
+    /// <summary>
+    /// Builds a DataTables-compatible response asynchronously from the provided pre-built query.
+    /// </summary>
+    /// <param name="query">The pre-built query to execute (typically already filtered and sorted).</param>
+    /// <param name="skip">The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="ct">A cancellation token to cancel the operation.</param>
+    /// <returns>
+    /// A <see cref="Response{TResult}"/> containing the data and metadata required by DataTables.
+    /// </returns>
+    public async Task<Response<TResult>> BuildFromQueryAsync(IQueryable<TResult> query, int? skip = null, int? pageSize = null, CancellationToken ct = default)
+    {
+        int totalCount = await _query.CountAsync(ct);
+        if (totalCount == 0) return new Response<TResult>() { Draw = _form["draw"] };
+
+        var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
+
+        int filteredCount = await query.CountAsync(ct);
+
+        if (filteredCount == 0) return response;
+
+        response.RecordsFiltered = filteredCount;
+
+        pageSize = _request?.PageSize ?? pageSize;
+        skip = _request?.Skip ?? skip ?? 0;
+        response.Data = pageSize > 0
+            ? await query.Skip(skip.Value).Take(pageSize.Value).ToListAsync(ct)
+            : await query.ToListAsync(ct);
+
+        return response;
+    }
+
+    /// <summary>
+    /// Builds a DataTables-compatible response from the provided pre-built query.
+    /// </summary>
+    /// <param name="query">The pre-built query to execute (typically already filtered and sorted).</param>
+    /// <param name="skip">The number of records to skip. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <param name="pageSize">The number of records to return. If <c>null</c>, the value is determined from the parsed request.</param>
+    /// <returns>
+    /// A <see cref="Response{TResult}"/> containing the data and metadata required by DataTables.
+    /// </returns>
+    public Response<TResult> BuildFromQuery(IQueryable<TResult> query, int? skip = null, int? pageSize = null)
+    {
+        int totalCount = _query.Count();
+        if (totalCount == 0) return new Response<TResult>() { Draw = _form["draw"] };
+
+        var response = new Response<TResult>() { Draw = _form["draw"], RecordsTotal = totalCount };
+
+        int filteredCount = query.Count();
+
+        if (filteredCount == 0) return response;
+
+        response.RecordsFiltered = filteredCount;
+
+        pageSize = _request?.PageSize ?? pageSize;
+        skip = _request?.Skip ?? skip ?? 0;
+        response.Data = pageSize > 0
+            ? query.Skip(skip.Value).Take(pageSize.Value).ToList()
+            : query.ToList();
+
+        return response;
+    }
 }
