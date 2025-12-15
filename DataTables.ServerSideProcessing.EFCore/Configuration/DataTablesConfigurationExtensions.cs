@@ -24,8 +24,6 @@ public static class DataTablesConfigurationExtensions
         FilterParsingOptions.SetDefault(cfg.FilterParsingOptions);
         DataTableComponent.SetDefaultTableClasses(cfg.TableClasses);
 
-        // optionally register the configuration instance in DI container
-
         return services;
     }
 }

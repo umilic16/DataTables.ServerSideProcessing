@@ -12,7 +12,6 @@
   - [ ] Maybe some data annotation on properties which should be included in global filtering
   - [ ] Support for caching
   - [ ] Add examples, improve documentation
-  - [ ] Add global configuration support (e.g. modifying Default instance of FilterParsingOptions, RequestParser...)
   - [ ] Custom exceptions
   - [ ] Js helper methods
   - [ ] Add components?
@@ -21,6 +20,7 @@
 
 ## 🧹 Done
 
+  - [x] Add global configuration support (e.g. modifying Default instance of FilterParsingOptions, RequestParser...)
   - [x] Add support for building query (and accessing it) but without executing it
   - [x] DI config of default options
   - [x] Component model for whole header/table
