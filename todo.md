@@ -3,7 +3,6 @@
 
 ## 🔥 High priority / Upcoming
 
-  - [ ] Add support for building query (and accessing it) but without executing it
   - [ ] CI/CD
 
 ## 💡 Low priority / Ideas
@@ -22,6 +21,7 @@
 
 ## 🧹 Done
 
+  - [x] Add support for building query (and accessing it) but without executing it
   - [x] DI config of default options
   - [x] Component model for whole header/table
   - [x] Fix select/multiselect filtering for enums, date types
