@@ -261,6 +261,10 @@ public sealed class ResponseBuilder<TSource, TResult>
         return _baseQuery = _projection != null ? _query.Select(_projection) : _query.Cast<TResult>();
     }
 
+    /// <inheritdoc cref="GetFilteredQuery(int?, int?, FilterParsingOptions?)"/>
+    public IQueryable<TResult> GetFilteredQuery(FilterParsingOptions options)
+        => GetFilteredQuery(null, null, options);
+
     /// <summary>
     /// Gets the query with global and column filters applied (sorting is not applied). Calling this method will parse the request (if it's not already parsed).
     /// </summary>
@@ -284,6 +288,10 @@ public sealed class ResponseBuilder<TSource, TResult>
         return _filteredQuery = _baseQuery.HandleGlobalFilter(_globalFilterProperties, _request.Search)
                                           .HandleColumnFilters(_request.Filters);
     }
+
+    /// <inheritdoc cref="GetFilteredQuery(int?, int?, FilterParsingOptions?)"/>
+    public IQueryable<TResult> GetFinalQuery(FilterParsingOptions options)
+        => GetFinalQuery(null, null, options);
 
     /// <summary>
     /// Gets the final query with filters and sorting applied. Calling this method will parse the request (if it's not already parsed).
