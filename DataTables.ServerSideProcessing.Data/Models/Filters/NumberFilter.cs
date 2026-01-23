@@ -12,11 +12,6 @@ namespace DataTables.ServerSideProcessing.Data.Models.Filters;
 public sealed record NumberFilter<T> : FilterModel<T> where T : INumber<T>
 {
     /// <summary>
-    /// Type of the numeric column (e.g., Int, Decimal).
-    /// </summary>
-    public NumericColumn ColumnType { get; init; } = NumericColumn.Int;
-
-    /// <summary>
     /// Type of filter to apply (e.g., Equals, Between).
     /// </summary>
     public required FilterOperations FilterType { get; init; }
