@@ -638,8 +638,8 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeVal <= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
@@ -706,8 +706,8 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtVal <= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
@@ -772,8 +772,8 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTime <= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTime > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTime <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTime > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
@@ -838,8 +838,8 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDt <= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDt > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDt <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDt > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
