@@ -63,13 +63,10 @@ internal static class DateExpressionBuilder
                 FilterOperations.GreaterThan => Expression.GreaterThan(memberAccess, dateTimeBase),
                 FilterOperations.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, dateTimeBase),
                 FilterOperations.LessThan => Expression.LessThan(memberAccess, dateTimeBase),
-                FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, dateTimeBase),
+                FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, dateTimeEnd),
                 _ => throw new InvalidOperationException($"Filter operation '{filterType}' is not valid for date filtering.")
             };
         }
         return Expression.Lambda<Func<T, bool>>(comparison, parameter);
     }
-
-
-
 }
