@@ -86,8 +86,12 @@ public sealed class ResponseBuilder<TSource, TResult>
     }
 
     /// <inheritdoc cref="BuildAsync(FilterParsingOptions?, CancellationToken)"/>
-    public Task<Response<TResult>> BuildAsync(CancellationToken ct = default)
+    public Task<Response<TResult>> BuildAsync(CancellationToken ct)
         => BuildAsync(null, ct);
+
+    /// <inheritdoc cref="BuildAsync(FilterParsingOptions?, CancellationToken)"/>
+    public Task<Response<TResult>> BuildAsync(FilterParsingOptions options)
+        => BuildAsync(options, default);
 
     /// <summary>
     /// Processes the DataTables request and executes the configured query pipeline asynchronously,
@@ -173,15 +177,15 @@ public sealed class ResponseBuilder<TSource, TResult>
     }
 
     /// <inheritdoc cref="GetDataAsync(int?, int?, FilterParsingOptions?, CancellationToken)"/>
-    public Task<List<TResult>> GetDataAsync(CancellationToken ct = default)
+    public Task<List<TResult>> GetDataAsync(CancellationToken ct)
         => GetDataAsync(null, null, null, ct);
 
     /// <inheritdoc cref="GetDataAsync(int?, int?, FilterParsingOptions?, CancellationToken)"/>
-    public Task<List<TResult>> GetDataAsync(FilterParsingOptions? options = null, CancellationToken ct = default)
+    public Task<List<TResult>> GetDataAsync(FilterParsingOptions options, CancellationToken ct = default)
         => GetDataAsync(null, null, options, ct);
 
     /// <inheritdoc cref="GetDataAsync(int?, int?, FilterParsingOptions?, CancellationToken)"/>
-    public Task<List<TResult>> GetDataAsync(int? skip = null, int? pageSize = null, CancellationToken ct = default)
+    public Task<List<TResult>> GetDataAsync(int skip, int pageSize, CancellationToken ct = default)
         => GetDataAsync(skip, pageSize, null, ct);
 
     /// <summary>
@@ -218,6 +222,10 @@ public sealed class ResponseBuilder<TSource, TResult>
     /// <inheritdoc cref="GetData(int?, int?, FilterParsingOptions?)"/>
     public List<TResult> GetData(FilterParsingOptions? options = null)
         => GetData(null, null, options);
+
+    /// <inheritdoc cref="GetData(int?, int?, FilterParsingOptions?)"/>
+    public List<TResult> GetData(int skip, int pageSize)
+        => GetData(skip, pageSize, null);
 
     /// <summary>
     /// Processes the DataTables request and executes the configured query pipeline,
@@ -265,6 +273,10 @@ public sealed class ResponseBuilder<TSource, TResult>
     public IQueryable<TResult> GetFilteredQuery(FilterParsingOptions options)
         => GetFilteredQuery(null, null, options);
 
+    /// <inheritdoc cref="GetFilteredQuery(int?, int?, FilterParsingOptions?)"/>
+    public IQueryable<TResult> GetFilteredQuery(int skip, int pageSize)
+        => GetFilteredQuery(skip, pageSize, null);
+
     /// <summary>
     /// Gets the query with global and column filters applied (sorting is not applied). Calling this method will parse the request (if it's not already parsed).
     /// </summary>
@@ -293,6 +305,10 @@ public sealed class ResponseBuilder<TSource, TResult>
     public IQueryable<TResult> GetFinalQuery(FilterParsingOptions options)
         => GetFinalQuery(null, null, options);
 
+    /// <inheritdoc cref="GetFilteredQuery(int?, int?, FilterParsingOptions?)"/>
+    public IQueryable<TResult> GetFinalQuery(int skip, int pageSize)
+        => GetFinalQuery(skip, pageSize, null);
+
     /// <summary>
     /// Gets the final query with filters and sorting applied. Calling this method will parse the request (if it's not already parsed).
     /// </summary>
@@ -319,7 +335,7 @@ public sealed class ResponseBuilder<TSource, TResult>
     }
 
     /// <inheritdoc cref="BuildFromQueryAsync(IQueryable{TResult}, int?, int?, CancellationToken)"/>
-    public Task<Response<TResult>> BuildFromQueryAsync(IQueryable<TResult> query, CancellationToken ct = default)
+    public Task<Response<TResult>> BuildFromQueryAsync(IQueryable<TResult> query, CancellationToken ct)
         => BuildFromQueryAsync(query, null, null, ct);
 
     /// <summary>
