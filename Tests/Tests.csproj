@@ -26,11 +26,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\src\DataTables.ServerSideProcessing\DataTables.ServerSideProcessing.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataTables.ServerSideProcessing.EFCore\DataTables.ServerSideProcessing.EFCore.csproj" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

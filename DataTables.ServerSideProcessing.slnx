@@ -12,7 +12,8 @@
     <File Path="README.md" />
     <File Path="todo.md" />
   </Folder>
-  <Project Path="DataTables.ServerSideProcessing.Data/DataTables.ServerSideProcessing.Data.csproj" />
-  <Project Path="DataTables.ServerSideProcessing.EFCore/DataTables.ServerSideProcessing.EFCore.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/DataTables.ServerSideProcessing/DataTables.ServerSideProcessing.csproj" Id="dbc35128-1295-467c-a71b-4db6f0cb67c8" />
+  </Folder>
   <Project Path="Tests/Tests.csproj" />
 </Solution>
