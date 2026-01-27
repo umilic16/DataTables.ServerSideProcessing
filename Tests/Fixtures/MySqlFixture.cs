@@ -6,7 +6,7 @@ namespace Tests.Fixtures;
 
 public class MySqlFixture : IAsyncLifetime, ITestDbFixture
 {
-    private readonly MySqlContainer _container = new MySqlBuilder().Build();
+    private readonly MySqlContainer _container = new MySqlBuilder("mysql:8.4.5").Build();
     public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();

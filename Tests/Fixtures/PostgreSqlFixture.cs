@@ -6,7 +6,7 @@ namespace Tests.Fixtures;
 
 public class PostgreSqlFixture : IAsyncLifetime, ITestDbFixture
 {
-    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder().Build();
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:18.1").Build();
     public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();

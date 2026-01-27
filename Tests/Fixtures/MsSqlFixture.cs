@@ -6,7 +6,7 @@ namespace Tests.Fixtures;
 
 public class MsSqlFixture : IAsyncLifetime, ITestDbFixture
 {
-    private readonly MsSqlContainer _container = new MsSqlBuilder().Build();
+    private readonly MsSqlContainer _container = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2019-latest").Build();
     public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();
