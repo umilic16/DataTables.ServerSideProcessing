@@ -19,13 +19,14 @@
     <!--<PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
     <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" Condition="'$(TargetFramework)' == 'net9.0'" />
     <PackageVersion Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" Condition="'$(TargetFramework)' == 'net10.0'" />-->
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.15.0.120848" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.18.0.131500" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
-    <PackageVersion Include="Testcontainers.MsSql" Version="4.7.0" />
-    <PackageVersion Include="Testcontainers.MySql" Version="4.7.0" />
-    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.7.0" />
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.10.0" />
+    <PackageVersion Include="Testcontainers.MySql" Version="4.10.0" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.10.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <PackageVersion Include="xunit.v3" Version="3.1.0" />
+    <PackageVersion Include="Xunit.SkippableFact" Version="1.5.61" />
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
 </Project>
