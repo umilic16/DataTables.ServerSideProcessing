@@ -9,10 +9,10 @@ namespace DataTables.ServerSideProcessing.Data.Models.Filters;
 /// Inherits from <see cref="FilterModel{T}"/> where <typeparamref name="T"/> implements <see cref="INumber{T}"/>.
 /// </summary>
 /// <typeparam name="T">The numeric type of the column (e.g., int, decimal) that implements <see cref="INumber{T}"/>.</typeparam>
-public sealed record NumberFilter<T> : FilterModel<T> where T : INumber<T>
+internal sealed record NumberFilter<T> : FilterModel<T> where T : INumber<T>
 {
     /// <summary>
     /// Type of filter to apply (e.g., Equals, Between).
     /// </summary>
-    public required FilterOperations FilterType { get; init; }
+    internal required FilterOperations FilterType { get; init; }
 }

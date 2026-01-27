@@ -7,15 +7,15 @@ namespace DataTables.ServerSideProcessing.Data.Models.Filters;
 /// Filter model for text-based columns.
 /// Inherits from <see cref="FilterModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
-public sealed record TextFilter : FilterModel<string>
+internal sealed record TextFilter : FilterModel<string>
 {
     /// <summary>
     /// Type of the column (e.g., Base, AccNumber).
     /// </summary>
-    public TextColumn ColumnType { get; init; } = TextColumn.Base;
+    internal TextColumn ColumnType { get; init; } = TextColumn.Base;
 
     /// <summary>
     /// Type of text filter to apply (e.g., Contains, StartsWith).
     /// </summary>
-    public required FilterOperations FilterType { get; init; }
+    internal required FilterOperations FilterType { get; init; }
 }

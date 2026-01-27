@@ -6,11 +6,11 @@ namespace DataTables.ServerSideProcessing.Data.Models.Filters;
 /// Filter model for SingleSelect columns.
 /// Inherits from <see cref="FilterModel{T}"/> with <c>string?</c> as the type parameter.
 /// </summary>
-public record SingleSelectFilter<T> : FilterModel<T>;
+internal record SingleSelectFilter<T> : FilterModel<T>;
 
 /// <summary>
 /// Filter model for SingleSelect columns.
 /// Inherits from <see cref="FilterModel{T}"/> with <c>string</c> as the type parameter.
 /// </summary>
-public sealed record SingleSelectFilter : SingleSelectFilter<string>;
+internal sealed record SingleSelectFilter : SingleSelectFilter<string>;
 
