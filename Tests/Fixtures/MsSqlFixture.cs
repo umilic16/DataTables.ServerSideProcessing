@@ -23,6 +23,6 @@ public class MsSqlFixture : IAsyncLifetime, ITestDbFixture
         var options = new DbContextOptionsBuilder<TestDbContext>().UseSqlServer(ConnectionString).Options;
         return new TestDbContext(options);
     }
-    public string ConnectionString => _container.GetConnectionString();
+    public string ConnectionString => $"{_container.GetConnectionString()};TrustServerCertificate=True;Encrypt=False;";
 }
 
