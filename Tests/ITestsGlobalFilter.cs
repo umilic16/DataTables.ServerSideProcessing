@@ -10,7 +10,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     TFixture Fixture { get; }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_NumericColumns()
+    async Task GlobalFilter_On_NumericColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -38,7 +38,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_NumericColumns_WithProjection()
+    async Task GlobalFilter_On_NumericColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -67,7 +67,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateTimeColumns()
+    async Task GlobalFilter_On_DateTimeColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -93,7 +93,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateOnlyColumns()
+    async Task GlobalFilter_On_DateOnlyColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -119,7 +119,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateTimeOffsetColumns()
+    async Task GlobalFilter_On_DateTimeOffsetColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -145,7 +145,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateTimeColumns_WithProjection()
+    async Task GlobalFilter_On_DateTimeColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -172,7 +172,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateOnlyColumns_WithProjection()
+    async Task GlobalFilter_On_DateOnlyColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -199,7 +199,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_DateTimeOffsetColumns_WithProjection()
+    async Task GlobalFilter_On_DateTimeOffsetColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -226,7 +226,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_EnumColumns()
+    async Task GlobalFilter_On_EnumColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -252,7 +252,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_EnumColumns_WithProjection()
+    async Task GlobalFilter_On_EnumColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -279,7 +279,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_BoolColumns()
+    async Task GlobalFilter_On_BoolColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -305,7 +305,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_BoolColumns_WithProjection()
+    async Task GlobalFilter_On_BoolColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -332,7 +332,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_StringColumns()
+    async Task GlobalFilter_On_StringColumns()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -358,7 +358,7 @@ public interface ITestsGlobalFilter<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "GlobalFilter")]
-    public async Task GlobalFilter_On_StringColumns_WithProjection()
+    async Task GlobalFilter_On_StringColumns_WithProjection()
     {
         // Arrange
         using var context = Fixture.CreateContext();

@@ -10,7 +10,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     TFixture Fixture { get; }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_IntVal_Ascending()
+    async Task Sort_IntVal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -32,7 +32,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_IntVal_WithProjection_Descending()
+    async Task Sort_IntVal_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -57,7 +57,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableInt_Ascending()
+    async Task Sort_NullableInt_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -79,7 +79,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullInt_WithProjection_Descending()
+    async Task Sort_NullInt_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -104,7 +104,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_DecimalVal_Ascending()
+    async Task Sort_DecimalVal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -126,7 +126,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_DecVal_WithProjection_Descending()
+    async Task Sort_DecVal_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -151,7 +151,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableDecimal_Ascending()
+    async Task Sort_NullableDecimal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -173,7 +173,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullDec_WithProjection_Descending()
+    async Task Sort_NullDec_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -198,7 +198,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_DateTimeVal_Ascending()
+    async Task Sort_DateTimeVal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -220,7 +220,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_DtVal_WithProjection_Descending()
+    async Task Sort_DtVal_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -245,7 +245,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableDateTime_Ascending()
+    async Task Sort_NullableDateTime_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -267,7 +267,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullDt_WithProjection_Descending()
+    async Task Sort_NullDt_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -292,7 +292,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_DateOnlyVal_Ascending()
+    async Task Sort_DateOnlyVal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -314,7 +314,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_DoVal_WithProjection_Descending()
+    async Task Sort_DoVal_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -339,7 +339,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableDateOnly_Ascending()
+    async Task Sort_NullableDateOnly_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -361,7 +361,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullDo_WithProjection_Descending()
+    async Task Sort_NullDo_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -386,7 +386,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_EnumVal_Ascending()
+    async Task Sort_EnumVal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -408,7 +408,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_EnumVal_WithProjection_Descending()
+    async Task Sort_EnumVal_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -433,7 +433,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableEnumAscending()
+    async Task Sort_NullableEnumAscending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -455,7 +455,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableEnum_WithProjection_Descending()
+    async Task Sort_NullableEnum_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -480,7 +480,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_BoolVal_Ascending()
+    async Task Sort_BoolVal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -502,7 +502,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_BoolVal_WithProjection_Descending()
+    async Task Sort_BoolVal_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -527,7 +527,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableBool_Ascending()
+    async Task Sort_NullableBool_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -549,7 +549,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableBool_WithProjection_Descending()
+    async Task Sort_NullableBool_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -574,7 +574,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_StringVal_Ascending()
+    async Task Sort_StringVal_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -596,7 +596,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_StrVal_WithProjection_Descending()
+    async Task Sort_StrVal_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -621,7 +621,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullableString_Ascending()
+    async Task Sort_NullableString_Ascending()
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -643,7 +643,7 @@ public interface ITestsSorting<TFixture> where TFixture : ITestDbFixture
     }
 
     [Fact, Trait("Category", "Sorting")]
-    public async Task Sort_NullStr_WithProjection_Descending()
+    async Task Sort_NullStr_WithProjection_Descending()
     {
         // Arrange
         using var context = Fixture.CreateContext();

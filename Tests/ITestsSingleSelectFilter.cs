@@ -14,7 +14,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_IntVal(string searchValue)
+    async Task Select_IntVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -45,7 +45,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_IntVal_WithProjection(string searchValue)
+    async Task Select_IntVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -77,7 +77,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_NullableInt(string searchValue)
+    async Task Select_NullableInt(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -108,7 +108,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_NullInt_WithProjection(string searchValue)
+    async Task Select_NullInt_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -140,7 +140,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_DecimalVal(string searchValue)
+    async Task Select_DecimalVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -171,7 +171,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_DecVal_WithProjection(string searchValue)
+    async Task Select_DecVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -203,7 +203,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_NullableDecimal(string searchValue)
+    async Task Select_NullableDecimal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -234,7 +234,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_NullDec_WithProjection(string searchValue)
+    async Task Select_NullDec_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -266,7 +266,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_DateTimeVal(string searchValue)
+    async Task Select_DateTimeVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -298,7 +298,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_DtVal_WithProjection(string searchValue)
+    async Task Select_DtVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -331,7 +331,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_NullableDateTime(string searchValue)
+    async Task Select_NullableDateTime(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -363,7 +363,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_NullDt_WithProjection(string searchValue)
+    async Task Select_NullDt_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -396,7 +396,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_DateOnlyVal(string searchValue)
+    async Task Select_DateOnlyVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -428,7 +428,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_DoVal_WithProjection(string searchValue)
+    async Task Select_DoVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -461,7 +461,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_NullableDateOnly(string searchValue)
+    async Task Select_NullableDateOnly(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -493,7 +493,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_NullDo_WithProjection(string searchValue)
+    async Task Select_NullDo_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -526,7 +526,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData(nameof(Something.Alpha))]
     [InlineData("1")]
     [InlineData("5")]
-    public async Task Select_EnumVal(string searchValue)
+    async Task Select_EnumVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -557,7 +557,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData(nameof(Something.Alpha))]
     [InlineData("1")]
     [InlineData("5")]
-    public async Task Select_EnumVal_WithProjection(string searchValue)
+    async Task Select_EnumVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -589,7 +589,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData(nameof(Something.Alpha))]
     [InlineData("1")]
     [InlineData("5")]
-    public async Task Select_NullableEnum(string searchValue)
+    async Task Select_NullableEnum(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -620,7 +620,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData(nameof(Something.Alpha))]
     [InlineData("1")]
     [InlineData("5")]
-    public async Task Select_NullableEnum_WithProjection(string searchValue)
+    async Task Select_NullableEnum_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -652,7 +652,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("1")]
     [InlineData("0")]
     [InlineData("true")]
-    public async Task Select_BoolVal(string searchValue)
+    async Task Select_BoolVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -683,7 +683,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("1")]
     [InlineData("0")]
     [InlineData("true")]
-    public async Task Select_BoolVal_WithProjection(string searchValue)
+    async Task Select_BoolVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -715,7 +715,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("1")]
     [InlineData("0")]
     [InlineData("true")]
-    public async Task Select_NullableBool(string searchValue)
+    async Task Select_NullableBool(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -746,7 +746,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("1")]
     [InlineData("0")]
     [InlineData("true")]
-    public async Task Select_NullableBool_WithProjection(string searchValue)
+    async Task Select_NullableBool_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -778,7 +778,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_StringVal(string searchValue)
+    async Task Select_StringVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -809,7 +809,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_StrVal_WithProjection(string searchValue)
+    async Task Select_StrVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -841,7 +841,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_NullableString(string searchValue)
+    async Task Select_NullableString(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -872,7 +872,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("999")]
     [InlineData("test")]
-    public async Task Select_NullStr_WithProjection(string searchValue)
+    async Task Select_NullStr_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -904,7 +904,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_DateTimeOffsetVal(string searchValue)
+    async Task Select_DateTimeOffsetVal(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -936,7 +936,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_DtoVal_WithProjection(string searchValue)
+    async Task Select_DtoVal_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -969,7 +969,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_NullableDateTimeOffset(string searchValue)
+    async Task Select_NullableDateTimeOffset(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();
@@ -1001,7 +1001,7 @@ public interface ITestsSingleSelectFilter<TFixture> where TFixture : ITestDbFixt
     [InlineData("123")]
     [InlineData("22.01.2025")]
     [InlineData("28.09.2031")]
-    public async Task Select_NullDto_WithProjection(string searchValue)
+    async Task Select_NullDto_WithProjection(string searchValue)
     {
         // Arrange
         using var context = Fixture.CreateContext();

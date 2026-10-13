@@ -15,27 +15,27 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
     bool IsPostgres { get; }
     FilterParsingOptions FilterParsingOptions => FilterParsingOptions.Default;
 
-    public static List<TheoryDataRow<string, FilterOperations>> ValidIntCases()
+    static List<TheoryDataRow<string, FilterOperations>> ValidIntCases()
     {
         return Utils.GetValidIntCases();
     }
 
-    public static List<TheoryDataRow<string, FilterOperations, string>> ValidDecCases()
+    static List<TheoryDataRow<string, FilterOperations, string>> ValidDecCases()
     {
         return Utils.GetValidDecCases();
     }
 
-    public static List<TheoryDataRow<string, FilterOperations, string>> ValidDateCases()
+    static List<TheoryDataRow<string, FilterOperations, string>> ValidDateCases()
     {
         return Utils.GetValidDateCases();
     }
 
-    public static List<TheoryDataRow<string, FilterOperations>> ValidStringCases()
+    static List<TheoryDataRow<string, FilterOperations>> ValidStringCases()
     {
         return Utils.GetValidStringCases();
     }
 
-    public static List<TheoryDataRow<string, FilterOperations, FilterCategory, NumericColumn?>> InvalidFilterOperationsCombinations()
+    static List<TheoryDataRow<string, FilterOperations, FilterCategory, NumericColumn?>> InvalidFilterOperationsCombinations()
     {
         List<TheoryDataRow<string, FilterOperations, FilterCategory, NumericColumn?>> rows = [];
         FilterOperations[] textOnlyOperations = Utils.s_textOps[..^2]; // exclude Equals and NotEqual
@@ -62,7 +62,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
         return rows;
     }
 
-    public static List<TheoryDataRow<string, NumericColumn>> InvalidNumericColumnTypeCombinations()
+    static List<TheoryDataRow<string, NumericColumn>> InvalidNumericColumnTypeCombinations()
     {
         List<TheoryDataRow<string, NumericColumn>> rows = [];
 
@@ -76,7 +76,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(InvalidFilterOperationsCombinations))]
-    public async Task InvalidFilterOperation_ShouldThrow(string propName, FilterOperations operation, FilterCategory category, NumericColumn? numericColumnType)
+    async Task InvalidFilterOperation_ShouldThrow(string propName, FilterOperations operation, FilterCategory category, NumericColumn? numericColumnType)
     {
         // Arrange
         var form = TestFormBuilder.Create();
@@ -104,7 +104,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(InvalidNumericColumnTypeCombinations))]
-    public async Task InvalidColumnType_ShouldThrow(string propName, NumericColumn numericColumnType)
+    async Task InvalidColumnType_ShouldThrow(string propName, NumericColumn numericColumnType)
     {
         // Arrange
         IFormCollection form = TestFormBuilder.Create().AddColumn(propName, new NumericFilterModel { SearchValue = "123", NumericCategory = numericColumnType }).Build();
@@ -119,7 +119,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidInt(string searchValue, FilterOperations operation)
+    async Task Filter_ValidInt(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -175,7 +175,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidInt_WithProjection(string searchValue, FilterOperations operation)
+    async Task Filter_ValidInt_WithProjection(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -231,7 +231,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidNullableInt(string searchValue, FilterOperations operation)
+    async Task Filter_ValidNullableInt(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -287,7 +287,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidIntCases))]
-    public async Task Filter_ValidNullableInt_WithProjection(string searchValue, FilterOperations operation)
+    async Task Filter_ValidNullableInt_WithProjection(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -342,7 +342,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDecCases))]
-    public async Task Filter_ValidDecimal(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDecimal(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -408,7 +408,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDecCases))]
-    public async Task Filter_ValidDecimal_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDecimal_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -474,7 +474,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDecCases))]
-    public async Task Filter_ValidNullableDecimal(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDecimal(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -540,7 +540,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDecCases))]
-    public async Task Filter_ValidNullableDecimal_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDecimal_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -605,7 +605,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidDateTime(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDateTime(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -673,7 +673,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidDateTime_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDateTime_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -739,7 +739,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidNullableDateTime(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDateTime(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -805,7 +805,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidNullableDateTime_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDateTime_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -870,7 +870,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidDateOnly(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDateOnly(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -936,7 +936,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidDateOnly_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDateOnly_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -1002,7 +1002,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidNullableDateOnly(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDateOnly(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -1068,7 +1068,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidNullableDateOnly_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDateOnly_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -1134,7 +1134,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidStringCases))]
-    public async Task Filter_ValidString(string searchValue, FilterOperations operation)
+    async Task Filter_ValidString(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -1173,7 +1173,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidStringCases))]
-    public async Task Filter_ValidString_WithProjection(string searchValue, FilterOperations operation)
+    async Task Filter_ValidString_WithProjection(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -1212,7 +1212,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidStringCases))]
-    public async Task Filter_ValidNullableString(string searchValue, FilterOperations operation)
+    async Task Filter_ValidNullableString(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -1251,7 +1251,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidStringCases))]
-    public async Task Filter_ValidNullableString_WithProjection(string searchValue, FilterOperations operation)
+    async Task Filter_ValidNullableString_WithProjection(string searchValue, FilterOperations operation)
     {
         // Arrange
         using TestDbContext context = Fixture.CreateContext();
@@ -1290,7 +1290,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidDateTimeOffset(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDateTimeOffset(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -1358,7 +1358,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidDateTimeOffset_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidDateTimeOffset_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -1424,7 +1424,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidNullableDateTimeOffset(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDateTimeOffset(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
@@ -1490,7 +1490,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
 
     [Theory, Trait("Category", "ColumnFilter")]
     [MemberData(nameof(ValidDateCases))]
-    public async Task Filter_ValidNullableDateTimeOffset_WithProjection(string searchValue, FilterOperations operation, string culture)
+    async Task Filter_ValidNullableDateTimeOffset_WithProjection(string searchValue, FilterOperations operation, string culture)
     {
         // Arrange
         var oldCulture = CultureInfo.CurrentCulture;
