@@ -17,7 +17,11 @@ public sealed class DataTableComponent
     /// Sets the global default CSS classes applied to all DataTables.
     /// </summary>
     /// <param name="value">The CSS class string to apply as the default.</param>
-    public static void SetDefaultTableClasses(string value) => DefaultTableClasses = value;
+    public static void SetDefaultTableClasses(string value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        DefaultTableClasses = value;
+    }
 
     /// <summary>
     /// Gets the CSS class string used for this specific table instance.

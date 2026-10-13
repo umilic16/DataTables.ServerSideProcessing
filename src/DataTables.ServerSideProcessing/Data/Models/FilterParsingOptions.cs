@@ -14,7 +14,11 @@ public sealed record FilterParsingOptions
     /// Sets the default <see cref="FilterParsingOptions"/> instance.
     /// </summary>
     /// <param name="options">The <see cref="FilterParsingOptions"/> instance to set as default.</param>
-    public static void SetDefault(FilterParsingOptions options) => Default = options;
+    public static void SetDefault(FilterParsingOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
+        Default = options;
+    }
 
     /// <summary>
     /// Prefix used for filter parameters in the request data. Default is "filter".

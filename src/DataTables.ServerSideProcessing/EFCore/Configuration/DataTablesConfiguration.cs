@@ -8,17 +8,23 @@ namespace DataTables.ServerSideProcessing.EFCore.Configuration;
 /// </summary>
 public sealed class DataTablesConfiguration
 {
-    internal FilterParsingOptions FilterParsingOptions { get; } = FilterParsingOptions.Default;
+    internal FilterParsingOptions FilterParsingOptions { get; private set; } = FilterParsingOptions.Default;
     internal string TableClasses { get; private set; } = DataTableComponent.DefaultTableClasses;
 
     /// <summary>
     /// Configures the default <see cref="Data.Models.FilterParsingOptions"/> values.
     /// </summary>
-    /// <param name="configure">A delegate used to modify the default filter parsing options.</param>
+    /// <param name="configure">
+    /// A delegate that receives the current default filter parsing options and returns the new ones,
+    /// e.g. <c>o => o with { Prefix = "f" }</c>.
+    /// </param>
     /// <returns>The current <see cref="DataTablesConfiguration"/> instance for fluent configuration.</returns>
-    public DataTablesConfiguration SetDefaultFilterParsingOptions(Action<FilterParsingOptions> configure)
+    public DataTablesConfiguration SetDefaultFilterParsingOptions(Func<FilterParsingOptions, FilterParsingOptions> configure)
     {
-        configure(FilterParsingOptions);
+        ArgumentNullException.ThrowIfNull(configure);
+
+        FilterParsingOptions = configure(FilterParsingOptions)
+            ?? throw new InvalidOperationException("The configure delegate must return a FilterParsingOptions instance.");
         return this;
     }
 
