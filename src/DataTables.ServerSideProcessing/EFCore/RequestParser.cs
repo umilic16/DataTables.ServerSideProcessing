@@ -109,7 +109,7 @@ internal static class RequestParser
                 if (!Enum.TryParse(requestFormData[filterTypeKey], out FilterOperations filterType))
                     continue;
 
-                AddDateFilter(searchValue, propertyName, filterType, filters, options);
+                AddDateFilter(searchValue, propertyName, filterType, filters, options.BetweenSeparator);
             }
             else if (filterCategory == FilterCategory.SingleSelect)
             {
@@ -188,7 +188,7 @@ internal static class RequestParser
         string propertyName,
         FilterOperations filterType,
         List<FilterModel> filters,
-        FilterParsingOptions options)
+        string betweenSeparator)
     {
         if (filterType != FilterOperations.Between)
         {
@@ -204,7 +204,7 @@ internal static class RequestParser
         }
         else
         {
-            string[] searchValues = searchValue.Split(options.BetweenSeparator);
+            string[] searchValues = searchValue.Split(betweenSeparator);
             for (int i = 0; i < 2; i++)
             {
                 if (string.IsNullOrEmpty(searchValues[i])
