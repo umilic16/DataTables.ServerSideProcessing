@@ -51,7 +51,7 @@ public class TestFormBuilder
             else if (filter is TextFilterModel textModel)
             {
                 _data[$"{filter.Options.Prefix}[{property}][{filter.Options.FilterTypeKey}]"] = ((int)textModel.FilterType).ToString();
-                _data[$"{filter.Options.Prefix}[{property}][{filter.Options.ValueCategoryKey}]"] = ((int)textModel.TextCategory!).ToString();
+                _data[$"{filter.Options.Prefix}[{property}][{filter.Options.ValueCategoryKey}]"] = ((int)textModel.TextCategory).ToString();
             }
             else if (filter is DateFilterModel dateModel)
             {

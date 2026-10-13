@@ -41,7 +41,7 @@ internal static class RequestParser
                 sortModels.Add(new SortModel
                 {
                     SortDirection = requestFormData[dirKey] == "asc" ? SortDirection.Ascending : SortDirection.Descending,
-                    PropertyName = requestFormData[nameKey]!
+                    PropertyName = requestFormData[nameKey].ToString()
                 });
             }
         }
