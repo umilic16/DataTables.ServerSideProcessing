@@ -10,7 +10,9 @@ public class PostgreSqlFixture : IAsyncLifetime, ITestDbFixture
     public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();
-        var options = new DbContextOptionsBuilder<TestDbContext>().UseNpgsql(ConnectionString).Options;
+        var options = new DbContextOptionsBuilder<TestDbContext>()
+            .UseNpgsql(ConnectionString, o => o.CommandTimeout(120).EnableRetryOnFailure())
+            .Options;
         DbHelpers.InitializeDatabase(options);
     }
     public async ValueTask DisposeAsync()

@@ -10,7 +10,9 @@ public class MsSqlFixture : IAsyncLifetime, ITestDbFixture
     public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();
-        var options = new DbContextOptionsBuilder<TestDbContext>().UseSqlServer(ConnectionString).Options;
+        var options = new DbContextOptionsBuilder<TestDbContext>()
+            .UseSqlServer(ConnectionString, o => o.CommandTimeout(120).EnableRetryOnFailure())
+            .Options;
         DbHelpers.InitializeDatabase(options);
     }
     public async ValueTask DisposeAsync()

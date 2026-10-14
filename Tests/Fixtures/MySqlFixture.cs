@@ -10,7 +10,9 @@ public class MySqlFixture : IAsyncLifetime, ITestDbFixture
     public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();
-        var options = new DbContextOptionsBuilder<TestDbContext>().UseMySQL(ConnectionString).Options;
+        var options = new DbContextOptionsBuilder<TestDbContext>()
+            .UseMySQL(ConnectionString, o => o.CommandTimeout(120).EnableRetryOnFailure())
+            .Options;
         DbHelpers.InitializeDatabase(options);
     }
     public async ValueTask DisposeAsync()
