@@ -1,5 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Version>0.0.1-dev</Version>
+  </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>DataTables.ServerSideProcessing.EFCore</PackageId>
+    <Authors>Uros Milic</Authors>
+    <Copyright>© Uros Milic</Copyright>
+    <Description>A .NET library for handling jQuery DataTables server-side processing requests with Entity Framework Core. Paging, multi-column sorting, global search and column filters (text, numeric, date, single-select, multi-select) are applied directly on an IQueryable, so only the requested data is retrieved from the database.</Description>
+    <PackageTags>datatables;jquery-datatables;server-side;serverside-processing;entity-framework-core;efcore;aspnetcore;paging;sorting;filtering</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/umilic16/DataTables.ServerSideProcessing</RepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />

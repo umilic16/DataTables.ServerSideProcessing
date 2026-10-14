@@ -1,0 +1,54 @@
+name: Build and push to nuget
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build-and-publish:
+    permissions:
+      contents: read
+      id-token: write  # enable GitHub OIDC token issuance for this job
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Pack DataTables.ServerSideProcessing
+        run: |
+          # Strip the 'v' from the tag (v1.0.3 becomes 1.0.3)
+          VERSION="${GITHUB_REF_NAME#v}"
+
+          dotnet pack ./src/DataTables.ServerSideProcessing/DataTables.ServerSideProcessing.csproj -c Release -p:Version="$VERSION" -o ./nuget-out
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: DataTables.ServerSideProcessing-NuGet-Package-${{ github.ref_name }}
+          path: |
+            ./nuget-out/*.nupkg
+            ./nuget-out/*.snupkg
+          retention-days: 7
+
+      # Get a short-lived NuGet API key
+      - name: NuGet login (OIDC → temp API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push to NuGet
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+        run: dotnet nuget push ./nuget-out/*.nupkg --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
