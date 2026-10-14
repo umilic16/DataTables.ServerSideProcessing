@@ -33,19 +33,19 @@ internal static class DateExpressionBuilder
         }
         else
         {
-            // For DateTime or DateTimeOffset, create values with time component set to start and end of the day
+            // For DateTime or DateTimeOffset, create values with time component set to start of the day and start of the next day (exclusive end)
             ConstantExpression dateTimeBase;
             ConstantExpression dateTimeEnd;
             if (underlyingType == typeof(DateTimeOffset))
             {
                 dateTimeBase = Expression.Constant(new DateTimeOffset(searchValue.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero), propertyType);
-                dateTimeEnd = Expression.Constant(new DateTimeOffset(searchValue.ToDateTime(TimeOnly.MaxValue), TimeSpan.Zero), propertyType);
+                dateTimeEnd = Expression.Constant(new DateTimeOffset(searchValue.AddDays(1).ToDateTime(TimeOnly.MinValue), TimeSpan.Zero), propertyType);
             }
             else
             {
                 // DateTime
                 dateTimeBase = Expression.Constant(searchValue.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), propertyType);
-                dateTimeEnd = Expression.Constant(searchValue.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc), propertyType);
+                dateTimeEnd = Expression.Constant(searchValue.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc), propertyType);
             }
 
             comparison = filterType switch
@@ -60,10 +60,10 @@ internal static class DateExpressionBuilder
                         Expression.LessThan(memberAccess, dateTimeBase),
                         Expression.GreaterThanOrEqual(memberAccess, dateTimeEnd)
                     ),
-                FilterOperations.GreaterThan => Expression.GreaterThan(memberAccess, dateTimeBase),
+                FilterOperations.GreaterThan => Expression.GreaterThanOrEqual(memberAccess, dateTimeEnd),
                 FilterOperations.GreaterThanOrEqual => Expression.GreaterThanOrEqual(memberAccess, dateTimeBase),
                 FilterOperations.LessThan => Expression.LessThan(memberAccess, dateTimeBase),
-                FilterOperations.LessThanOrEqual => Expression.LessThanOrEqual(memberAccess, dateTimeEnd),
+                FilterOperations.LessThanOrEqual => Expression.LessThan(memberAccess, dateTimeEnd),
                 _ => throw new InvalidOperationException($"Filter operation '{filterType}' is not valid for date filtering.")
             };
         }
