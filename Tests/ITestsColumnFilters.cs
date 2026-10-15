@@ -628,7 +628,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.DateTimeVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.DateTimeVal < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -638,12 +638,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -696,7 +696,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.DtVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.DtVal < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -706,12 +706,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.DtVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -762,7 +762,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.NullableDateTime <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.NullableDateTime < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -772,12 +772,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTime <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTime > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTime < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTime >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTime >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTime >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTime < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTime <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTime < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -828,7 +828,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.NullDt <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.NullDt < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -838,12 +838,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDt <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDt > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDt < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDt >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDt >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDt >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.NullDt < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDt <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDt < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -1313,7 +1313,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.DateTimeOffsetVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.DateTimeOffsetVal < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -1323,12 +1323,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeOffsetVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeOffsetVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeOffsetVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeOffsetVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeOffsetVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DateTimeOffsetVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DateTimeOffsetVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DateTimeOffsetVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DateTimeOffsetVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DateTimeOffsetVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DateTimeOffsetVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.DateTimeOffsetVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeOffsetVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DateTimeOffsetVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -1381,7 +1381,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.DtoVal <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.DtoVal < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -1391,12 +1391,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.DtoVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtoVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtoVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtoVal > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtoVal > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.DtoVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.DtoVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.DtoVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.DtoVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.DtoVal >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.DtoVal >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.DtoVal < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtoVal <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.DtoVal < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -1447,7 +1447,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.NullableDateTimeOffset <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.NullableDateTimeOffset < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -1457,12 +1457,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTimeOffset >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTimeOffset <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTimeOffset < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTimeOffset > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTimeOffset > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullableDateTimeOffset >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullableDateTimeOffset < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullableDateTimeOffset < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullableDateTimeOffset >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullableDateTimeOffset >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullableDateTimeOffset >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.NullableDateTimeOffset < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTimeOffset <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullableDateTimeOffset < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
@@ -1513,7 +1513,7 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                 if (!string.IsNullOrEmpty(values[1]))
                 {
                     DateOnly parsedValTo = DateOnly.Parse(values[1], CultureInfo.CurrentCulture);
-                    baseQuery = baseQuery.Where(x => x.NullDto <= parsedValTo.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc));
+                    baseQuery = baseQuery.Where(x => x.NullDto < parsedValTo.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc));
                 }
             }
             else
@@ -1523,12 +1523,12 @@ public interface ITestsColumnFilters<TFixture> where TFixture : ITestDbFixture
                     DateOnly parsedVal = DateOnly.Parse(searchValue, CultureInfo.CurrentCulture);
                     baseQuery = operation switch
                     {
-                        FilterOperations.Equals => baseQuery.Where(x => x.NullDto >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDto <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDto < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDto > parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
-                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDto > parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.Equals => baseQuery.Where(x => x.NullDto >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) && x.NullDto < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.NotEqual => baseQuery.Where(x => x.NullDto < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc) || x.NullDto >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
+                        FilterOperations.GreaterThan => baseQuery.Where(x => x.NullDto >= parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.GreaterThanOrEqual => baseQuery.Where(x => x.NullDto >= parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         FilterOperations.LessThan => baseQuery.Where(x => x.NullDto < parsedVal.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
-                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDto <= parsedVal.ToDateTime(TimeOnly.MaxValue, DateTimeKind.Utc)),
+                        FilterOperations.LessThanOrEqual => baseQuery.Where(x => x.NullDto < parsedVal.AddDays(1).ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)),
                         _ => throw new InvalidOperationException($"{operation} not supported")
                     };
                 }
